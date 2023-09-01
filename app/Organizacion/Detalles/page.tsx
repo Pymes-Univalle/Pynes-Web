@@ -5,6 +5,7 @@ import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import GOOGLE_MAPS_API_KEY from "@/googleMapsConfig";
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useRouter } from "next/router";
+import {organizations} from "@/prueba"; // Importa tus datos
 
 const mapContainerStyle = {
   width: "100%",
@@ -16,19 +17,23 @@ const center = {
   lng: -66.224047,
 };
 
-export default function Detalles() {
-  const router = useRouter();
-  const { id, latitud, longitud, nombre , correo , nit } = router.query; // Captura el ID, latitud y longitud de la URL
+interface DetallesProps {
+  id: string | undefined;
+};
 
-  const parsedLatitud = typeof latitud === 'string' ? parseFloat(latitud) : null;
-  const parsedLongitud = typeof longitud === 'string' ? parseFloat(longitud) : null;
+export default function Detalles({ id }: DetallesProps) {
 
-  console.log("ID:", id);
-  console.log("Latitud:", latitud);
-  console.log("Longitud:", longitud);
-  console.log("Nombre:", nombre);
-  console.log("Correo:", correo);
-  console.log("Nit:", nit);
+  
+
+  // Busca el elemento en tus datos
+  const item = organizations.find((item) => item.id === id);
+
+  if (!item) {
+    return <div>No se encontró el elemento con ID {id}</div>;
+  }
+
+  const parsedLatitud = typeof item.latitude === 'string' ? parseFloat(item.latitude) : null;
+  const parsedLongitud = typeof item.longitude === 'string' ? parseFloat(item.longitude) : null;
 
   return (
     <div className="bg-blanco min-h-screen text-black ">
@@ -36,13 +41,13 @@ export default function Detalles() {
         <h1 className="text-black text-2xl text-center font-bold mb-8 mt-5"> Visualizar Organización </h1>
         <div className=" p-5 border-1 shadow ">
             <div className="mb-5 mt-5">
-            <strong>Nombre:</strong> {nombre}
+            <strong>Nombre:</strong> {item.name}
           </div>
           <div className="mb-5">
-            <strong>Gmail:</strong> {correo}
+            <strong>Gmail:</strong> {item.email}
           </div>
           <div className="mb-5">
-            <strong>Nit:</strong> {nit}
+            <strong>Nit:</strong> {item.nit}
           </div>
           <div className="mb-5">
             <label>Ubicación:</label>
@@ -63,12 +68,7 @@ export default function Detalles() {
               </LoadScript>
             </div>
           </div>
-          <Button
-            color="primary"
-            onClick={() => router.push("/ListaDeOrganizaciones")} // Navegar de vuelta a la lista
-          >
-            Volver
-          </Button>
+         
         </div>
       </div>
     </div>

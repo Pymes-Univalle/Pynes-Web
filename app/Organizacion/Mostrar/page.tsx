@@ -6,12 +6,9 @@ import { organizations } from "@/prueba";
 import EditIcon from "@/EditIcon";
 import DeleteIcon from "@/DeleteIcon";
 import EyeIcon from "@/EyeIcon";
-import { useRouter } from 'next/router';
-
-
 
 export default function Mostrar() {
-  
+
   const [page, setPage] = React.useState(1);
   const rowsPerPage = 10;
 
@@ -25,7 +22,7 @@ export default function Mostrar() {
     return organizations.slice(start, end);
   }, [page, organizations]);
 
-
+ 
 
   return (
     <div className="text-black bg-blanco p-4">
@@ -78,13 +75,14 @@ export default function Mostrar() {
               <TableCell>{item.nit}</TableCell>
 
               <TableCell>
-                <Link href={`/Organizacion/Detalles/${item.id}`} >
-                  
-                  <Button className="flex items-center text-black hover:text-gray-800 " color="primary">
-                    <EyeIcon className="w-6 h-6  text-black" />
+              
+                <Link href={`/Organizacion/Direccion/${item.id}`}>
+                  <Button className="flex items-center text-black hover:text-gray-800" color="primary">
+                    <EyeIcon className="w-6 h-6 text-black" />
                     Ver
                   </Button>
                 </Link>
+             
               </TableCell>
 
               <TableCell>
