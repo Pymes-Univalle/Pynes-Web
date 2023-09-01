@@ -1,146 +1,31 @@
 'use client'
-/*
-import React from "react";
-import { Input } from "@nextui-org/react";
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
-import {Card, CardHeader, CardBody, CardFooter, Divider, Link, Image} from "@nextui-org/react";
-
-export default function App() {
-  const [isVisible, setIsVisible] = React.useState(false);
-
-  const toggleVisibility = () => setIsVisible(!isVisible);
-
-  return (
-    <>
-    <Input
-      label="Contraseña"
-      type={isVisible ? "text" : "password"}
-      endContent={
-        <button className="focus:outline-none" type="button" onClick={toggleVisibility}>
-          {isVisible ? (
-            <FaEyeSlash className="text-2xl text-default-400 pointer-events-none" />
-          ) : (
-            <FaEye className="text-2xl text-default-400 pointer-events-none" />
-          )}
-        </button>
-      }
-    /> 
-    <Card className="container">
-    <CardHeader className="flex gap-3">
-      <Image
-        alt="nextui logo"
-        height={40}
-        radius="sm"
-        src="https://avatars.githubusercontent.com/u/86160567?s=200&v=4"
-        width={40}
-      />
-      <div className="flex flex-col">
-        <p className="text-md">NextUI</p>
-        <p className="text-small text-default-500">nextui.org</p>
-      </div>
-    </CardHeader>
-    <Divider/>
-    <CardBody>
-      <p>Make beautiful websites regardless of your design experience.</p>
-    </CardBody>
-    <Divider/>
-    <CardFooter>
-      <Link
-        isExternal
-        showAnchorIcon
-        href="https://github.com/nextui-org/nextui"
-      >
-        Visit source code on GitHub.
-      </Link>
-    </CardFooter>
-  </Card>
-    </>
-    
-
-    
-  );
-}
-*/
-/*
-import React from "react";
-import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Pagination, getKeyValue} from "@nextui-org/react";
-import { users } from "@/prueba";
-
-export default function App() {
-  const [page, setPage] = React.useState(1);
-  const rowsPerPage = 10;
-
-  const pages = Math.ceil(users.length / rowsPerPage);
-
-  const items = React.useMemo(() => {
-    const start = (page - 1) * rowsPerPage;
-    const end = start + rowsPerPage;
-
-    return users.slice(start, end);
-  }, [page, users]);
-
-  return (
-    <>
-    <div className="text-black" >
-    <Table  
-      aria-label="Example table with client side pagination"
-      bottomContent={
-        <div className="flex w-full justify-center">
-          <Pagination
-            isCompact
-            showControls
-            showShadow
-            color="secondary"
-            page={page}
-            total={pages}
-            onChange={(page) => setPage(page)}
-          />
-        </div>
-      }
-      classNames={{
-        wrapper: "min-h-[222px]",
-      }}
-    >
-      <TableHeader>
-        <TableColumn key="name">NAME</TableColumn>
-        <TableColumn key="role">ROLE</TableColumn>
-        <TableColumn key="status">STATUS</TableColumn>
-      </TableHeader>
-      <TableBody items={items}>
-        {(item) => (
-          <TableRow key={item.name}>
-            {(columnKey) => <TableCell>{getKeyValue(item, columnKey)}
-            </TableCell>}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
-    </div>
-    </>
-    
-  );
-}*/
-/*
 import React from "react";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Pagination, Image, Tooltip , Link, Button } from "@nextui-org/react";
 import { organizations } from "@/prueba";
 import EditIcon from "@/EditIcon";
 import DeleteIcon from "@/DeleteIcon";
 import EyeIcon from "@/EyeIcon";
+import { useRouter } from 'next/router';
 
-export default function App() {
+
+
+export default function Mostrar() {
+  
   const [page, setPage] = React.useState(1);
   const rowsPerPage = 10;
 
   const pages = Math.ceil(organizations.length / rowsPerPage);
 
   const items = React.useMemo(() => {
+   
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
 
     return organizations.slice(start, end);
   }, [page, organizations]);
+
+
 
   return (
     <div className="text-black bg-blanco p-4">
@@ -182,7 +67,7 @@ export default function App() {
         </TableHeader>
         <TableBody items={items}>
           {(item) => (
-            <TableRow key={item.id}>
+              <TableRow key={item.id}>
               <TableCell>{item.id}</TableCell>
               <TableCell>{item.name}</TableCell>
               <TableCell>{item.email}</TableCell>
@@ -193,7 +78,8 @@ export default function App() {
               <TableCell>{item.nit}</TableCell>
 
               <TableCell>
-                <Link href={`/editar/${item.id}`} >
+                <Link href={`/Organizacion/Detalles/${item.id}`} >
+                  
                   <Button className="flex items-center text-black hover:text-gray-800 " color="primary">
                     <EyeIcon className="w-6 h-6  text-black" />
                     Ver
@@ -228,4 +114,3 @@ export default function App() {
     </div>
   );
 }
-*/

@@ -19,7 +19,7 @@ const center = {
 
 
 
-export default function App() {
+export default function Crear() {
 
   const [crearProductos, setCrearProductos] = React.useState(false);
 
@@ -43,18 +43,26 @@ export default function App() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formElements = event.currentTarget.elements;
+    var crear = 0;
     const nombre = (formElements.namedItem("nombre") as HTMLInputElement).value;
     const correo = (formElements.namedItem("correo") as HTMLInputElement).value;
     const contrasena = (formElements.namedItem("contrasena") as HTMLInputElement).value;
     const celular = (formElements.namedItem("celular") as HTMLInputElement).value;
    
     const nit = (formElements.namedItem("nit") as HTMLInputElement).value;
+
+    if(crearProductos == true){
+      crear = 1;
+    }else{
+      crear = 0;
+    }
+
     console.log({
         nombre,
         correo,
         contrasena,
         celular,
-        crearProductos,
+        crear ,
         nit
     });
     markers.forEach((marker, index) => {
