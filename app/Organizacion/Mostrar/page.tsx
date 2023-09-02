@@ -6,9 +6,11 @@ import { organizations } from "@/prueba";
 import EditIcon from "@/EditIcon";
 import DeleteIcon from "@/DeleteIcon";
 import EyeIcon from "@/EyeIcon";
+import { useRouter } from "next/navigation";
 
 export default function Mostrar() {
 
+  const router = useRouter()
   const [page, setPage] = React.useState(1);
   const rowsPerPage = 10;
 
@@ -22,7 +24,9 @@ export default function Mostrar() {
     return organizations.slice(start, end);
   }, [page, organizations]);
 
- 
+  const clic = (id: any) => {
+    router.push(`/Organizacion/Detalles?id=${id}`) 
+  };
 
   return (
     <div className="text-black bg-blanco p-4">
@@ -76,22 +80,25 @@ export default function Mostrar() {
 
               <TableCell>
               
-                <Link href={`/Organizacion/Direccion/${item.id}`}>
-                  <Button className="flex items-center text-black hover:text-gray-800" color="primary">
-                    <EyeIcon className="w-6 h-6 text-black" />
-                    Ver
+                <Button
+                      className="flex items-center text-black hover:text-gray-800"
+                      color="primary"
+                      onClick={() => clic(item.id)} // Llama a la función con el ID
+                    >
+                      <EyeIcon className="w-6 h-6 text-black" />
+                      Ver
                   </Button>
-                </Link>
              
               </TableCell>
 
               <TableCell>
-                <Link href={`/editar/${item.id}`} >
-                  <Button className="flex items-center text-black hover:text-gray-800 "   color="success">
-                    <EditIcon className="w-6 h-6  text-black" />
+                <Link href={`/Organizacion/Direccion/${item.id}`}>
+                  <Button className="flex items-center text-black hover:text-gray-800" color="success">
+                    <EditIcon className="w-6 h-6 text-black" />
                     Editar
                   </Button>
                 </Link>
+               
               </TableCell>
 
               <TableCell>
