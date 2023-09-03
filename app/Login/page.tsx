@@ -16,6 +16,7 @@ const page = () => {
           <div className="hidden bg-cover lg:block lg:w-1/2">
             <img
               className="h-screen w-full"
+              alt="Imagen"
               src="https://images.pexels.com/photos/5749155/pexels-photo-5749155.jpeg"
             ></img>
           </div>
