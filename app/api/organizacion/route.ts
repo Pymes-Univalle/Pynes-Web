@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { usuario } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 
@@ -19,7 +20,7 @@ export async function GET() {
       }
 }
 
-export async function POST(request: Request ){
+export async function POST(request: Request  ){
     try {
         const { nombre, correo, contrasena, celular, fechaActualizacion, latitud, longitud, crearProductos, nit } = await request.json();
       

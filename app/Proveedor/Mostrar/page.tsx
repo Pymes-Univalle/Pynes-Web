@@ -47,9 +47,9 @@ export default function Mostrar() {
   };
   return (
     <div className="text-black bg-blanco p-4">
-      <h1 className="text-center text-2xl mb-4">Lista de Organizaciones</h1>
-      <Link href="/Organizacion/Crear" className="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Crear Organizacion
+      <h1 className="text-center text-2xl mb-4">Lista de Proveedores</h1>
+      <Link href="/Proveedor/Crear" className="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+        Crear Proveedor
       </Link>
       <Table
         aria-label="Example table with client side pagination"
@@ -73,12 +73,8 @@ export default function Mostrar() {
         <TableHeader>
           <TableColumn key="idOrganizacion">Id</TableColumn>
           <TableColumn key="nombre">Nombre</TableColumn>
-          <TableColumn key="correo">Correo</TableColumn>
           <TableColumn key="celular">Celular</TableColumn>
-          <TableColumn key="latitud">Latitud</TableColumn>
-          <TableColumn key="longitud">Longitud</TableColumn>
-          <TableColumn key="crearProductos">CrearProductos</TableColumn>
-          <TableColumn key="nit">Nit</TableColumn>
+        
           <TableColumn key="ver">Ver</TableColumn>
           <TableColumn key="editar">Editar</TableColumn>
           <TableColumn key="eliminar">Eliminar</TableColumn>
@@ -93,11 +89,7 @@ export default function Mostrar() {
               </TableCell>
               <TableCell>{item['usuario']['nombre']}</TableCell> 
               <TableCell>{item['usuario']['correo']}</TableCell> 
-              <TableCell>{item['usuario']['celular']}</TableCell>
-              <TableCell>{item['latitud']}</TableCell>
-              <TableCell>{item['longitud']}</TableCell>
-              <TableCell>{item['crearProductos']}</TableCell>
-              <TableCell>{item['nit']}</TableCell>
+              
               <TableCell>
                 <Button
                   className="flex items-center text-black hover:text-gray-800"
@@ -114,7 +106,7 @@ export default function Mostrar() {
                   color="success"
                   onClick={() => clicEdit(item['idOrganizacion'])}
                 >
-                  <EditIcon className="w-6 h-6 text-black" />
+                  <EyeIcon className="w-6 h-6 text-black" />
                   Editar
                 </Button>
               </TableCell>
@@ -133,3 +125,4 @@ export default function Mostrar() {
     </div>
   );
 }
+
