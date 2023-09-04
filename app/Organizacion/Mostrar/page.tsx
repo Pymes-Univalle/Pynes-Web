@@ -42,7 +42,9 @@ export default function Mostrar() {
   const clic = (id: any) => {
     router.push(`/Organizacion/Detalles?id=${id}`);
   };
-
+  const clicEdit = (id: any) => {
+    router.push(`/Organizacion/Editar?id=${id}`);
+  };
   return (
     <div className="text-black bg-blanco p-4">
       <h1 className="text-center text-2xl mb-4">Lista de Organizaciones</h1>
@@ -107,12 +109,14 @@ export default function Mostrar() {
                 </Button>
               </TableCell>
               <TableCell>
-                <Link href={`/Organizacion/Detalles/${item['idOrganizacion']}`}>
-                  <Button className="flex items-center text-black hover:text-gray-800" color="success">
-                    <EditIcon className="w-6 h-6 text-black" />
-                    Editar
-                  </Button>
-                </Link>
+              <Button
+                  className="flex items-center text-black hover:text-gray-800"
+                  color="primary"
+                  onClick={() => clicEdit(item['idOrganizacion'])}
+                >
+                  <EyeIcon className="w-6 h-6 text-black" />
+                  Editar
+                </Button>
               </TableCell>
               <TableCell>
                 <Link href={`/editar/${item['id']}`}>
