@@ -79,8 +79,8 @@ model insumo {
 
 model organizacion {
   idOrganizacion Int         @id
-  latitud        Float       @db.Float
-  longitud       Float       @db.Float
+  latitud        String      @db.VarChar(60)
+  longitud       String      @db.VarChar(60)
   crearProductos Int?        @db.TinyInt
   nit            String      @db.VarChar(45)
   usuario        usuario     @relation(fields: [idOrganizacion], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Organizacion_usuario1")

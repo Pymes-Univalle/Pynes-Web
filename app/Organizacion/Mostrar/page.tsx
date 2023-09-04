@@ -1,8 +1,8 @@
-'use client'
 
-import React from "react";
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Pagination, Image, Tooltip , Link, Button } from "@nextui-org/react";
-import { organizations } from "@/prueba";
+'use client'
+import React, { useEffect, useMemo, useState } from "react";
+import axios from "axios"; // Importa Axios
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Pagination, Image, Tooltip, Link, Button } from "@nextui-org/react";
 import EditIcon from "@/EditIcon";
 import DeleteIcon from "@/DeleteIcon";
 import EyeIcon from "@/EyeIcon";
@@ -15,30 +15,39 @@ export const metadata: Metadata = {
 }
 
 export default function Mostrar() {
+  const router = useRouter();
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 3;
+  const [organizacion, setOrganizations] = useState([]); // Estado para almacenar las organizaciones
 
-  const router = useRouter()
-  const [page, setPage] = React.useState(1);
-  const rowsPerPage = 10;
+  useEffect(() => {
+    // Realizar la solicitud GET al servidor para obtener las organizaciones usando Axios
+    axios.get("/api/organizacion")
+      .then((response) => {
+        if (response.data && response.data.data) {
+          setOrganizations(response.data.data);
+        }
+      })
+      .catch((error) => console.error("Error al obtener las organizaciones:", error));
+  }, []);
 
-  const pages = Math.ceil(organizations.length / rowsPerPage);
+  const pages = Math.ceil(organizacion.length / rowsPerPage);
 
-  const items = React.useMemo(() => {
-   
+  const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
-
-    return organizations.slice(start, end);
-  }, [page, organizations]);
+    return organizacion.slice(start, end);
+  }, [page, organizacion]);
 
   const clic = (id: any) => {
-    router.push(`/Organizacion/Detalles?id=${id}`) 
+    router.push(`/Organizacion/Detalles?id=${id}`);
   };
 
   return (
     <div className="text-black bg-blanco p-4">
       <h1 className="text-center text-2xl mb-4">Lista de Organizaciones</h1>
       <Link href="/Organizacion/Crear" className="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-        Ir a Otra Página
+        Crear
       </Link>
       <Table
         aria-label="Example table with client side pagination"
@@ -60,13 +69,13 @@ export default function Mostrar() {
         }}
       >
         <TableHeader>
-          <TableColumn key="id">Id</TableColumn>
-          <TableColumn key="name">Nombre</TableColumn>
-          <TableColumn key="email">Correo</TableColumn>
-          <TableColumn key="phone">Celular</TableColumn>
-          <TableColumn key="latitude">Latitud</TableColumn>
-          <TableColumn key="longitude">Longitud</TableColumn>
-          <TableColumn key="createProducts">Estado</TableColumn>
+          <TableColumn key="idOrganizacion">Id</TableColumn>
+          <TableColumn key="nombre">Nombre</TableColumn>
+          <TableColumn key="correo">Correo</TableColumn>
+          <TableColumn key="celular">Celular</TableColumn>
+          <TableColumn key="latitud">Latitud</TableColumn>
+          <TableColumn key="longitud">Longitud</TableColumn>
+          <TableColumn key="crearProductos">CrearProductos</TableColumn>
           <TableColumn key="nit">Nit</TableColumn>
           <TableColumn key="ver">Ver</TableColumn>
           <TableColumn key="editar">Editar</TableColumn>
@@ -74,66 +83,45 @@ export default function Mostrar() {
         </TableHeader>
         <TableBody items={items}>
           {(item) => (
-              <TableRow key={item.id}>
+            <TableRow key={item['idOrganizacion']}>
               <TableCell>
-                
                 <div className="flex gap-4">
-                    <Image
-                      alt="nextui logo"
-                      height={40}
-                      radius="sm"
-                      src="https://avatars.githubusercontent.com/u/86160567?s=200&v=4"
-                      width={40}
-                    />
-                    <div className="flex flex-col">
-                      <p className="text-md">NextUI</p>
-                      <p className="text-small text-default-500">nextui.org</p>
-                    </div>
+                {item['idOrganizacion']}
                 </div>
-
               </TableCell>
-              <TableCell>{item.name}</TableCell>
-              <TableCell>{item.email}</TableCell>
-              <TableCell>{item.phone}</TableCell>
-              <TableCell>{item.latitude}</TableCell>
-              <TableCell>{item.longitude}</TableCell>
-              <TableCell>{item.createProducts}</TableCell>
-              <TableCell>{item.nit}</TableCell>
-
+              <TableCell>{item['usuario']['nombre']}</TableCell> 
+              <TableCell>{item['usuario']['correo']}</TableCell> 
+              <TableCell>{item['usuario']['celular']}</TableCell>
+              <TableCell>{item['latitud']}</TableCell>
+              <TableCell>{item['longitud']}</TableCell>
+              <TableCell>{item['crearProductos']}</TableCell>
+              <TableCell>{item['nit']}</TableCell>
               <TableCell>
-              
                 <Button
-                      className="flex items-center text-black hover:text-gray-800"
-                      color="primary"
-                      onClick={() => clic(item.id)} // Llama a la función con el ID
-                    >
-                      <EyeIcon className="w-6 h-6 text-black" />
-                      Ver
-                  </Button>
-             
+                  className="flex items-center text-black hover:text-gray-800"
+                  color="primary"
+                  onClick={() => clic(item['idOrganizacion'])}
+                >
+                  <EyeIcon className="w-6 h-6 text-black" />
+                  Ver
+                </Button>
               </TableCell>
-
               <TableCell>
-                <Link href={`/Organizacion/Direccion/${item.id}`}>
+                <Link href={`/Organizacion/Detalles/${item['idOrganizacion']}`}>
                   <Button className="flex items-center text-black hover:text-gray-800" color="success">
                     <EditIcon className="w-6 h-6 text-black" />
                     Editar
                   </Button>
                 </Link>
-               
               </TableCell>
-
               <TableCell>
-                <Link href={`/editar/${item.id}`} >
-                  <Button className="flex items-center text-black hover:text-gray-800 "  color="danger">
-                    <DeleteIcon className="w-6 h-6  text-black" />
+                <Link href={`/editar/${item['id']}`}>
+                  <Button className="flex items-center text-black hover:text-gray-800" color="danger">
+                    <DeleteIcon className="w-6 h-6 text-black" />
                     Eliminar
                   </Button>
                 </Link>
               </TableCell>
-
-              
-
             </TableRow>
           )}
         </TableBody>

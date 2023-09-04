@@ -17,7 +17,21 @@ const center = {
   lng: -66.224047,
 };
 
+interface User {
+  nombre: string;
+  correo: string;
+  contrasena: string;
+  celular: string;
+  estado: number;
+  fechaActualizacion: Date;
+}
 
+interface Organization {
+  latitud: number;
+  longitud: number;
+  nit: string;
+  crearProductos: number;
+}
 
 export default function Crear() {
 
@@ -40,40 +54,79 @@ export default function Crear() {
     }
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formElements = event.currentTarget.elements;
-    var crear = 0;
-    const nombre = (formElements.namedItem("nombre") as HTMLInputElement).value;
-    const correo = (formElements.namedItem("correo") as HTMLInputElement).value;
-    const contrasena = (formElements.namedItem("contrasena") as HTMLInputElement).value;
-    const celular = (formElements.namedItem("celular") as HTMLInputElement).value;
+   var crear = 0;
+    
+    const nombre = (formElements.namedItem("nombre") as HTMLInputElement)?.value || "";
+    const correo = (formElements.namedItem("correo") as HTMLInputElement)?.value || "";
+    const contrasena = (formElements.namedItem("contrasena") as HTMLInputElement)?.value || "";
+    const celular = (formElements.namedItem("celular") as HTMLInputElement)?.value || "";
+    const nit = (formElements.namedItem("nit") as HTMLInputElement)?.value || "";
+    const fechaActualizacion = new Date()
+    
    
-    const nit = (formElements.namedItem("nit") as HTMLInputElement).value;
-
+    
     if(crearProductos == true){
       crear = 1;
     }else{
       crear = 0;
     }
 
-    console.log({
-        nombre,
-        correo,
-        contrasena,
-        celular,
-        crear ,
-        nit
-    });
-    markers.forEach((marker, index) => {
-      console.log(`Marker ${index + 1}: Latitud: ${marker.lat}, Longitud: ${marker.lng}`);
-  });
+    
+    const mysqlFormattedDate = fechaActualizacion.toISOString().slice(0, 19).replace('T', ' ');
+    
+    const user: User = {
+      nombre,
+      correo,
+      contrasena,
+      celular,
+      estado: 1,
+      fechaActualizacion: new Date(),
+    };
+
+    const organization: Organization = {
+      latitud: markers[0]?.lat || 0,
+      longitud: markers[0]?.lng || 0,
+      nit,
+      crearProductos: crear,
+    };
+
+    console.log({user: user} )
+    console.log({organization: organization} )
+
+    const axios = require('axios');
+  
+    try {
+      const resp = await axios.post('/api/organizacion/', {
+        nombre: user.nombre,
+        correo: user.correo,
+        contrasena: user.contrasena,
+        celular: user.celular,
+        fechaActualizacion: fechaActualizacion,
+        latitud:  organization.latitud.toString(),
+        longitud: organization.longitud.toString(),
+        crearProductos: organization.crearProductos,
+        nit: organization.nit,
+
+      });
+  
+      if (resp && resp.data) {
+        console.log('AddUser->resp.data: ', resp.data);
+       
+      }
+    
+    }catch(error){
+
+    }  
   };
+  
   return (
     <div className="bg-blanco min-h-screen text-black ">
       <div className="mx-auto max-w-5xl">
         <h1 className=" text-black text-2xl text-center font-bold mb-8 mt-5"> Crear Orgnizacion </h1>
-        <form className=" p-5 border-1 shadow " onSubmit={handleSubmit}>
+        <form className=" p-5 border-1 shadow " method="Post" onSubmit={handleSubmit}>
           <div className="mb-5 mt-5">
            
             <Input id="nombre" key="outside" type="text" label="Nombre" required  />

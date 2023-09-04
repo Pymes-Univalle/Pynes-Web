@@ -1,4 +1,4 @@
-'use client'
+
 /*
 import React from "react";
 import { Input } from "@nextui-org/react";
@@ -229,3 +229,75 @@ export default function App() {
   );
 }
 */
+
+"use client"
+
+import { usuario } from '@prisma/client';
+import { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react';
+import axios from 'axios';
+import { Input } from '@nextui-org/react';
+
+export default function Home() {
+
+  const [user, setUser] = useState<usuario>({
+    id: 0,
+    nombre: '',
+    correo: '',
+    contrasena: '',
+    celular: '',
+    estado: 1,
+    fechaRegistro: new Date(),
+    fechaActualizacion: new Date()
+
+  });
+
+  console.log(user.nombre);
+
+
+
+  const addUser = async (e: SyntheticEvent) => {
+    e.preventDefault();
+
+    try {
+      const resp = await axios.post('/api/organizacion/', {
+        nombre: user.nombre,
+        correo: user.correo,
+        contrasena: user.contrasena,
+        celular: user.celular
+      });
+      console.log('Respuesta del servidor:', resp);
+      // Resto del código si es necesario
+    } catch (error) {
+      console.error('Error al realizar la solicitud:', error);
+    }
+
+ 
+  };
+
+  // Update specific input field
+  const HandleChange = (e: ChangeEvent<HTMLInputElement>) =>
+    setUser(prevState => ({ ...prevState, [e.target.name]: e.target.value }))
+
+  return (
+<>
+  <h1>Users</h1>
+  <form className='text-black bg-blanco'>
+    <Input onChange={HandleChange} value={user.nombre} type="text" name="nombre" placeholder="nombre" />
+    <br />
+    <Input onChange={HandleChange} value={user.correo} type="email" name="correo" placeholder="correo" />
+    <br />
+    <Input onChange={HandleChange} value={user.contrasena} type="password" name="contrasena" placeholder="contrasena" />
+    <br />
+    <Input onChange={HandleChange} value={user.celular}  name="celular" placeholder="celular" />
+    <br />
+    <div style={{ marginTop: "5px" }}>
+      <button onClick={addUser}>Add User</button>
+      
+    </div>
+  </form>
+</>
+
+
+  
+  );
+}
