@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import { Input, Checkbox, Button } from "@nextui-org/react";
+import { Input, Checkbox, Button, Progress } from "@nextui-org/react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import GOOGLE_MAPS_API_KEY from "@/googleMapsConfig";
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
@@ -15,7 +15,7 @@ const mapContainerStyle = {
   height: "500px",
 };
 
-const center = {
+const defaultCenter = {
   lat: -17.329855,
   lng: -66.224047,
 };
@@ -39,12 +39,21 @@ interface Organization {
 export default function Editar() {
 
   const [crearProductos, setCrearProductos] = React.useState(false);
-
+  const [mapCenter, setMapCenter] = useState(defaultCenter); 
   const axios = require('axios');
 
   const [organization, setOrganization] = useState(null);
   const valor = useSearchParams();
   const id = valor.get('id');
+
+  const [nombre, setNombre] = useState<string>("");
+  const [correo, setCorreo] = useState<string>("");
+  const [contrasena, setContrasena] = useState<string>("");
+  const [celular, setCelular] = useState<string>("");
+  const [nit, setNit] = useState<string>("");
+
+
+
   const handleCrearProductosChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCrearProductos(event.target.checked);
   };
@@ -57,16 +66,14 @@ export default function Editar() {
   const handleMapClick = (event: google.maps.MapMouseEvent) => {
     if (event.latLng) {
         const newMarker = event.latLng.toJSON();
+      
         setMarkers([newMarker]);
+
+        setMapCenter(newMarker);
        
     }
   };
 
- 
-  
-  
-  
-  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -76,7 +83,24 @@ export default function Editar() {
           const organizacionData = await data.organizacion;
           setOrganization(organizacionData);
           
+         
+          if (organizacionData['crearProductos'] === 1) {
+            setCrearProductos(true);
+          }
+         
+         const organizationCenter = {
+          lat: parseFloat(organizacionData['latitud']),
+          lng: parseFloat(organizacionData['longitud']),
+        };
+        setMapCenter(organizationCenter);
+          setMarkers([{ lat: parseFloat(organizacionData['latitud']), lng: parseFloat(organizacionData['longitud']) }]);
+          setNombre(organizacionData['usuario']['nombre'] || "");
+          setCorreo(organizacionData['usuario']['correo'] || "");
+          setContrasena(organizacionData['usuario']['contrasena'] || "");
+          setCelular(organizacionData['usuario']['celular'] || "");
+          setNit(organizacionData['nit'] || "");
 
+          console.log(organizacionData)
         } else {
           console.error("Error al obtener la organización");
         }
@@ -86,27 +110,118 @@ export default function Editar() {
     };
         fetchData();
     }, []);
+
     if (!organization) {
-        return <div>Cargando...</div>;
-      }
+        return  
+        <Progress
+        size="sm"
+        isIndeterminate
+        aria-label="Loading..."
+        className="max-w-md"
+      />
+    }
     
    
+
+    
+
    
+  
+
+  
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
+    event.preventDefault();
+    const formElements = event.currentTarget.elements;
+    var crear = 0;
+    const id = (formElements.namedItem("id") as HTMLInputElement)?.value || "";
+    const nombre = (formElements.namedItem("nombre") as HTMLInputElement)?.value || "";
+    const correo = (formElements.namedItem("correo") as HTMLInputElement)?.value || "";
+    const contrasena = (formElements.namedItem("contrasena") as HTMLInputElement)?.value || "";
+    const celular = (formElements.namedItem("celular") as HTMLInputElement)?.value || "";
+    const nit = (formElements.namedItem("nit") as HTMLInputElement)?.value || "";
+    const fechaActualizacion = new Date();
+    if(crearProductos == true){
+      crear = 1;
+    }else{
+      crear = 0;
+    }
+
    
-    console.log(organization);
+
+    const user: User = {
+      
+      nombre,
+      correo,
+      contrasena,
+      celular,
+      estado: 1,
+      fechaActualizacion: new Date(new Date().toISOString()), 
+    };
+
+    const organization: Organization = {
+      latitud: markers[0]?.lat || 0,
+      longitud: markers[0]?.lng || 0,
+      nit,
+      crearProductos: crear,
+    };
+
+    
+    console.log({user: user} )
+    console.log({organization: organization} )
+
+
+    try {
+      const response = await axios.put(`/api/organizacion/${id}`, {
+        nombre: user.nombre,
+        correo: user.correo,
+        contrasena: user.contrasena,
+        celular: user.celular,
+        fechaActualizacion: user.fechaActualizacion,
+        latitud:  organization.latitud.toString(),
+        longitud: organization.longitud.toString(),
+        crearProductos: organization.crearProductos,
+        nit: organization.nit,
+
+      });
+  
+      if (response.status === 200) {
+        // Maneja la respuesta exitosa aquí, por ejemplo, muestra un mensaje de éxito o redirige a otra página
+        console.log('Actualización exitosa:', response.data);
+      } else {
+        // Maneja la respuesta en caso de error aquí
+        console.error('Error al actualizar:', response.data);
+      }
+    } catch (error) {
+      // Maneja los errores de red o del servidor aquí
+      console.error('Error en la solicitud PUT:', error);
+    }
+    
+
+
+
+  }
+
+
   return (
     <div className="bg-blanco min-h-screen text-black ">
       <div className="mx-auto max-w-5xl">
         <h1 className=" text-black text-2xl text-center font-bold mb-8 mt-5"> Crear Orgnizacion </h1>
-        <form className=" p-5 border-1 shadow ">
+        <form className=" p-5 border-1 shadow " onSubmit={handleSubmit}>
+
+        <div className="mb-5 mt-5" >
+           
+           <Input id="id" key="outside" type="text" label="ID"  value={organization['idOrganizacion']}  />
+          
+         </div>
+
           <div className="mb-5 mt-5">
            
-            <Input id="nombre" key="outside" type="text" label="Nombre" required value={ organization['usuario']['nombre']} />
+            <Input id="nombre" key="outside" type="text" label="Nombre" required value={nombre}  onChange={(event) => setNombre(event.target.value)} />
            
           </div>
           <div className="mb-5">
          
-            <Input id="correo" key="outside" type="gmail" label="Gmail" required value={ organization['usuario']['correo']} />
+            <Input id="correo" key="outside" type="gmail" label="Gmail" required value={correo} onChange={(event) => setCorreo(event.target.value)}/>
           </div>
           <div className="mb-5">
             <Input
@@ -124,11 +239,12 @@ export default function Editar() {
               }
               label="Contraseña"
               required 
-              value={ organization['usuario']['contrasena']}
+              value={ contrasena}
+              onChange={(event) => setContrasena(event.target.value)}
             />
           </div>
           <div className="mb-5">
-            <Input id="celular" key="outside" label="Celular" required value={ organization['usuario']['celular']}/>
+            <Input id="celular" key="outside" label="Celular" required value={celular} onChange={(event) => setCelular(event.target.value)}/>
           </div>
           <div className="mb-5">
             <label>Ubicación:</label>
@@ -136,30 +252,28 @@ export default function Editar() {
               <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
                 <GoogleMap
                   mapContainerStyle={mapContainerStyle}
-                  center={{
-                    lat: parseFloat(organization['latitud']) || center.lat,
-                    lng:parseFloat(organization['longitud'])|| center.lng,
-                  }}
+                  center={mapCenter}
                   zoom={10}
                   onClick={handleMapClick}
                   
                 >
-                 {parseFloat(organization['latitud']) !== null && parseFloat(organization['longitud']) !== null && (
-                  <Marker position={{ lat: parseFloat(organization['latitud']), lng: parseFloat(organization['longitud']) }} />
-                )}
+                
+                {markers.map((marker, index) => (
+                    <Marker key={index} position={marker} />
+                  ))}
                  
                 </GoogleMap>
               </LoadScript>
             </div>
           </div>
           <div className="mb-5">
-            <Checkbox id="crearProductos" defaultChecked color="success"   onChange={handleCrearProductosChange} >
+            <Checkbox id="crearProductos" color="success" defaultSelected={crearProductos}  onChange={handleCrearProductosChange}  >
               Crear Productos
             </Checkbox>
 
           </div>
           <div className="mb-5">
-            <Input id="nit" key="outside" label="Nit" required  value={ organization['nit']}/>
+            <Input id="nit" key="outside" label="Nit" required  value={ nit} onChange={(event) => setNit(event.target.value)}/>
           </div>
           <Button type="submit" color="primary">
             Enviar

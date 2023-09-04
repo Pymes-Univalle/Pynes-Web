@@ -37,6 +37,8 @@ export default function Crear() {
 
   const [crearProductos, setCrearProductos] = React.useState(false);
 
+
+
   const handleCrearProductosChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCrearProductos(event.target.checked);
   };

@@ -7,6 +7,7 @@ import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import GOOGLE_MAPS_API_KEY from "@/googleMapsConfig";
 import axios from "axios"; 
 import { useSearchParams } from "next/navigation";
+import { organizations } from "@/prueba";
 
 const mapContainerStyle = {
   width: "100%",
@@ -57,10 +58,10 @@ function page() {
       <h1 className="text-black text-2xl text-center font-bold mb-8 mt-5"> Visualizar Organización </h1>
       <div className=" p-5 border-1 shadow ">
           <div className="mb-5 mt-5">
-          <strong>Nombre:</strong> {organization['usuario']['nombre']}
+          <strong>Nombre:</strong> {organization['nombre']}
         </div>
         <div className="mb-5">
-          <strong>Gmail:</strong> {organization['usuario']['correo']}
+          <strong>Gmail:</strong> {organization['correo']}
         </div>
         <div className="mb-5">
           <strong>Nit:</strong> {organization['nit']}
