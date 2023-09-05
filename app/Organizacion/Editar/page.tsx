@@ -22,6 +22,7 @@ const defaultCenter = {
 
 interface User {
   nombre: string;
+  apellido: string;
   correo: string;
   contrasena: string;
   celular: string;
@@ -47,6 +48,7 @@ export default function Editar() {
   const id = valor.get('id');
 
   const [nombre, setNombre] = useState<string>("");
+  const [apellido, setApellido] = useState<string>("");
   const [correo, setCorreo] = useState<string>("");
   const [contrasena, setContrasena] = useState<string>("");
   const [celular, setCelular] = useState<string>("");
@@ -95,6 +97,7 @@ export default function Editar() {
         setMapCenter(organizationCenter);
           setMarkers([{ lat: parseFloat(organizacionData['latitud']), lng: parseFloat(organizacionData['longitud']) }]);
           setNombre(organizacionData['usuario']['nombre'] || "");
+          setApellido(organizacionData['usuario']['apellido'] || "");
           setCorreo(organizacionData['usuario']['correo'] || "");
           setContrasena(organizacionData['usuario']['contrasena'] || "");
           setCelular(organizacionData['usuario']['celular'] || "");
@@ -134,6 +137,7 @@ export default function Editar() {
     const formElements = event.currentTarget.elements;
     var crear = 0;
     const id = (formElements.namedItem("id") as HTMLInputElement)?.value || "";
+    const apellido = (formElements.namedItem("apellido") as HTMLInputElement)?.value || "";
     const nombre = (formElements.namedItem("nombre") as HTMLInputElement)?.value || "";
     const correo = (formElements.namedItem("correo") as HTMLInputElement)?.value || "";
     const contrasena = (formElements.namedItem("contrasena") as HTMLInputElement)?.value || "";
@@ -151,6 +155,7 @@ export default function Editar() {
     const user: User = {
       
       nombre,
+      apellido,
       correo,
       contrasena,
       celular,
@@ -173,6 +178,7 @@ export default function Editar() {
     try {
       const response = await axios.put(`/api/organizacion/${id}`, {
         nombre: user.nombre,
+        apellido:user.apellido,
         correo: user.correo,
         contrasena: user.contrasena,
         celular: user.celular,
@@ -219,6 +225,12 @@ export default function Editar() {
             <Input id="nombre" key="outside" type="text" label="Nombre" required value={nombre}  onChange={(event) => setNombre(event.target.value)} />
            
           </div>
+
+          <div className="mb-5 mt-5">
+           
+           <Input id="apelllido" key="outside" type="text" label="Apelldio" required value={apellido}  onChange={(event) => setApellido(event.target.value)} />
+          
+         </div>
           <div className="mb-5">
          
             <Input id="correo" key="outside" type="gmail" label="Gmail" required value={correo} onChange={(event) => setCorreo(event.target.value)}/>

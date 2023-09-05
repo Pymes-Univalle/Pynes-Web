@@ -95,6 +95,7 @@ export default function Mostrar() {
         <TableHeader>
           <TableColumn key="idOrganizacion">Id</TableColumn>
           <TableColumn key="nombre">Nombre</TableColumn>
+          <TableColumn key="apellido">Apellido</TableColumn>
           <TableColumn key="correo">Correo</TableColumn>
           <TableColumn key="celular">Celular</TableColumn>
           <TableColumn key="latitud">Latitud</TableColumn>
@@ -112,7 +113,9 @@ export default function Mostrar() {
                 <div className="flex gap-4">{item["id"]}</div>
               </TableCell>
               <TableCell>{item["nombre"]}</TableCell>
+              <TableCell>{item["apellido"]}</TableCell>
               <TableCell>{item["correo"]}</TableCell>
+           
               <TableCell>{item["celular"]}</TableCell>
               <TableCell>{item["organizacion"]["latitud"]}</TableCell>
               <TableCell>{item["organizacion"]["longitud"]}</TableCell>

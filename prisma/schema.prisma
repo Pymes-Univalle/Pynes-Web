@@ -163,6 +163,7 @@ model ruta {
 model usuario {
   id                 Int           @id @default(autoincrement())
   nombre             String        @db.VarChar(45)
+  apellido           String        @db.VarChar(45)
   correo             String        @db.VarChar(45)
   contrasena         String        @db.VarChar(45)
   celular            String        @db.VarChar(45)

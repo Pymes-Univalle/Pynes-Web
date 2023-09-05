@@ -19,6 +19,7 @@ const center = {
 
 interface User {
   nombre: string;
+  apellido: string;
   correo: string;
   contrasena: string;
   celular: string;
@@ -62,6 +63,7 @@ export default function Crear() {
    var crear = 0;
     
     const nombre = (formElements.namedItem("nombre") as HTMLInputElement)?.value || "";
+    const apellido = (formElements.namedItem("apellido") as HTMLInputElement)?.value || "";
     const correo = (formElements.namedItem("correo") as HTMLInputElement)?.value || "";
     const contrasena = (formElements.namedItem("contrasena") as HTMLInputElement)?.value || "";
     const celular = (formElements.namedItem("celular") as HTMLInputElement)?.value || "";
@@ -81,6 +83,7 @@ export default function Crear() {
     
     const user: User = {
       nombre,
+      apellido,
       correo,
       contrasena,
       celular,
@@ -103,6 +106,7 @@ export default function Crear() {
     try {
       const resp = await axios.post('/api/organizacion/', {
         nombre: user.nombre,
+        apellido: user.apellido,
         correo: user.correo,
         contrasena: user.contrasena,
         celular: user.celular,
@@ -133,6 +137,9 @@ export default function Crear() {
            
             <Input id="nombre" key="outside" type="text" label="Nombre" required  />
             
+          </div>
+          <div className="mb-5">
+            <Input id="apellido" key="outside" type="text" label="Apellido" required />
           </div>
           <div className="mb-5">
          

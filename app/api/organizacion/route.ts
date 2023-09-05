@@ -26,12 +26,13 @@ export async function GET() {
 
 export async function POST(request: Request  ){
     try {
-        const { nombre, correo, contrasena, celular, fechaActualizacion, latitud, longitud, crearProductos, nit } = await request.json();
+        const { nombre, correo, apellido,contrasena, celular, fechaActualizacion, latitud, longitud, crearProductos, nit } = await request.json();
       
         const result = await prisma.$transaction(async (transaction) => {
           const usuario = await transaction.usuario.create({
             data: {
               nombre: nombre,
+              apellido:apellido,
               correo: correo,
               contrasena: contrasena,
               celular: celular,
