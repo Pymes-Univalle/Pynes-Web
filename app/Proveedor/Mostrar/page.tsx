@@ -22,7 +22,7 @@ export default function Mostrar() {
 
   useEffect(() => {
     // Realizar la solicitud GET al servidor para obtener las organizaciones usando Axios
-    axios.get("/api/organizacion")
+    axios.get("/api/proveedor")
       .then((response) => {
         if (response.data && response.data.data) {
           setOrganizations(response.data.data);
@@ -71,7 +71,7 @@ export default function Mostrar() {
         }}
       >
         <TableHeader>
-          <TableColumn key="idOrganizacion">Id</TableColumn>
+          <TableColumn key="id">Id</TableColumn>
           <TableColumn key="nombre">Nombre</TableColumn>
           <TableColumn key="celular">Celular</TableColumn>
         
@@ -84,17 +84,17 @@ export default function Mostrar() {
             <TableRow key={item['idOrganizacion']}>
               <TableCell>
                 <div className="flex gap-4">
-                {item['idOrganizacion']}
+                {item['id']}
                 </div>
               </TableCell>
-              <TableCell>{item['usuario']['nombre']}</TableCell> 
-              <TableCell>{item['usuario']['correo']}</TableCell> 
+              <TableCell>{item['nombre']}</TableCell> 
+              <TableCell>{item['celular']}</TableCell> 
               
               <TableCell>
                 <Button
                   className="flex items-center text-black hover:text-gray-800"
                   color="primary"
-                  onClick={() => clic(item['idOrganizacion'])}
+                  onClick={() => clic(item['id'])}
                 >
                   <EyeIcon className="w-6 h-6 text-black" />
                   Ver
@@ -104,9 +104,9 @@ export default function Mostrar() {
               <Button
                   className="flex items-center text-black hover:text-gray-800"
                   color="success"
-                  onClick={() => clicEdit(item['idOrganizacion'])}
+                  onClick={() => clicEdit(item['id'])}
                 >
-                  <EyeIcon className="w-6 h-6 text-black" />
+                  <EditIcon className="w-6 h-6 text-black" />
                   Editar
                 </Button>
               </TableCell>

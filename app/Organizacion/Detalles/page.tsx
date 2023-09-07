@@ -58,10 +58,13 @@ function page() {
       <h1 className="text-black text-2xl text-center font-bold mb-8 mt-5"> Visualizar Organización </h1>
       <div className=" p-5 border-1 shadow ">
           <div className="mb-5 mt-5">
-          <strong>Nombre:</strong> {organization['nombre']}
+          <strong>Nombre:</strong> {organization['usuario']['nombre']}
         </div>
         <div className="mb-5">
-          <strong>Gmail:</strong> {organization['correo']}
+          <strong>Apellido:</strong> {organization['usuario']['apellido']}
+        </div>
+        <div className="mb-5">
+          <strong>Gmail:</strong> {organization['usuario']['correo']}
         </div>
         <div className="mb-5">
           <strong>Nit:</strong> {organization['nit']}

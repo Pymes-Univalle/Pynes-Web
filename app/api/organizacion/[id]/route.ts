@@ -87,7 +87,8 @@ export async function DELETE(request: Request, { params }: Params) {
           id: Number(params.id),
         },
         data: {
-          estado: estado
+          estado: estado,
+          fechaActualizacion: new Date(new Date().toISOString())
         },
       }),
       

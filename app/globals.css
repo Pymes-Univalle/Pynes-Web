@@ -25,3 +25,7 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+.table-dark {
+  background-color: #000; /* Cambia esto al color negro deseado */
+  color: #fff; /* Cambia esto al color de texto deseado para resaltar */
+}

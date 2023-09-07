@@ -5,7 +5,7 @@ import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import GOOGLE_MAPS_API_KEY from "@/googleMapsConfig";
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useSearchParams } from "next/navigation";
-import { organizations } from "@/prueba";
+
 import { text } from "node:stream/consumers";
 
 
@@ -265,7 +265,7 @@ export default function Editar() {
                 <GoogleMap
                   mapContainerStyle={mapContainerStyle}
                   center={mapCenter}
-                  zoom={10}
+                  zoom={15}
                   onClick={handleMapClick}
                   
                 >
