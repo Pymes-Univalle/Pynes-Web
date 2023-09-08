@@ -4,8 +4,7 @@ import { Input, Checkbox, Button } from "@nextui-org/react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import GOOGLE_MAPS_API_KEY from "@/googleMapsConfig";
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-
-
+import crypto from 'crypto';
 
 const mapContainerStyle = {
   width: "100%",
@@ -37,8 +36,17 @@ interface Organization {
 export default function Crear() {
 
   const [crearProductos, setCrearProductos] = React.useState(false);
+ 
+  var contraseña: string ;
 
-
+  const generateRandomPassword = () => {
+    const passwordLength = 12; // Puedes ajustar la longitud de la contraseña según tus necesidades
+    const randomBytes = crypto.randomBytes(passwordLength);
+    const password = randomBytes.toString('base64').slice(0, passwordLength);
+    return password;
+  };
+  //Generar la contraseña aleatoria
+  contraseña = generateRandomPassword();
 
   const handleCrearProductosChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setCrearProductos(event.target.checked);
@@ -65,7 +73,7 @@ export default function Crear() {
     const nombre = (formElements.namedItem("nombre") as HTMLInputElement)?.value || "";
     const apellido = (formElements.namedItem("apellido") as HTMLInputElement)?.value || "";
     const correo = (formElements.namedItem("correo") as HTMLInputElement)?.value || "";
-    const contrasena = (formElements.namedItem("contrasena") as HTMLInputElement)?.value || "";
+ 
     const celular = (formElements.namedItem("celular") as HTMLInputElement)?.value || "";
     const nit = (formElements.namedItem("nit") as HTMLInputElement)?.value || "";
     const fechaActualizacion = new Date()
@@ -78,6 +86,7 @@ export default function Crear() {
       crear = 0;
     }
 
+   
     
     const mysqlFormattedDate = fechaActualizacion.toISOString().slice(0, 19).replace('T', ' ');
     
@@ -85,7 +94,7 @@ export default function Crear() {
       nombre,
       apellido,
       correo,
-      contrasena,
+      contrasena: contraseña,
       celular,
       estado: 1,
       fechaActualizacion: new Date(),
@@ -119,8 +128,21 @@ export default function Crear() {
       });
   
       if (resp && resp.data) {
-        console.log('AddUser->resp.data: ', resp.data);
-       
+        try {
+          const response = await axios.post('/api/sendEmail/', {
+            gmail: user.correo,
+            contraseña: contraseña
+          });
+      
+          if (response.status === 200) {
+            console.log('Correo electrónico enviado con éxito');
+          } else {
+            console.error('Error al enviar el correo electrónico');
+          }
+        } catch (error) {
+          console.error('Error al enviar el correo electrónico:', error);
+        }
+
       }
     
     }catch(error){
@@ -145,8 +167,7 @@ export default function Crear() {
          
             <Input id="correo" key="outside" type="gmail" label="Gmail" required />
           </div>
-          <div className="mb-5">
-            <Input
+          {/*  <Input
               id="contrasena"
               key="outside"
               type={isVisible ? "text" : "password"}
@@ -161,7 +182,9 @@ export default function Crear() {
               }
               label="Contraseña"
               required 
-            />
+            /> */}
+          <div className="mb-5">
+           
           </div>
           <div className="mb-5">
             <Input id="celular" key="outside" label="Celular" required />
