@@ -142,10 +142,13 @@ model productos {
 }
 
 model proveedores {
-  id             Int              @id @default(autoincrement())
-  nombre         String           @db.VarChar(45)
-  celular        String           @db.VarChar(45)
-  almaceninsumos almaceninsumos[]
+  id                 Int              @id @default(autoincrement())
+  nombre             String           @db.VarChar(45)
+  celular            String           @db.VarChar(45)
+  estado             Int              @default(1) @db.TinyInt
+  fechaRegistro      DateTime?        @default(now()) @db.DateTime(0)
+  fechaActualizacion DateTime         @db.DateTime(0)
+  almaceninsumos     almaceninsumos[]
 }
 
 model ruta {

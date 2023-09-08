@@ -7,7 +7,7 @@ import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import GOOGLE_MAPS_API_KEY from "@/googleMapsConfig";
 import axios from "axios"; 
 import { useSearchParams } from "next/navigation";
-import { organizations } from "@/prueba";
+
 
 const mapContainerStyle = {
   width: "100%",

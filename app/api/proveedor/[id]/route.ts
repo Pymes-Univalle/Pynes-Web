@@ -13,7 +13,9 @@ export async function GET(request: Request , {params}: Params) {
             }
         })
     
-        return NextResponse.json({ data: proveedor }, { status: 200 });
+        return NextResponse.json({
+          proveedor
+      });
       } catch (error) {
         console.log(error);
         if (error instanceof Error) {
@@ -24,7 +26,7 @@ export async function GET(request: Request , {params}: Params) {
 
 export async function PUT(request: Request , {params}: Params) {
     
-    const {nombre,celular} = await request.json();
+    const {nombre,celular,fechaActualizacion} = await request.json();
     try {
         
         const proveedor = await prisma.proveedores.update({
@@ -33,7 +35,8 @@ export async function PUT(request: Request , {params}: Params) {
             },
             data:{
                 nombre:nombre,
-                celular: celular
+                celular: celular,
+                fechaActualizacion:fechaActualizacion
             }
         })
     
@@ -46,3 +49,26 @@ export async function PUT(request: Request , {params}: Params) {
       }
 }
 
+export async function DELETE(request: Request , {params}: Params) {
+    
+  const {estado,fechaActualizacion} = await request.json();
+  try {
+      
+      const proveedor = await prisma.proveedores.update({
+          where:{
+              id:Number(params.id)
+          },
+          data:{
+              estado:estado, 
+              fechaActualizacion:fechaActualizacion
+          }
+      })
+  
+      return NextResponse.json({ data: proveedor }, { status: 200 });
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        return NextResponse.json({ message: error.message }, { status: 500 });
+      }
+    }
+}

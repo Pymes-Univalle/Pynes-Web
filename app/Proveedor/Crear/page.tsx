@@ -14,8 +14,6 @@ interface Provedores {
 export default function page() {
 
 
-  
-
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
@@ -29,14 +27,14 @@ export default function page() {
     const proveedor: Provedores = {
      nombre,
      celular,   
-     fechaActualizacion: new Date()
+     fechaActualizacion: fechaActualizacion
     };
 
     try {
       const resp = await axios.post('/api/proveedor/', {
         nombre: proveedor.nombre,
         celular: proveedor.celular,
-        
+        fechaActualizacion:fechaActualizacion
 
       });
   

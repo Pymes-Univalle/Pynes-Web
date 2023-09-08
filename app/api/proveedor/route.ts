@@ -4,7 +4,11 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
     try {
-        const proveedor = await prisma.proveedores.findMany();
+        const proveedor = await prisma.proveedores.findMany({
+          where:{
+            estado:1
+          }
+        });
     
         return NextResponse.json({ data: proveedor }, { status: 200 });
       } catch (error) {
@@ -18,13 +22,13 @@ export async function GET() {
 
 export async function POST(request: Request) {
     try {
-        const {nombre , celular, almaceninsumos } =  await request.json();
+        const {nombre , celular, fechaActualizacion } =  await request.json();
 
         const proveedor = await prisma.proveedores.create({
             data:{
                 nombre: nombre,
                 celular: celular,
-                almaceninsumos: almaceninsumos
+                fechaActualizacion: fechaActualizacion
                 
             }
         })
