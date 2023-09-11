@@ -34,7 +34,7 @@ export async function GET(request: Request , {params}: Params) {
 
 export async function PUT(request: Request, { params }: Params) {
   try {
-    const { nombre, correo, contrasena, celular, fechaActualizacion, latitud, longitud, crearProductos, nit } =
+    const { nombre, apellido,correo, contrasena, celular, fechaActualizacion, latitud, longitud, crearProductos, nit } =
       await request.json();
 
     const [updateUsuario, updateOrganizacion] = await prisma.$transaction([
@@ -44,6 +44,7 @@ export async function PUT(request: Request, { params }: Params) {
         },
         data: {
           nombre: nombre,
+          apellido: apellido,
           correo: correo,
           contrasena: contrasena,
           celular: celular,

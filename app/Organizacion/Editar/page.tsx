@@ -193,6 +193,9 @@ export default function Editar() {
       if (response.status === 200) {
         // Maneja la respuesta exitosa aquí, por ejemplo, muestra un mensaje de éxito o redirige a otra página
         console.log('Actualización exitosa:', response.data);
+        window.location.href = '/Organizacion/Mostrar';
+
+
       } else {
         // Maneja la respuesta en caso de error aquí
         console.error('Error al actualizar:', response.data);
@@ -228,7 +231,7 @@ export default function Editar() {
 
           <div className="mb-5 mt-5">
            
-           <Input id="apelllido" key="outside" type="text" label="Apelldio" required value={apellido}  onChange={(event) => setApellido(event.target.value)} />
+           <Input id="apellido" key="outside" type="text" label="Apellido" required value={apellido}  onChange={(event) => setApellido(event.target.value)} />
           
          </div>
           <div className="mb-5">
