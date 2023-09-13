@@ -6,6 +6,7 @@ import GOOGLE_MAPS_API_KEY from "@/googleMapsConfig";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import crypto from "crypto";
 import axios from "axios";
+import { CircularProgress } from "@nextui-org/react";
 
 const mapContainerStyle = {
   width: "100%",
@@ -38,14 +39,16 @@ export default function Crear() {
   const [crearProductos, setCrearProductos] = React.useState(false);
   const [CorreoU, setOrganization] = useState(null);
   const [correoExiste, setCorreoExiste] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   //Validacion
   const correoInputRef = useRef<HTMLInputElement | null>(null);
-
   const [correo, setValue] = React.useState("");
   const [nombre, setNombreV] = React.useState("");
   const [apellido, setApellidoV] = React.useState("");
   const [celular, setCelularV] = React.useState("");
   const [nit, setNitV] = React.useState("");
+  const [mapValid, setMapValid] = React.useState(false);
+  
 
   const handleValueChange = (value:any) => {
     setValue(value);
@@ -116,7 +119,7 @@ export default function Crear() {
     if (event.latLng) {
       const newMarker = event.latLng.toJSON();
       setMarkers([newMarker]);
-      
+      setMapValid(true);
     }
   };
 
@@ -157,9 +160,11 @@ export default function Crear() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsLoading(true);
     const formElements = event.currentTarget.elements;
     var crear = 0;
 
+    
     const nombre =
       (formElements.namedItem("nombre") as HTMLInputElement)?.value || "";
     const apellido =
@@ -193,6 +198,15 @@ export default function Crear() {
     if(validationNit == "invalid"){
       (formElements.namedItem("nit") as HTMLInputElement).focus();
     }
+
+    if (!mapValid) {
+      // Si el mapa no es válido, muestra un mensaje de error y no envía el formulario.
+      setMapValid(false);
+      console.log("No se selecciono el mapa ");
+      
+    }
+
+   
 
     if (crearProductos == true) {
       crear = 1;
@@ -235,8 +249,8 @@ export default function Crear() {
 
 
      
-      if (data.organizacion == null  ) {
-        if(validationApellido == "valid" && validationNombre == "valid" && validationCelular == "valid" && validationState == "valid"){
+      if (data.organizacion == null ) {
+        if(validationApellido == "valid" && validationNombre == "valid" && validationNit == "valid" && validationCelular == "valid" && validationState == "valid" && mapValid ){
           try {
             const resp = await axios.post("/api/organizacion/", {
               nombre: user.nombre,
@@ -277,7 +291,7 @@ export default function Crear() {
               setApellidoV("");
               setCelularV("");
               setNombreV("");
-
+              setNitV("");   
               // Limpiar el mapa
               setMarkers([]);
             
@@ -288,7 +302,9 @@ export default function Crear() {
                 });
   
                 if (response.status === 200) {
-                  console.log("Se envio el gmail exitosamente");
+                  setIsLoading(false);
+                  
+                  window.location.href = '/Organizacion/Mostrar';
                 } else {
                   console.error("Error al enviar el correo electrónico");
                 }
@@ -302,7 +318,7 @@ export default function Crear() {
       } else {
         console.log("Este correo ya fue registrado");
         setCorreoExiste(true);
-        
+        (formElements.namedItem("correo") as HTMLInputElement).focus();
         
       }
     
@@ -411,9 +427,10 @@ export default function Crear() {
           </div>
           <div className="mb-5">
             <label>Ubicación:</label>
-            <div style={mapContainerStyle}>
+            <div  style={mapContainerStyle}>
               <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
                 <GoogleMap
+                
                   mapContainerStyle={mapContainerStyle}
                   center={center}
                   zoom={10}
@@ -425,6 +442,9 @@ export default function Crear() {
                 </GoogleMap>
               </LoadScript>
             </div>
+            {!mapValid && (
+              <p className="text-red-500">Debes seleccionar una ubicación en el mapa.</p>
+            )}
           </div>
           <div className="mb-5">
             <Checkbox
@@ -444,8 +464,12 @@ export default function Crear() {
              onValueChange={handleNitChange}
              />
           </div>
-          <Button type="submit" color="primary">
-            Enviar
+          <Button type="submit" color="primary" disabled={isLoading}>
+            {isLoading ? (
+            <CircularProgress aria-label="Loading..." />
+            ) : (
+              "Enviar"
+            )}
           </Button>
         </form>
       </div>

@@ -138,7 +138,7 @@ export default function Mostrar() {
                   onClick={() => clic(item['id'])}
                 >
                   <EyeIcon className="w-6 h-6 text-black" />
-                  Ver {item['id']}
+                  Ver
                 </Button>
               </TableCell>
               <TableCell>
