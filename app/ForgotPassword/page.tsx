@@ -43,8 +43,8 @@ const page = () => {
                 </Button>
                 
                 <div className="mt-2 justify-end">
-                  <a className="font-bold text-blue-500  hover:underline hover:p-2 cursor-pointer">
-                    Iniciar Sesión
+                  <a href="/Login/" className="font-bold text-blue-500  hover:underline hover:p-2 cursor-pointer">
+                   ← Iniciar Sesión
                   </a>
                 </div>
               </form>

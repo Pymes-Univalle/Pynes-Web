@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Input,
   Button,
@@ -12,8 +12,8 @@ import {
 } from "@nextui-org/react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import GOOGLE_MAPS_API_KEY from "@/googleMapsConfig";
-import { randomBytes } from "crypto";
-import emailjs from "@emailjs/browser";
+import { useSearchParams } from "next/navigation";
+import axios from "axios";
 
 const mapContainerStyle = {
   width: "100%",
@@ -32,7 +32,7 @@ interface User {
   contrasena: string;
   celular: string;
   estado: number;
-  fechaRegistro: Date;
+  fechaActualizacion: Date;
 }
 
 interface Productor {
@@ -42,10 +42,24 @@ interface Productor {
   idOrganizacion: number;
 }
 
-export default function Crear() {
+export default function Editar() {
+  const valor = useSearchParams();
+  const id = valor.get("id");
+  const [mapCenter, setMapCenter] = useState(center);
+  const [productor, setProductor] = useState(null);
+
+  const [nombre, setNombre] = useState<string>("");
+  const [apellido, setApellido] = useState<string>("");
+  const [correo, setCorreo] = useState<string>("");
+  const [contrasena, setContrasena] = useState<string>("");
+  const [celular, setCelular] = useState<string>("");
+  const [puesto, setPuesto] = useState<string>("");
+  const [idOrganizacion, setIdOrganizacion] = useState<number>(0);
+
+  const [markers, setMarkers] = React.useState<google.maps.LatLngLiteral[]>([]);
+
   const [modal, setModal] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [markers, setMarkers] = React.useState<google.maps.LatLngLiteral[]>([]);
   const [fieldValidations, setFieldValidations] = useState({
     nombres: true,
     apellidos: true,
@@ -54,28 +68,55 @@ export default function Crear() {
     puesto: true,
   });
 
-  var contrasena: string;
-
-  const generarContraseña = (longitud: number = 6) =>
-    Array.from(
-      randomBytes(longitud),
-      (byte) =>
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[
-          byte % 62
-        ]
-    ).join("");
-
-  contrasena = generarContraseña();
-
   const handleMapClick = (event: google.maps.MapMouseEvent) => {
     if (event.latLng) {
       const newMarker = event.latLng.toJSON();
       setMarkers([newMarker]);
     }
   };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        console.log(id);
+        const response = await axios.get(`/api/productor/${id}`);
+        if (response.status === 200) {
+          const data = await response.data;
+          const productorData = await data.productor;
+          setProductor(productorData);
+
+          const centerMap = {
+            lat: parseFloat(productorData["latitud"]),
+            lng: parseFloat(productorData["longitud"]),
+          };
+          setMapCenter(centerMap);
+          setMarkers([
+            {
+              lat: parseFloat(productorData["latitud"]),
+              lng: parseFloat(productorData["longitud"]),
+            },
+          ]);
+          setNombre(productorData["usuario"]["nombre"] || "");
+          setApellido(productorData["usuario"]["apellido"] || "");
+          setCorreo(productorData["usuario"]["correo"] || "");
+          setContrasena(productorData["usuario"]["contrasena"] || "");
+          setCelular(productorData["usuario"]["celular"] || "");
+          setPuesto(productorData["puesto"] || "");
+          setIdOrganizacion(productorData["idOrganizacion"] || 0);
+
+          console.log(productorData);
+        } else {
+          console.error(response.status);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     const formElements = event.currentTarget.elements;
 
     const nombre =
@@ -88,16 +129,15 @@ export default function Crear() {
       (formElements.namedItem("celular") as HTMLInputElement)?.value || "";
     const puesto =
       (formElements.namedItem("puesto") as HTMLInputElement)?.value || "";
-    const idOrganizacion = 1;
 
     const user: User = {
       nombre,
       apellido,
       correo,
-      contrasena: contrasena,
+      contrasena,
       celular,
       estado: 1,
-      fechaRegistro: new Date(),
+      fechaActualizacion: new Date(),
     };
 
     const productor: Productor = {
@@ -119,31 +159,9 @@ export default function Crear() {
 
     if (Object.values(newValidations).every((valid) => valid)) {
       const axios = require("axios");
-      var templateParams = {
-        from_name: "Totem",
-        nombre: user.nombre,
-        contrasena: user.contrasena,
-        email: user.correo,
-      };
 
       try {
-        emailjs
-          .send(
-            "service_7xh4aqx",
-            "template_soj79xk",
-            templateParams,
-            "BQzfsMnH6-p-UBfyg"
-          )
-          .then(
-            (result) => {
-              console.log(result.text);
-            },
-            (error) => {
-              console.log(error.text);
-            }
-          );
-
-        const resp = await axios.post("/api/productor/", {
+        const resp = await axios.put(`/api/productor/${id}`, {
           nombre: user.nombre,
           apellido: user.apellido,
           correo: user.correo,
@@ -183,6 +201,8 @@ export default function Crear() {
               type="text"
               label="Nombres"
               labelPlacement="outside"
+              onChange={(event) => setNombre(event.target.value)}
+              value={nombre}
               required
               validationState={fieldValidations.nombres ? "valid" : "invalid"}
               errorMessage={
@@ -198,6 +218,8 @@ export default function Crear() {
               type="text"
               label="Apellidos"
               labelPlacement="outside"
+              onChange={(event) => setApellido(event.target.value)}
+              value={apellido}
               required
               validationState={fieldValidations.apellidos ? "valid" : "invalid"}
               errorMessage={
@@ -213,6 +235,8 @@ export default function Crear() {
               type="email"
               label="Correo Electrónico"
               labelPlacement="outside"
+              onChange={(event) => setCorreo(event.target.value)}
+              value={correo}
               required
               validationState={fieldValidations.correo ? "valid" : "invalid"}
               errorMessage={
@@ -224,11 +248,13 @@ export default function Crear() {
           <div className="mt-10">
             <Input
               id="celular"
-              type="number"
               name="celular"
+              type="number"
               key="outside"
               labelPlacement="outside"
               label="Celular"
+              onChange={(event) => setCelular(event.target.value)}
+              value={celular}
               required
               validationState={fieldValidations.celular ? "valid" : "invalid"}
               errorMessage={
@@ -244,6 +270,8 @@ export default function Crear() {
               type="text"
               label="Puesto"
               labelPlacement="outside"
+              onChange={(event) => setPuesto(event.target.value)}
+              value={puesto}
               required
               validationState={fieldValidations.puesto ? "valid" : "invalid"}
               errorMessage={
@@ -253,7 +281,7 @@ export default function Crear() {
           </div>
           <div className="mt-10 mb-10">
             <label>Ubicación:</label>
-            <div>
+            <div className="w-full h-500">
               <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
                 <GoogleMap
                   mapContainerStyle={mapContainerStyle}
@@ -270,7 +298,7 @@ export default function Crear() {
           </div>
 
           <Button type="submit" radius="full" className="bg-amarillo">
-            Registrar
+            Actualizar
           </Button>
           <Modal isOpen={modal} onOpenChange={onOpenChange}>
             <ModalContent>

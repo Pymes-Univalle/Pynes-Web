@@ -61,11 +61,11 @@ export default function Mostrar() {
     return productor.slice(start, end);
   }, [page, productor]);
 
-  const clic = (id: any) => {
-    //router.push(`/Organizacion/Detalles?id=${id}`);
+  const detalles = (id: any) => {
+    router.push(`/Productores/Detalles?id=${id}`);
   };
-  const clicEdit = (id: any) => {
-    //router.push(`/Organizacion/Editar?id=${id}`);
+  const editar = (id: any) => {
+    router.push(`/Productores/Editar?id=${id}`);
   };
 
   const handleDeleteConfirm = async (id: any) => {
@@ -73,6 +73,7 @@ export default function Mostrar() {
       const response = await axios.delete(`/api/productor/${id}`, {
         data: {
           estado: user.estado,
+          fechaActualizacion: user.fechaActualizacion,
         },
       });
 
@@ -133,7 +134,7 @@ export default function Mostrar() {
           {(item) => (
             <TableRow key={item["usuario"]["id"]}>
               <TableCell>
-                <div className="flex gap-4">{item["id"]}</div>
+                <div className="flex gap-4">{item["usuario"]["id"]}</div>
               </TableCell>
               <TableCell>{item["usuario"]["nombre"]}</TableCell>
               <TableCell>{item["usuario"]["apellido"]}</TableCell>
@@ -152,7 +153,7 @@ export default function Mostrar() {
               <TableCell>
                 <Tooltip content="Editar productor">
                   <span
-                    onClick={() => clicEdit(item["id"])}
+                    onClick={() => editar(item["usuario"]["id"])}
                     className="text-lg text-default-400 cursor-pointer active:opacity-50"
                   >
                     <EditIcon />
@@ -188,8 +189,7 @@ export default function Mostrar() {
                         <div className="mt-2 flex flex-col gap-2 w-full">
                           <Button
                             color="success"
-                            
-                            onClick={() => handleDeleteConfirm(item["id"])}
+                            onClick={() => handleDeleteConfirm(item["usuario"]["id"])}
                           >
                             Confirmar
                           </Button>
