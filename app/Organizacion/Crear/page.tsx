@@ -160,7 +160,7 @@ export default function Crear() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setIsLoading(true);
+    
     const formElements = event.currentTarget.elements;
     var crear = 0;
 
@@ -251,6 +251,7 @@ export default function Crear() {
      
       if (data.organizacion == null ) {
         if(validationApellido == "valid" && validationNombre == "valid" && validationNit == "valid" && validationCelular == "valid" && validationState == "valid" && mapValid ){
+          setIsLoading(true);
           try {
             const resp = await axios.post("/api/organizacion/", {
               nombre: user.nombre,
@@ -294,7 +295,7 @@ export default function Crear() {
               setNitV("");   
               // Limpiar el mapa
               setMarkers([]);
-            
+              
               try {
                 const response = await axios.post("/api/sendEmail/", {
                   gmail: user.correo,
