@@ -1,9 +1,10 @@
-"use client";
-import React, { Component } from "react";
+"use client"
+import React, { useState } from "react";
 import { Input, Button } from "@nextui-org/react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import GOOGLE_MAPS_API_KEY from "@/googleMapsConfig";
-import { randomBytes } from 'crypto';
+import { randomBytes } from "crypto";
+import emailjs from '@emailjs/browser';
 
 const mapContainerStyle = {
   width: "100%",
@@ -31,13 +32,23 @@ interface Productor {
   puesto: string;
   idOrganizacion: number;
 }
+
 export default function Crear() {
   const [markers, setMarkers] = React.useState<google.maps.LatLngLiteral[]>([]);
+  const [fieldValidations, setFieldValidations] = useState({
+    nombres: true,
+    apellidos: true,
+    correo: true,
+    celular: true,
+    puesto: true,
+  });
 
-  var contrasena: string ;
+  var contrasena: string;
 
   const generarContraseña = (longitud: number = 6) =>
-  Array.from(randomBytes(longitud), (byte) => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'[byte % 62]).join('');
+    Array.from(randomBytes(longitud), (byte) =>
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[byte % 62]
+    ).join("");
 
   contrasena = generarContraseña();
 
@@ -48,22 +59,22 @@ export default function Crear() {
     }
   };
 
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formElements = event.currentTarget.elements;
-   
-    
-    const nombre = (formElements.namedItem("nombres") as HTMLInputElement)?.value || "";
-    const apellido = (formElements.namedItem("apellidos") as HTMLInputElement)?.value || "";
-    const correo = (formElements.namedItem("correo") as HTMLInputElement)?.value || "";
- 
-    const celular = (formElements.namedItem("celular") as HTMLInputElement)?.value || "";
-    const puesto = (formElements.namedItem("puesto") as HTMLInputElement)?.value || "";
+
+    const nombre =
+      (formElements.namedItem("nombres") as HTMLInputElement)?.value || "";
+    const apellido =
+      (formElements.namedItem("apellidos") as HTMLInputElement)?.value || "";
+    const correo =
+      (formElements.namedItem("correo") as HTMLInputElement)?.value || "";
+    const celular =
+      (formElements.namedItem("celular") as HTMLInputElement)?.value || "";
+    const puesto =
+      (formElements.namedItem("puesto") as HTMLInputElement)?.value || "";
     const idOrganizacion = 1;
 
-    
-    
     const user: User = {
       nombre,
       apellido,
@@ -81,60 +92,63 @@ export default function Crear() {
       idOrganizacion,
     };
 
-    console.log({user: user} )
-    console.log({productor: productor} )
-
-    const axios = require('axios');
     
-  
-    try {
-      if (
-        user.nombre.trim() === '' ||
-        user.apellido.trim() === '' ||
-        user.correo.trim() === '' ||
-        user.celular.trim() === '' ||
-        productor.puesto.trim() === ''
-      ) {
-        alert('Todos los campos son obligatorios');
-        return; // Evita enviar el formulario si hay campos vacíos
-      }
-      else{
-        const resp = await axios.post('/api/productor/', {
+    const newValidations = {
+      nombres: nombre.trim() !== "",
+      apellidos: apellido.trim() !== "",
+      correo: correo.trim() !== "",
+      celular: celular.trim() !== "",
+      puesto: puesto.trim() !== "",
+    };
+
+    setFieldValidations(newValidations);
+
+    if (Object.values(newValidations).every((valid) => valid)) {
+      const axios = require("axios");
+      var templateParams = {
+        from_name: "Totem",
+        nombre: user.nombre,
+        contrasena: user.contrasena,
+        email: user.correo,
+      };
+
+      try {
+
+        emailjs
+        .send(
+          "service_7xh4aqx",
+          "template_soj79xk",
+          templateParams,
+          "BQzfsMnH6-p-UBfyg"
+        )
+        .then(
+          (result) => {
+            console.log(result.text);
+          },
+          (error) => {
+            console.log(error.text);
+          }
+        );
+
+        const resp = await axios.post("/api/productor/", {
           nombre: user.nombre,
           apellido: user.apellido,
           correo: user.correo,
           contrasena: user.contrasena,
           celular: user.celular,
-          latitud:  productor.latitud.toString(),
+          latitud: productor.latitud.toString(),
           longitud: productor.longitud.toString(),
           puesto: productor.puesto,
           idOrganizacion: productor.idOrganizacion,
-  
         });
-    
+
         if (resp && resp.data) {
-          // try {
-          //   const response = await axios.post('/api/sendEmail/', {
-          //     gmail: user.correo,
-          //     contrasena: contrasena
-          //   });
-        
-          //   if (response.status === 200) {
-          //     console.log('Correo electrónico enviado con éxito');
-          //   } else {
-          //     console.error('Error al enviar el correo electrónico');
-          //   }
-          // } catch (error) {
-          //   console.error('Error al enviar el correo electrónico:', error);
-          // }
-  
+          // Tu lógica adicional aquí
         }
-      
+      } catch (error: any) {
+        console.log(error.message);
       }
-      
-    }catch(error: any){
-      console.log(error.message);
-    }  
+    }
   };
 
   return (
@@ -157,6 +171,10 @@ export default function Crear() {
               label="Nombres"
               labelPlacement="outside"
               required
+              validationState={fieldValidations.nombres ? "valid" : "invalid"}
+              errorMessage={
+                !fieldValidations.nombres ? "Campo requerido" : undefined
+              }
             />
           </div>
           <div className="mt-10">
@@ -168,6 +186,10 @@ export default function Crear() {
               label="Apellidos"
               labelPlacement="outside"
               required
+              validationState={fieldValidations.apellidos ? "valid" : "invalid"}
+              errorMessage={
+                !fieldValidations.apellidos ? "Campo requerido" : undefined
+              }
             />
           </div>
           <div className="mt-10">
@@ -175,10 +197,14 @@ export default function Crear() {
               id="correo"
               name="correo"
               key="outside"
-              type="gmail"
+              type="email"
               label="Correo Electrónico"
               labelPlacement="outside"
               required
+              validationState={fieldValidations.correo ? "valid" : "invalid"}
+              errorMessage={
+                !fieldValidations.correo ? "Campo requerido" : undefined
+              }
             />
           </div>
 
@@ -190,6 +216,10 @@ export default function Crear() {
               labelPlacement="outside"
               label="Celular"
               required
+              validationState={fieldValidations.celular ? "valid" : "invalid"}
+              errorMessage={
+                !fieldValidations.celular ? "Campo requerido" : undefined
+              }
             />
           </div>
           <div className="mt-10">
@@ -201,6 +231,10 @@ export default function Crear() {
               label="Puesto"
               labelPlacement="outside"
               required
+              validationState={fieldValidations.puesto ? "valid" : "invalid"}
+              errorMessage={
+                !fieldValidations.puesto ? "Campo requerido" : undefined
+              }
             />
           </div>
           <div className="mt-10 mb-10">
