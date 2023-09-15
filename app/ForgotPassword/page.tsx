@@ -1,7 +1,16 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
-import { Button } from "@nextui-org/react";
+import {
+  Input,
+  Button,
+  useDisclosure,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  Link,
+  ModalFooter,
+} from "@nextui-org/react";
 import { motion } from "framer-motion";
 import { randomBytes } from "crypto";
 import emailjs from "@emailjs/browser";
@@ -15,6 +24,8 @@ interface Usuario {
   // Otras propiedades del usuario
 }
 export default function ForgotPassword() {
+  const [modal, setModal] = useState(false);
+
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [usuarioEncontrado, setUsuarioEncontrado] = useState<Usuario | null>(
     null
@@ -43,7 +54,7 @@ export default function ForgotPassword() {
     if (usuarioEncontrado) {
       // Aquí tienes el usuario encontrado
       console.log("Usuario encontrado:");
-      //var contrasenaNueva: string;
+      var contrasenaNueva: string;
 
       const generarContraseña = (longitud: number = 6) =>
         Array.from(
@@ -56,45 +67,54 @@ export default function ForgotPassword() {
 
       setUsuarioEncontrado(usuarioEncontrado);
 
-      usuarioEncontrado.contrasena = generarContraseña();
+      contrasenaNueva = generarContraseña();
       var templateParams = {
         from_name: "Totem",
         nombre: usuarioEncontrado.nombre,
-        contrasena: usuarioEncontrado.contrasena,
+        contrasena: contrasenaNueva,
         email: usuarioEncontrado.correo,
       };
 
       try {
-        // emailjs
-        //   .send(
-        //     "service_7xh4aqx",
-        //     "template_soj79xk",
-        //     templateParams,
-        //     "BQzfsMnH6-p-UBfyg"
-        //   )
-        //   .then(
-        //     (result) => {
-        //       console.log(result.text);
-        //     },
-        //     (error) => {
-        //       console.log(error.text);
-        //     }
-        //   );
+        emailjs
+          .send(
+            "service_7xh4aqx",
+            "template_soj79xk",
+            templateParams,
+            "BQzfsMnH6-p-UBfyg"
+          )
+          .then(
+            (result) => {
+              console.log(result.text);
+            },
+            (error) => {
+              console.log(error.text);
+            }
+          );
         console.log(usuarioEncontrado.id);
-        console.log(usuarioEncontrado.contrasena);
-        const response = await axios.put(`/api/login/${usuarioEncontrado.id}`, {
-          data: {
-            contrasena: usuarioEncontrado.contrasena,
-            fechaActualizacion: new Date(new Date().toISOString()),
-          },
-        });
-        console.log(response.data);
+        console.log(contrasenaNueva);
 
-        if (response.status === 200) {
-          alert("Se ha enviado un correo con la nueva contraseña.");
-        } else {
-          console.error("Error al actualizar:", response.data);
-        }
+        // Define los datos que deseas enviar en la solicitud PUT
+        const data = {
+          contrasena: contrasenaNueva, // Reemplaza con la nueva contraseña
+          fechaActualizacion: new Date(new Date().toISOString()), // Reemplaza con la fecha y hora adecuadas
+        };
+
+        // Realiza la solicitud PUT utilizando Axios
+        axios
+          .put("/api/login/" + usuarioEncontrado.id, data)
+          .then((response) => {
+            console.log("Respuesta de la API:", response.data);
+            if (response.status === 200) {
+              setModal(true);
+              
+            }
+          })
+
+          .catch((error) => {
+            console.error("Error al realizar la solicitud PUT:", error);
+            // Realiza el manejo de errores aquí
+          });
       } catch (error: any) {
         console.log(error.message);
       }
@@ -136,7 +156,6 @@ export default function ForgotPassword() {
                     required
                   />
                 </div>
-
                 <Button
                   type="submit"
                   className="flex items-center  justify-center mt-4 text-white rounded-lg shadow-md bg-blue-500 hover:bg-blue-400 w-full h-13"
@@ -144,8 +163,28 @@ export default function ForgotPassword() {
                   <h1 className="px-4 py-3 w-5/6 text-base text-center text-white font-bold">
                     Recuperar contraseña
                   </h1>
-                </Button>
+                </Button>{" "}
+                <Modal isOpen={modal}>
+                  <ModalContent>
+                    {(onClose) => (
+                      <>
+                        <ModalHeader className="flex flex-col gap-1 self-center mt-10">
+                          Tu nueva contraseña ha sido enviada a tu correo.
+                        </ModalHeader>
 
+                        <ModalFooter>
+                          <Button
+                            color="success"
+                            as={Link}
+                            href="/Login/"
+                          >
+                            Aceptar
+                          </Button>
+                        </ModalFooter>
+                      </>
+                    )}
+                  </ModalContent>
+                </Modal>
                 <div className="mt-2 justify-end">
                   <a
                     href="/Login/"

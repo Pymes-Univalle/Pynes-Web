@@ -7,20 +7,20 @@ interface Params {
 
 export async function PUT(request: Request, { params }: Params) {
     try {
-      const { contrasena } = await request.json();
-  
+      const { contrasena, fechaActualizacion } = await request.json();
+      console.log(request.json());
       const updateUsuario = await prisma.usuario.update({
         where: {
           id: Number(params.id),
         },
         data: {
           contrasena: contrasena,
-          fechaActualizacion: new Date(new Date().toISOString()),
+          fechaActualizacion: fechaActualizacion,
         },
       });
   
       return NextResponse.json({
-        mensaje: contrasena
+        updateUsuario
       });
     } catch (error) {
       console.log(error);
