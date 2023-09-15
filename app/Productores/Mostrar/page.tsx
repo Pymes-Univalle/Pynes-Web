@@ -145,7 +145,10 @@ export default function Mostrar() {
 
               <TableCell>
                 <Tooltip content="Ver detalles">
-                  <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                  <span
+                    onClick={() => detalles(item["usuario"]["id"])}
+                    className="text-lg text-default-400 cursor-pointer active:opacity-50"
+                  >
                     <EyeIcon />
                   </span>
                 </Tooltip>
@@ -189,7 +192,9 @@ export default function Mostrar() {
                         <div className="mt-2 flex flex-col gap-2 w-full">
                           <Button
                             color="success"
-                            onClick={() => handleDeleteConfirm(item["usuario"]["id"])}
+                            onClick={() =>
+                              handleDeleteConfirm(item["usuario"]["id"])
+                            }
                           >
                             Confirmar
                           </Button>

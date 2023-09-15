@@ -277,7 +277,7 @@ export default function Crear() {
               {(onClose) => (
                 <>
                   <ModalHeader className="flex flex-col gap-1 self-center mt-10">
-                    Productor actualizado correctamente
+                    Productor registrado correctamente
                   </ModalHeader>
 
                   <ModalFooter>
