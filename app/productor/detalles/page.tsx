@@ -38,7 +38,7 @@ function page() {
     };
 
     fetchData();
-  }, []);
+  }, [id]);
 
   if (!productor) {
     return <div>Cargando...</div>;

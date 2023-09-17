@@ -165,111 +165,101 @@ export default function Crear() {
   };
 
   return (
-    <div className="bg-black min-h-screen text-blanco ">
-      <div className="mx-auto max-w-5xl">
-        <h1 className=" text-white text-2xl text-center font-bold mb-8 mt-5">
-          Registrar Productor
-        </h1>
-        <form
-          className=" p-5 border-1 shadow"
-          method="Post"
-          onSubmit={handleSubmit}
-        >
-          <div className="mt-10">
-            <Input
-              id="nombres"
-              name="nombres"
-              key="outside"
-              type="text"
-              label="Nombres"
-              labelPlacement="outside"
-              required
-              validationState={fieldValidations.nombres ? "valid" : "invalid"}
-              errorMessage={
-                !fieldValidations.nombres ? "Campo requerido" : undefined
-              }
-            />
-          </div>
-          <div className="mt-10">
-            <Input
-              id="apellidos"
-              name="apellidos"
-              key="outside"
-              type="text"
-              label="Apellidos"
-              labelPlacement="outside"
-              required
-              validationState={fieldValidations.apellidos ? "valid" : "invalid"}
-              errorMessage={
-                !fieldValidations.apellidos ? "Campo requerido" : undefined
-              }
-            />
-          </div>
-          <div className="mt-10">
-            <Input
-              id="correo"
-              name="correo"
-              key="outside"
-              type="email"
-              label="Correo Electrónico"
-              labelPlacement="outside"
-              required
-              validationState={fieldValidations.correo ? "valid" : "invalid"}
-              errorMessage={
-                !fieldValidations.correo ? "Campo requerido" : undefined
-              }
-            />
-          </div>
+    <div className="max-w-5xl w-full">
+      <form
+        className="m-4 p-5 border-1 shadow grid sm:grid-cols-2 gap-8"
+        method="Post"
+        onSubmit={handleSubmit}
+      >
+        <section className="col-span-1 flex flex-col items-center">
+          <div className="w-full">
+            <h1 className=" text-white text-2xl text-center font-bold mb-2 mt-5">
+              Registrar Productor
+            </h1>
+            <div className="mt-10">
+              <Input
+                id="nombres"
+                name="nombres"
+                key="outside"
+                type="text"
+                label="Nombres"
+                labelPlacement="outside"
+                required
+                validationState={fieldValidations.nombres ? "valid" : "invalid"}
+                errorMessage={
+                  !fieldValidations.nombres ? "Campo requerido" : undefined
+                }
+              />
+            </div>
+            <div className="mt-10">
+              <Input
+                id="apellidos"
+                name="apellidos"
+                key="outside"
+                type="text"
+                label="Apellidos"
+                labelPlacement="outside"
+                required
+                validationState={
+                  fieldValidations.apellidos ? "valid" : "invalid"
+                }
+                errorMessage={
+                  !fieldValidations.apellidos ? "Campo requerido" : undefined
+                }
+              />
+            </div>
+            <div className="mt-10">
+              <Input
+                id="correo"
+                name="correo"
+                key="outside"
+                type="email"
+                label="Correo Electrónico"
+                labelPlacement="outside"
+                required
+                validationState={fieldValidations.correo ? "valid" : "invalid"}
+                errorMessage={
+                  !fieldValidations.correo ? "Campo requerido" : undefined
+                }
+              />
+            </div>
 
-          <div className="mt-10">
-            <Input
-              id="celular"
-              type="number"
-              name="celular"
-              key="outside"
-              labelPlacement="outside"
-              label="Celular"
-              required
-              validationState={fieldValidations.celular ? "valid" : "invalid"}
-              errorMessage={
-                !fieldValidations.celular ? "Campo requerido" : undefined
-              }
-            />
-          </div>
-          <div className="mt-10">
-            <Input
-              id="puesto"
-              name="puesto"
-              key="outside"
-              type="text"
-              label="Puesto"
-              labelPlacement="outside"
-              required
-              validationState={fieldValidations.puesto ? "valid" : "invalid"}
-              errorMessage={
-                !fieldValidations.puesto ? "Campo requerido" : undefined
-              }
-            />
-          </div>
-          <div className="mt-10 mb-10">
-            <label>Ubicación:</label>
-            <div>
-              <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
-                <GoogleMap
-                  mapContainerStyle={mapContainerStyle}
-                  center={center}
-                  zoom={10}
-                  onClick={handleMapClick}
-                >
-                  {markers.map((marker, index) => (
-                    <Marker key={index} position={marker} />
-                  ))}
-                </GoogleMap>
-              </LoadScript>
+            <div className="mt-10">
+              <Input
+                id="celular"
+                type="number"
+                name="celular"
+                key="outside"
+                labelPlacement="outside"
+                label="Celular"
+                required
+                validationState={fieldValidations.celular ? "valid" : "invalid"}
+                errorMessage={
+                  !fieldValidations.celular ? "Campo requerido" : undefined
+                }
+              />
+            </div>
+            <div className="mt-10">
+              <Input
+                id="puesto"
+                name="puesto"
+                key="outside"
+                type="text"
+                label="Puesto"
+                labelPlacement="outside"
+                required
+                validationState={fieldValidations.puesto ? "valid" : "invalid"}
+                errorMessage={
+                  !fieldValidations.puesto ? "Campo requerido" : undefined
+                }
+              />
             </div>
           </div>
-
-          <Button type="submit" radius="full" className="bg-amarillo">
+          <Button
+            type="submit"
+            radius="lg"
+            className="bg-amarillo mt-8 mb-6 max-sm:hidden sm:visible w-2/4"
+          >
             Registrar
           </Button>
           <Modal isOpen={modal} onOpenChange={onOpenChange}>
@@ -293,8 +283,31 @@ export default function Crear() {
               )}
             </ModalContent>
           </Modal>
-        </form>
-      </div>
+        </section>
+        <section className="col-span-1 flex flex-col justify-center">
+          <div className="h-fit">
+            <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
+              <GoogleMap
+                mapContainerStyle={mapContainerStyle}
+                center={center}
+                zoom={10}
+                onClick={handleMapClick}
+              >
+                {markers.map((marker, index) => (
+                  <Marker key={index} position={marker} />
+                ))}
+              </GoogleMap>
+            </LoadScript>
+          </div>
+          <Button
+            type="submit"
+            radius="lg"
+            className="bg-amarillo sm:hidden mt-6"
+          >
+            Registrar
+          </Button>
+        </section>
+      </form>
     </div>
   );
 }

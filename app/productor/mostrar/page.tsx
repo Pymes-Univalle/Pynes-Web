@@ -88,14 +88,14 @@ export default function Mostrar() {
   };
 
   return (
-    <div className="text-black bg-blanco p-4">
+    <div className="text-white p-4 h-full w-full max-w-7xl flex-col items-center justify-center">
       <h1 className="text-center text-2xl mb-4">Lista de Productores</h1>
       <Button
         color="success"
         variant="solid"
         as={Link}
         href="/Productores/Crear"
-        className="btn mb-5 text-white font-bold py-2 px-4 rounded-full"
+        className="btn mb-5 text-white font-bold py-2 px-4 rounded-lg"
       >
         Registrar Productor
       </Button>

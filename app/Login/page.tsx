@@ -45,7 +45,7 @@ export default function Login() {
 
   return (
     <motion.div
-      className="w-full content-center items-center"
+      className="w-screen content-center items-center"
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1 }}
@@ -60,7 +60,7 @@ export default function Login() {
             ></img>
           </div>
 
-          <div className="flex items-center w-full max-w-3xl p-8 mx-auto lg:px-12 lg:w-1/2">
+          <div className="flex items-center w-full max-w-2xl p-8 mx-auto lg:px-12 lg:w-1/2">
             <div className="w-full">
               <h1 className="text-4xl font-bold text-white">INICIAR SESIÓN</h1>
 
