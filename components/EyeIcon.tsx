@@ -1,5 +1,11 @@
 import React from "react";
-export const EyeIcon = (props) => (
+
+interface EyeIconProps {
+  className?: string;
+  // Otros props personalizables si es necesario
+}
+
+const EyeIcon: React.FC<EyeIconProps> = ({ className, ...props }) => (
   <svg
     aria-hidden="true"
     fill="none"
@@ -8,8 +14,10 @@ export const EyeIcon = (props) => (
     role="presentation"
     viewBox="0 0 20 20"
     width="1em"
+    className={className}
     {...props}
   >
+    
     <path
       d="M12.9833 10C12.9833 11.65 11.65 12.9833 10 12.9833C8.35 12.9833 7.01666 11.65 7.01666 10C7.01666 8.35 8.35 7.01666 10 7.01666C11.65 7.01666 12.9833 8.35 12.9833 10Z"
       stroke="currentColor"
@@ -26,3 +34,5 @@ export const EyeIcon = (props) => (
     />
   </svg>
 );
+
+export default EyeIcon;
