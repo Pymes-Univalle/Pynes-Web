@@ -113,7 +113,7 @@ model productor {
   idOrganizacion     Int
   estado             Int          @default(1) @db.TinyInt
   fechaRegistro      DateTime?    @default(now()) @db.DateTime(0)
-  fechaActualizacion String       @db.VarChar(45)
+  fechaActualizacion DateTime     @db.DateTime(0)
   produccion         produccion[]
   usuario            usuario      @relation(fields: [idProductor], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Productores_usuario1")
   organizacion       organizacion @relation(fields: [idOrganizacion], references: [idOrganizacion], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_organizacion")
@@ -123,19 +123,22 @@ model productor {
 }
 
 model productos {
-  idProductos   Int             @id @default(autoincrement())
-  nombre        String          @db.VarChar(45)
-  precio        Decimal         @db.Decimal(18, 2)
-  descripcion   String?         @db.VarChar(100)
-  idCategoria   Int
-  cantidad      Int
-  idProductor   Int
-  atributo      atributo[]
-  detalleventas detalleventas[]
-  produccion    produccion[]
-  categoria     categoria       @relation(fields: [idCategoria], references: [idCategoria], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_categoria")
-  productor     productor       @relation(fields: [idProductor], references: [idProductor], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_productor")
-  ruta          ruta[]
+  idProductos        Int             @id @default(autoincrement())
+  nombre             String          @db.VarChar(45)
+  precio             Decimal         @db.Decimal(18, 2)
+  descripcion        String?         @db.VarChar(100)
+  idCategoria        Int
+  cantidad           Int
+  idProductor        Int
+  estado             Int             @default(1) @db.TinyInt
+  fechaRegistro      DateTime?       @default(now()) @db.DateTime(0)
+  fechaActualizacion DateTime        @db.DateTime(0)
+  atributo           atributo[]
+  detalleventas      detalleventas[]
+  produccion         produccion[]
+  categoria          categoria       @relation(fields: [idCategoria], references: [idCategoria], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_categoria")
+  productor          productor       @relation(fields: [idProductor], references: [idProductor], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_productor")
+  ruta               ruta[]
 
   @@index([idCategoria], map: "id_idx")
   @@index([idProductor], map: "id_idx1")
@@ -153,9 +156,9 @@ model proveedores {
 
 model ruta {
   id                 Int       @id @default(autoincrement())
-  ruta               String    @db.VarChar(45)
+  ruta               String    @db.VarChar(200)
   idProducto         Int
-  estado             Int       @db.TinyInt
+  estado             Int       @default(1) @db.TinyInt
   fechaRegistro      DateTime? @default(now()) @db.DateTime(0)
   fechaActualizacion DateTime  @db.DateTime(0)
   productos          productos @relation(fields: [idProducto], references: [idProductos], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_productos")
