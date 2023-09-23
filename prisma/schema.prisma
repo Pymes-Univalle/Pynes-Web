@@ -33,7 +33,7 @@ model atributo {
 }
 
 model categoria {
-  idCategoria Int         @id
+  idCategoria Int         @id @default(autoincrement())
   nombre      String      @db.VarChar(60)
   productos   productos[]
 }
