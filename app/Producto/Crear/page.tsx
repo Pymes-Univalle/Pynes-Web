@@ -135,7 +135,7 @@ export default function Page() {
 
     // Adjuntar cada imagen al FormData con un nombre de campo distinto
     imagePreviews.forEach((preview, index) => {
-      formData.append(`imagen_${index}`, preview.src);
+      formData.append(`imagen_${index}`, preview.file);
     });
 
     try {
@@ -146,42 +146,7 @@ export default function Page() {
         console.log("Datos y imágenes enviados correctamente a la API");
         const productId = response.data.message; // Aquí accedemos al campo del ID
         console.log("El ID es:", productId);
-        
-        // Aquí puedes redirigir o hacer otras acciones después del envío exitoso
-        await Promise.all(
-          imagePreviews.map(async (preview, index) => {
-            const data = new FormData();
-            console.log(preview.file.name);
-            data.append("file", preview.file);
-            data.append('upload_preset', 'test_pymes');
-            data.append('cloud_name', 'di9vckxy5');
-           
-
-            const cloudinaryResponse = await fetch(
-              "https://api.cloudinary.com/v1_1/di9vckxy5/image/upload",
-              {
-                method: "post",
-                body: data,
-              }
-            ).then((response) => {
-              console.log("Se subio correctamente la imagen " + response)
-        
-            }).catch((errors) => {
-              console.log(errors)
-            });
-/*
-            if (cloudinaryResponse.ok) {
-              console.log(`Imagen ${index + 1} subida a Cloudinary`);
-              const cloudinaryData = await cloudinaryResponse.json();
-              console.log("URL de la imagen:", cloudinaryData.url);
-            } else {
-              console.error(
-                `Error al subir la imagen ${index + 1} a Cloudinary`
-              );
-            }*/
-          })
-        );
-
+      
       } else {
         console.error("Error al enviar los datos y las imágenes a la API");
       }

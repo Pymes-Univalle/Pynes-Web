@@ -43,8 +43,55 @@ export async function POST(request: Request) {
       })
     );
 
-    // Subir las imágenes a Cloudinary y guardar las rutas en la base de datos
-    // ...
+     // Procesar imágenes
+     const urls: string[] = [];
+
+     for (let index = 0; ; index++) {
+       const fieldName = `imagen_${index}`;
+       const imageData = formData.get(fieldName);
+ 
+       if (!imageData) {
+         // Si no se encuentra más información bajo ese campo, sal del bucle
+         break;
+       }
+ 
+       // Convertir la imagen a un formato que puedas usar, como Blob
+       const imageBlob = new Blob([imageData as unknown as Buffer], { type: 'image/jpeg' });
+ 
+       // Crear un nuevo FormData para la imagen y agregarla a él
+       const imageFormData = new FormData();
+       imageFormData.append('file', imageBlob, 'image.jpg');
+       imageFormData.append('upload_preset', 'test_pymes');
+ 
+       // Subir la imagen a Cloudinary (o realizar la acción deseada con la imagen)
+       const response = await fetch(
+         'https://api.cloudinary.com/v1_1/di9vckxy5/image/upload',
+         {
+           method: 'POST',
+           body: imageFormData,
+         }
+       );
+ 
+       if (response.ok) {
+         const responseData = await response.json() as { secure_url: string };
+         const imageUrl = responseData.secure_url;
+         urls.push(imageUrl);
+         console.log("Imagen subida a Cloudinary:", imageUrl);
+       }
+     }
+ 
+     // Guardar las URL de las imágenes en la base de datos
+     await Promise.all(
+       urls.map(async (url) => {
+         await prisma.ruta.create({
+           data: {
+             ruta: url,
+             idProducto: nuevoProducto.idProductos,
+             fechaActualizacion: new Date().toISOString(),
+           },
+         });
+       })
+     );
 
     return NextResponse.json({ message: nuevoProducto.idProductos }, { status: 200 });
   } catch (error) {
