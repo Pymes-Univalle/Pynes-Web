@@ -3,6 +3,25 @@ import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 
+export async function GET() {
+  try {
+    const producto = await prisma.productos.findMany({
+      include:{
+        ruta:true,
+        categoria: true,
+        atributo: true
+      }
+    })
+    return NextResponse.json({ data: producto }, { status: 200 });
+  } catch (error) {
+    console.log(error);
+    if (error instanceof Error) {
+      return NextResponse.json({ message: error.message }, { status: 500 });
+    }
+  }
+}
+
+
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
@@ -13,6 +32,7 @@ export async function POST(request: Request) {
     const descripcion = formData.get('descripcion');
     const cantidad = formData.get('cantidad');
     const idCategoria = formData.get('idCategoria');
+    const idProductor = formData.get('idProductor');
 
     // Extraer los atributos del cuerpo de la solicitud como un JSON
     const atributosJSON = formData.get('atributos');
@@ -26,7 +46,7 @@ export async function POST(request: Request) {
         descripcion: descripcion as string,
         cantidad: parseInt(cantidad as string),
         idCategoria: parseInt(idCategoria as string),
-        idProductor: 2,
+        idProductor: parseInt(idProductor as string),
         fechaActualizacion: new Date(new Date().toISOString()),
       },
     });

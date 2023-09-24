@@ -11,34 +11,19 @@ import React, { use, useEffect, useState } from "react";
 
 import axios from "axios";
 
-interface Producto {
-  nombre: string;
-  precio: string;
-  descripcion: string;
-  cantidad: string;
-  idCategoria: number;
-  idProductor: number;
-  fechaActualizacion: Date;
-}
-
-interface Atributos {
-  nombre: string;
-  valor: string;
-}
-
-interface Ruta {
-  ruta: string;
-  fechaActualizacion: Date;
-}
-
 export default function Page() {
-  
   const [idCategoria, setIdCategoria] = useState("");
   const [categorias, setCategorias] = useState([]);
+  //Esto seria para el que hizo productor
+  const [idProductor, setIdProductor] = useState("");
+  const [productores, setProductor] = useState([]);
+
   const [atributos, setAtributos] = useState<
     { nombre: string; valor: string }[]
   >([{ nombre: "", valor: "" }]);
-  const [imagePreviews, setImagePreviews] = useState<{ src: string; alt: string; file: File }[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<
+    { src: string; alt: string; file: File }[]
+  >([]);
 
   useEffect(() => {
     // Realiza la solicitud a la API utilizando Axios
@@ -51,7 +36,16 @@ export default function Page() {
       .catch((error) => {
         console.error("Error al cargar categorías desde la API:", error);
       });
-  }, []); // Se ejecuta solo una vez al montar el componente
+
+    axios
+      .get("/api/productor")
+      .then((response) => {
+        setProductor(response.data.data);
+      })
+      .catch((error) => {
+        console.log("Error al cargar productores desde la API", error);
+      });
+  }, []);
 
   const handleCategoryChange = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -60,33 +54,12 @@ export default function Page() {
     setIdCategoria(selectedValue);
   };
 
-  /*
-  function handleFile(event: React.ChangeEvent<HTMLInputElement>): void {
-      const file = event.target.files?.[0];
-      setImage(file);
-      console.log(file);
-
-      if(file){
-        const url = URL.createObjectURL(file);
-        setUrl(url);
-        console.log("Esto es la " + url);
-      }
-  }*/
-
-  function createImagePreview(
-    file: File
-  ): Promise<{ src: string; alt: string }> {
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        resolve({
-          src: event.target?.result as string,
-          alt: file.name,
-        });
-      };
-      reader.readAsDataURL(file);
-    });
-  }
+  const handleProductorChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const selectedValue = event.target.value;
+    setIdProductor(selectedValue);
+  };
 
   async function sumbit(
     event: React.FormEvent<HTMLFormElement>
@@ -110,6 +83,7 @@ export default function Page() {
     console.log("Imágenes a enviar:", imagePreviews);
     console.log("Atributos:", atributos);
     console.log("Id Categoria", idCategoria);
+    console.log("Id Productor", idProductor);
     console.log(
       "Nombre: ",
       nombre,
@@ -119,6 +93,7 @@ export default function Page() {
       descripcion,
       " cantidad: ",
       cantidad
+     
     );
 
     // Crear un objeto FormData
@@ -130,14 +105,17 @@ export default function Page() {
     formData.append("descripcion", descripcion);
     formData.append("cantidad", cantidad);
     formData.append("idCategoria", idCategoria);
+
+    //Aca adjuntamos el dato del idProductor
+    formData.append("idProductor", idProductor);
+
     formData.append("atributos", JSON.stringify(atributosArray));
-    //formData.append('fechaActualizacion', Date.now());
 
     // Adjuntar cada imagen al FormData con un nombre de campo distinto
     imagePreviews.forEach((preview, index) => {
       formData.append(`imagen_${index}`, preview.file);
     });
-
+    
     try {
       // Realizar la solicitud a tu API utilizando axios
       const response = await axios.post("/api/producto/", formData);
@@ -154,29 +132,6 @@ export default function Page() {
       console.error("Error al realizar la solicitud a la API:", error);
     }
 
-    /*
-    if(!image){
-      console.log("Porfavor seleccione una imagen");
-      return;
-    }
-
-    const data = new FormData();
-
-    data.append('file', image); // Correctly appends the image file
-    data.append('upload_preset', 'test_pymes');
-    data.append('cloud_name', 'di9vckxy5');
-    data.append('filename','hola');
-
-
-    fetch('https://api.cloudinary.com/v1_1/di9vckxy5/image/upload',{
-      method: 'post',
-      body: data
-    }).then((response) => {
-      console.log("Se subio correctamente la imagen " + response)
-
-    }).catch((errors) => {
-      console.log(errors)
-    })*/
   }
 
   function removeImagePreview(index: number): void {
@@ -185,7 +140,9 @@ export default function Page() {
     setImagePreviews(updatedImagePreviews);
   }
 
-  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>): Promise<void> {
+  async function handleFileChange(
+    event: React.ChangeEvent<HTMLInputElement>
+  ): Promise<void> {
     const files = event.target.files;
 
     if (files) {
@@ -280,6 +237,28 @@ export default function Page() {
               <Input id="cantidad" key="outside" label="Cantidad" required />
             </div>
 
+            <div>
+              <Select
+                label="Productor"
+                placeholder="Selecciona un Productor"
+                value={idProductor}
+                onChange={(selectedValue: any) =>
+                  handleProductorChange(selectedValue)
+                }
+                className="mb-5 max-w-xs"
+              >
+                {productores.map((productor) => (
+                  <SelectItem
+                    className="text-black"
+                    key={productor["idProductor"]}
+                    value={productor["idProductor"]}
+                  >
+                    {productor["puesto"]}
+                  </SelectItem>
+                ))}
+              </Select>
+            </div>
+
             {/*<div className="mb-5">
               <Input type="file" onChange={handleFile}  />
                 </div>*/}
@@ -319,8 +298,7 @@ export default function Page() {
 
             <div className="mb-5">
               <h2>Atributos:</h2>
-              
-              
+
               {atributos.map((atributo, index) => (
                 <div key={index} className="mb-2">
                   <Input
