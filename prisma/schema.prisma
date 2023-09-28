@@ -133,6 +133,7 @@ model productos {
   estado             Int             @default(1) @db.TinyInt
   fechaRegistro      DateTime?       @default(now()) @db.DateTime(0)
   fechaActualizacion DateTime        @db.DateTime(0)
+  fechaVencimiento   DateTime?       @db.DateTime(0)
   atributo           atributo[]
   detalleventas      detalleventas[]
   produccion         produccion[]

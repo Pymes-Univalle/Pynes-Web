@@ -61,8 +61,15 @@ function page() {
             <div className="mb-5">
               <strong>Cantidad:</strong> {products["cantidad"]}
             </div>
+            {products["fechaVencimiento"] && (
+              <div className="mb-5">
+                <strong>Fecha de Vencimiento:</strong> {products["fechaVencimiento"]}
+              </div>
+            )}
+
+
            <div className="mb-5">
-              <strong>Ruta:</strong>
+              <strong>Imagenes:</strong>
               <div style={{ display: "flex" }}>
                 {rutaData.map((rutaItem, index) => (
                   <div key={index}

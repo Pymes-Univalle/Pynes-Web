@@ -1,5 +1,6 @@
 // Importa tus modelos de Prisma
 import prisma from "@/lib/prisma";
+import { data } from "autoprefixer";
 import { NextResponse } from "next/server";
 
 
@@ -33,6 +34,13 @@ export async function POST(request: Request) {
     const cantidad = formData.get('cantidad');
     const idCategoria = formData.get('idCategoria');
     const idProductor = formData.get('idProductor');
+    const fechaVencimientoValue  = formData.get('fechaVencimineto');
+    let fechaVencimiento: Date | undefined;
+
+    if (fechaVencimientoValue && typeof fechaVencimientoValue === 'string') {
+      // Convertir la cadena de fecha a un objeto de fecha
+      fechaVencimiento = new Date(fechaVencimientoValue);
+    }
 
     // Extraer los atributos del cuerpo de la solicitud como un JSON
     const atributosJSON = formData.get('atributos');
@@ -48,6 +56,7 @@ export async function POST(request: Request) {
         idCategoria: parseInt(idCategoria as string),
         idProductor: parseInt(idProductor as string),
         fechaActualizacion: new Date(new Date().toISOString()),
+        fechaVencimiento: fechaVencimiento || null
       },
     });
 

@@ -6,12 +6,16 @@ import {
   SelectItem,
   Textarea,
   Image,
+  Checkbox,
 } from "@nextui-org/react";
 import React, { use, useEffect, useState } from "react";
 
 import axios from "axios";
 
 export default function Page() {
+  const [tieneFechaVencimiento, setTieneFechaVencimiento] = useState(false);
+  const [fechaVencimiento, setFechaVencimiento] = useState("");
+
   const [idCategoria, setIdCategoria] = useState("");
   const [categorias, setCategorias] = useState([]);
   //Esto seria para el que hizo productor
@@ -47,6 +51,44 @@ export default function Page() {
       });
   }, []);
 
+  //Validaciones 
+  const [nombre, setNombreV] = React.useState("");
+  const [precio, setPrecioV] = React.useState("");
+
+
+  const handleNameChange = (value:any) => {
+    setNombreV(value);
+  }
+  const handlePriceChange = (value:any) =>{
+    setPrecioV(value);
+  }
+
+  const validateNombre = (value: any) => {
+    if(typeof value == "string"){
+      return value.match(/^[A-Za-z\s]{3,}$/i);
+    }
+    return false;
+  }
+  const validatePrecio = (value: any) =>{
+    if(typeof value == "string"){
+       return value.match(/^\d{2,}$/);
+    }
+    return false;
+  }
+
+  const validationNombre = React.useMemo(() => {
+    if(nombre == " ") return undefined;
+
+    return validateNombre(nombre) ? "valid" : "invalid";
+  }, [nombre])
+
+  const validationPrecio = React.useMemo(() => {
+    if(precio == " ") return undefined;
+    return validatePrecio(precio) ? "valid" : "invalid";
+  } , [precio])
+
+  //Fin de Validacion
+
   const handleCategoryChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
@@ -79,11 +121,20 @@ export default function Page() {
       valor: atributo.valor,
     }));
 
+    let fecha;
+    let fechaMysql: any;
+
+    if(fechaVencimiento){
+      fecha = new Date(fechaVencimiento);
+      fechaMysql = fecha.toISOString().slice(0, 19).replace("T", " ");
+    }
+    
     console.log("CLick en el submit");
     console.log("Imágenes a enviar:", imagePreviews);
     console.log("Atributos:", atributos);
     console.log("Id Categoria", idCategoria);
     console.log("Id Productor", idProductor);
+    console.log("Fecha Vencimiento", fechaMysql);
     console.log(
       "Nombre: ",
       nombre,
@@ -110,6 +161,9 @@ export default function Page() {
     formData.append("idProductor", idProductor);
 
     formData.append("atributos", JSON.stringify(atributosArray));
+    if(tieneFechaVencimiento){
+      formData.append("fechaVencimineto" , fechaMysql);
+    }
 
     // Adjuntar cada imagen al FormData con un nombre de campo distinto
     imagePreviews.forEach((preview, index) => {
@@ -122,8 +176,8 @@ export default function Page() {
 
       if (response.status === 200) {
         console.log("Datos y imágenes enviados correctamente a la API");
-        const productId = response.data.message; // Aquí accedemos al campo del ID
-        console.log("El ID es:", productId);
+       
+        window.location.href = '/Producto/Mostrar';
       
       } else {
         console.error("Error al enviar los datos y las imágenes a la API");
@@ -133,6 +187,13 @@ export default function Page() {
     }
 
   }
+
+  useEffect(() => {
+    // Este efecto se ejecutará cuando 'tieneFechaVencimiento' cambie
+    if (!tieneFechaVencimiento) {
+      setFechaVencimiento(""); // Limpia la fecha de vencimiento cuando se desmarca el checkbox
+    }
+  }, [tieneFechaVencimiento]);
 
   function removeImagePreview(index: number): void {
     const updatedImagePreviews = [...imagePreviews];
@@ -198,10 +259,21 @@ export default function Page() {
                 type="text"
                 label="Nombre"
                 required
+                color={validationNombre === "invalid" ? "danger" : "success"}
+                errorMessage={validationNombre === "invalid" && "El campo nombre es obligatorio y solo letras"  }
+                validationState={validationNombre}
+                onValueChange={handleNameChange}
               />
             </div>
             <div className="mb-5">
-              <Input id="precio" key="outside" label="Precio" required />
+              <Input id="precio"
+               key="outside" 
+               label="Precio" 
+               required
+               color={validationPrecio === "invalid" ? "danger" : "success"}
+               errorMessage={validationPrecio === "invalid" && "El campo precio es obligatorio"  }
+               validationState={validationPrecio}
+               onValueChange={handlePriceChange} />
             </div>
             <div className="mb-5">
               <Textarea
@@ -209,6 +281,7 @@ export default function Page() {
                 key="outside"
                 label="Descripcion"
                 required
+               
               />
             </div>
             <div>
@@ -297,6 +370,33 @@ export default function Page() {
             </div>
 
             <div className="mb-5">
+            <label>
+              <Checkbox
+                type="checkbox"
+                checked={tieneFechaVencimiento}
+                onChange={(e) => setTieneFechaVencimiento(e.target.checked)}
+              />{" "}
+              Tiene Fecha de Vencimiento
+            </label>
+          </div>
+          {tieneFechaVencimiento && (
+              <div>
+                <Input
+                  type="text"
+                  label="Fecha de Vencimiento - Nombre"
+                  value="Fecha de Vencimiento"
+                  disabled
+                />
+                <Input
+                  type="date"
+                  label="Fecha de Vencimiento - Valor"
+                  placeholder="Ingrese la fecha de vencimiento"
+                  value={fechaVencimiento}
+                  onChange={(e) => setFechaVencimiento(e.target.value)}
+                />
+              </div>
+            )}
+            <div className="mb-5">
               <h2>Atributos:</h2>
 
               {atributos.map((atributo, index) => (
@@ -322,6 +422,8 @@ export default function Page() {
                   </button>
                 </div>
               ))}
+
+             
               <button type="button" onClick={addAtributo}>
                 Agregar Atributo
               </button>
