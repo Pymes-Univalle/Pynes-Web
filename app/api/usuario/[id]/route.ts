@@ -28,47 +28,29 @@ export async function PUT(request: Request, { params }: Params) {
   try {
     const {
       nombre,
+      apellidos,
       correo,
-      contrasena,
       celular,
-      fechaActualizacion,
-      latitud,
-      longitud,
-      puesto,
-      idOrganizacion,
     } = await request.json();
 
-    const [updateUsuario, updateProductor] = await prisma.$transaction([
+    const [updateUsuario,] = await prisma.$transaction([
       prisma.usuario.update({
         where: {
           id: Number(params.id),
         },
         data: {
           nombre: nombre,
+          apellido: apellidos,
           correo: correo,
-          contrasena: contrasena,
           celular: celular,
           fechaActualizacion: new Date(new Date().toISOString()),
         },
       }),
-      prisma.productor.update({
-        where: {
-          idProductor: Number(params.id),
-        },
-        data: {
-          idProductor: Number(params.id),
-          puesto: puesto,
-          latitud: latitud.toString(), // Convertir latitud a cadena
-          longitud: longitud.toString(), // Convertir longitud a cadena
-          idOrganizacion: idOrganizacion,
-          fechaActualizacion: new Date(new Date().toISOString()),
-        },
-      }),
+      
     ]);
 
     return NextResponse.json({
       updateUsuario,
-      updateProductor,
     });
   } catch (error) {
     console.log(error);

@@ -51,7 +51,7 @@ export default function UpdatePassword() {
           }
           if (
             usario.usuario.contrasena ==
-            CryptoJS.MD5(contrasenaActual).toString(CryptoJS.enc.Hex)
+            CryptoJS.MD5(contrasenaActual.trim()).toString(CryptoJS.enc.Hex)
           ) {
             const resp = await axios.delete("/api/usuario/11", {
               data: {
@@ -161,7 +161,7 @@ export default function UpdatePassword() {
                     <Button
                       color="success"
                       as={Link}
-                      href="/Productores/Mostrar"
+                      href="/Usuario/UpdatePassword"
                     >
                       Aceptar
                     </Button>
