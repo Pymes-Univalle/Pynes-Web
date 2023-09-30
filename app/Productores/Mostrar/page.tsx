@@ -33,7 +33,7 @@ interface User {
 export default function Mostrar() {
   const router = useRouter();
   const [page, setPage] = useState(1);
-  const rowsPerPage = 3;
+  const rowsPerPage = 10;
   const [productor, setProductores] = useState([]);
 
   const user: User = {

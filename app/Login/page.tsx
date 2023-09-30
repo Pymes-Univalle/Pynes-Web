@@ -1,13 +1,22 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, user } from "@nextui-org/react";
 import { motion } from "framer-motion";
+import CryptoJS from "crypto-js";
+
+//redux
+import { useSelector, useDispatch } from "react-redux";
+import { addUser } from "../redux/features/userSlice";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 interface User {
   correo: string;
   contrasena: string;
 }
 export default function Login() {
+  const dispatch = useAppDispatch();
 
+
+  const [invalidMesasge, setInvalidMessage] = useState(false); 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formElements = event.currentTarget.elements;
@@ -21,6 +30,9 @@ export default function Login() {
     };
 
     const axios = require("axios");
+    var pass =CryptoJS.MD5( user.contrasena).toString(CryptoJS.enc.Hex);
+    user.contrasena=pass;
+    
 
     try {
       var resp = await axios.post("/api/login/", {
@@ -29,19 +41,27 @@ export default function Login() {
       });
 
       if (resp.status === 200) {
-        console.log("TOKEN: ",resp.data);
+        dispatch(addUser(resp.data.user.id));
+        //const select = useAppSelector((state) => state.user);
+
+        
+
+        console.log(resp.data.user.id);
         //window.location.href = "/Productores/Mostrar/";
       }
       else if (resp.status === 404) {
-        alert("Contraseña o correo incorrecto");
+        setInvalidMessage(true);
       }
     } catch (error) {
       
         console.error(error);
-        // Manejar otros errores de solicitud si es necesario
-      
+        //setInvalidMessage(true);
     }
+  
   };
+  
+  console.log(useAppSelector((state) => state.user.id));
+  
 
   return (
     <motion.div
@@ -64,10 +84,11 @@ export default function Login() {
             <div className="w-full">
               <h1 className="text-4xl font-bold text-white">INICIAR SESIÓN</h1>
 
-              {/* <p className="mt-4 text-gray-500 dark:text-gray-400">
-                Let’s get you all set up so you can verify your personal account
-                and begin setting up your profile.
-              </p> */}
+
+             {(invalidMesasge) &&
+              <p className="mt-4 text-red-500">
+                Correo o contraseña incorrrecta
+              </p> }
 
               <form onSubmit={handleSubmit}>
                 <div className="mt-6">

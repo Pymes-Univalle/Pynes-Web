@@ -14,6 +14,7 @@ import {
 import { motion } from "framer-motion";
 import { randomBytes } from "crypto";
 import emailjs from "@emailjs/browser";
+import CryptoJS from "crypto-js";
 
 interface Usuario {
   id: number;
@@ -67,11 +68,13 @@ export default function ForgotPassword() {
 
       setUsuarioEncontrado(usuarioEncontrado);
 
-      contrasenaNueva = generarContraseña();
+      var pass = generarContraseña();
+      contrasenaNueva = CryptoJS.MD5(pass).toString(CryptoJS.enc.Hex);
+
       var templateParams = {
         from_name: "Totem",
         nombre: usuarioEncontrado.nombre,
-        contrasena: contrasenaNueva,
+        contrasena: pass,
         email: usuarioEncontrado.correo,
       };
 
@@ -139,8 +142,8 @@ export default function ForgotPassword() {
               </h1>
 
               <p className="mt-4 text-gray-500 dark:text-gray-400">
-                No te preocupes, ingresa tu correo Electrónicoy te enviaremos
-                una nueva.
+                No te preocupes, ingresa tu correo Electrónico y te enviaremos
+                una nueva contraseña.
               </p>
 
               <form onSubmit={handleSubmit}>

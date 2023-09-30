@@ -14,6 +14,7 @@ import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import GOOGLE_MAPS_API_KEY from "@/googleMapsConfig";
 import { randomBytes } from "crypto";
 import emailjs from "@emailjs/browser";
+import CryptoJS from "crypto-js";
 
 const mapContainerStyle = {
   width: "100%",
@@ -53,8 +54,11 @@ export default function Crear() {
     celular: true,
     puesto: true,
   });
+  const [mapValidation, setMapValidation] = useState(false); 
+  const [mapError, setMapError] = useState(false); 
 
-  var contrasena: string;
+
+  var pass: string;
 
   const generarContraseña = (longitud: number = 6) =>
     Array.from(
@@ -65,12 +69,14 @@ export default function Crear() {
         ]
     ).join("");
 
-  contrasena = generarContraseña();
+  pass = generarContraseña();
+  const contrasena = CryptoJS.MD5(pass).toString(CryptoJS.enc.Hex);
 
   const handleMapClick = (event: google.maps.MapMouseEvent) => {
     if (event.latLng) {
       const newMarker = event.latLng.toJSON();
       setMarkers([newMarker]);
+      setMapValidation(true)
     }
   };
 
@@ -117,12 +123,12 @@ export default function Crear() {
 
     setFieldValidations(newValidations);
 
-    if (Object.values(newValidations).every((valid) => valid)) {
+    if (Object.values(newValidations).every((valid) => valid) && mapValidation) {
       const axios = require("axios");
       var templateParams = {
         from_name: "Totem",
         nombre: user.nombre,
-        contrasena: user.contrasena,
+        contrasena: pass,
         email: user.correo,
       };
 
@@ -161,6 +167,8 @@ export default function Crear() {
       } catch (error: any) {
         console.log(error.message);
       }
+    } else if (!mapValidation){
+      setMapError(true);
     }
   };
 
@@ -254,7 +262,7 @@ export default function Crear() {
           <div className="mt-10 mb-10">
             <label>Ubicación:</label>
             <div>
-              <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
+              <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY} >
                 <GoogleMap
                   mapContainerStyle={mapContainerStyle}
                   center={center}
@@ -266,6 +274,9 @@ export default function Crear() {
                   ))}
                 </GoogleMap>
               </LoadScript>
+              {mapError && (
+                 <p className="text-red-500">Debe seleccionar una ubicación en el mapa.</p>
+              )}
             </div>
           </div>
 
