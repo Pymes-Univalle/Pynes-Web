@@ -88,7 +88,7 @@ export default function Mostrar() {
   };
 
   return (
-    <div className="text-black bg-blanco p-4">
+    <div className="text-black bg-blanco p-4 w-full">
       <h1 className="text-center text-2xl mb-4">Lista de Productores</h1>
       <Button
         color="success"
@@ -100,7 +100,7 @@ export default function Mostrar() {
         Registrar Productor
       </Button>
       <Table
-        aria-label="Example table with client side pagination"
+        
         bottomContent={
           <div className="flex w-full justify-center">
             <Pagination

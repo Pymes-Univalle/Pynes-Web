@@ -63,6 +63,9 @@ function page() {
           <strong>Correo Electrónico:</strong> {productor['usuario']['correo']}
         </div>
         <div className="mb-5">
+          <strong>Celular:</strong> {productor['usuario']['celular']}
+        </div>
+        <div className="mb-5">
           <strong>Puesto:</strong> {productor['puesto']}
         </div>
         <div className="mb-5">

@@ -5,15 +5,15 @@ import { motion } from "framer-motion";
 import CryptoJS from "crypto-js";
 
 //redux
-import { useSelector, useDispatch } from "react-redux";
+//import { useSelector, useDispatch } from "react-redux";
 import { addUser } from "../redux/features/userSlice";
-import { useAppDispatch, useAppSelector } from "../redux/hooks";
+//import { useAppDispatch, useAppSelector } from "../redux/hooks";
 interface User {
   correo: string;
   contrasena: string;
 }
 export default function Login() {
-  const dispatch = useAppDispatch();
+  //const dispatch = useAppDispatch();
 
 
   const [invalidMesasge, setInvalidMessage] = useState(false); 
@@ -41,7 +41,7 @@ export default function Login() {
       });
 
       if (resp.status === 200) {
-        dispatch(addUser(resp.data.user.id));
+       // dispatch(addUser(resp.data.user.id));
         //const select = useAppSelector((state) => state.user);
 
         
@@ -60,7 +60,7 @@ export default function Login() {
   
   };
   
-  console.log(useAppSelector((state) => state.user.id));
+ // console.log(useAppSelector((state) => state.user.id));
   
 
   return (
