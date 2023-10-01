@@ -13,6 +13,7 @@ import {
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import GOOGLE_MAPS_API_KEY from "@/googleMapsConfig";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 
 const mapContainerStyle = {
@@ -43,6 +44,7 @@ interface Productor {
 }
 
 export default function Editar() {
+  const router = useRouter();
   const valor = useSearchParams();
   const id = valor.get("id");
   const [mapCenter, setMapCenter] = useState(center);
@@ -113,6 +115,9 @@ export default function Editar() {
     };
     fetchData();
   }, []);
+ const handleAceparClick = () => {
+    router.push("/Productores/Mostrar");
+ }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -311,8 +316,7 @@ export default function Editar() {
                   <ModalFooter>
                     <Button
                       color="success"
-                      as={Link}
-                      href="/Productores/Mostrar"
+                      onClick={handleAceparClick}
                     >
                       Aceptar
                     </Button>

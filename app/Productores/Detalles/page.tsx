@@ -6,6 +6,7 @@ import axios from "axios";
 import { useSearchParams } from "next/navigation";
 
 
+
 const mapContainerStyle = {
   width: "100%",
   height: "500px",

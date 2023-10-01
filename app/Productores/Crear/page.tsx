@@ -15,6 +15,7 @@ import GOOGLE_MAPS_API_KEY from "@/googleMapsConfig";
 import { randomBytes } from "crypto";
 import emailjs from "@emailjs/browser";
 import CryptoJS from "crypto-js";
+import { useRouter } from "next/navigation";
 
 const mapContainerStyle = {
   width: "100%",
@@ -44,6 +45,7 @@ interface Productor {
 }
 
 export default function Crear() {
+  const router = useRouter();
   const [modal, setModal] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [markers, setMarkers] = React.useState<google.maps.LatLngLiteral[]>([]);
@@ -79,6 +81,10 @@ export default function Crear() {
       setMapValidation(true)
     }
   };
+
+  const handleAceparClick = () => {
+    router.push("/Productores/Mostrar");
+ }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -294,8 +300,7 @@ export default function Crear() {
                   <ModalFooter>
                     <Button
                       color="success"
-                      as={Link}
-                      href="/Productores/Mostrar"
+                      onClick={handleAceparClick}
                     >
                       Aceptar
                     </Button>

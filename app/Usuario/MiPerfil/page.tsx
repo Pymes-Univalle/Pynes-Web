@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button, Link } from "@nextui-org/react";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { useRouter } from "next/navigation";
 
 function page() {
   const [nombre, setNombre] = useState("");
@@ -14,10 +16,15 @@ function page() {
     celular: true,
     correo: true,
   });
+    const router = useRouter();
+  const id = useAppSelector((state) => state.user.id);
+  console.log(id);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`/api/usuario/11`);
+       
+
+        const response = await axios.get(`/api/usuario/${id}`);
         if (response.status === 200) {
           const usuario = await response.data;
 
@@ -36,6 +43,9 @@ function page() {
     };
     fetchData();
   }, []);
+  const handleActualizarClick = () =>{
+    router.push("/Usuario/UpdateData");
+  }
 
   return (
     <div className="bg-blanco min-h-screen text-black ">
@@ -63,8 +73,8 @@ function page() {
         </div>
       </div>
       <Button radius="full" className="mt-5 bg-amarillo"
-       as={Link}
-       href="/Usuario/UpdateData">
+       onClick={handleActualizarClick}
+       >
         Actualizar Datos
       </Button>
     </div>

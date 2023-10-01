@@ -10,6 +10,8 @@ import {
   Link,
   ModalFooter,
 } from "@nextui-org/react";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { useRouter } from "next/navigation";
 
 import axios from "axios";
 
@@ -26,10 +28,12 @@ export default function UpdateData() {
     celular: true,
     correo: true,
   });
+    const router = useRouter();
+  const id = useAppSelector((state) => state.user.id);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`/api/usuario/11`);
+        const response = await axios.get(`/api/usuario/${id}`);
         if (response.status === 200) {
           const usuario = await response.data;
 
@@ -48,6 +52,10 @@ export default function UpdateData() {
     };
     fetchData();
   }, []);
+  const handleActualizadoClick = () => {
+    router.push('/Usuario/MiPerfil');
+  };
+
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -177,8 +185,7 @@ export default function UpdateData() {
                   <ModalFooter>
                     <Button
                       color="success"
-                      as={Link}
-                       href="/Usuario/UpdateData"
+                     onClick={handleActualizadoClick}
                     >
                       Aceptar
                     </Button>

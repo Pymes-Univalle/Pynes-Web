@@ -2,7 +2,9 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { Providers } from "./providers";
+//import { Providers } from "./providers";
+import { Providers } from "./redux/provider"
+import { useRouter } from "next/navigation";
 
 import {
   Navbar,
@@ -51,6 +53,17 @@ export default function RootLayout({
     "Help & Feedback",
     "Log Out",
   ];
+  const router = useRouter();
+  const handleMyPerfil = () => {
+    router.push('/Usuario/MiPerfil');
+  };
+  const handleCambiarContrasena = () => {
+    router.push('/Usuario/UpdatePassword');
+  };
+  const handleProductores = () => {
+    router.push('/Productores/Mostrar');
+  };
+
 
   return (
     <html lang="en" className="dark">
@@ -94,7 +107,7 @@ export default function RootLayout({
                 <NavbarItem isActive>
                   <Link
                     color="foreground"
-                    href="/Productores/Mostrar"
+                    onClick={handleProductores}
                     aria-current="page"
                   >
                     Productores
@@ -127,7 +140,7 @@ export default function RootLayout({
                       <DropdownItem key="miPerfil">
                         <Link
                           className="text-white w-full"
-                          href="/Usuario/MiPerfil"
+                          onClick={handleMyPerfil}
                         >
                           Mi Perfil
                         </Link>
@@ -135,7 +148,7 @@ export default function RootLayout({
                       <DropdownItem key="cambiarContraseña">
                         <Link
                           className="text-white w-full"
-                          href="/Usuario/UpdatePassword"
+                          onClick={handleCambiarContrasena}
                         >
                           Cambiar Contraseña
                         </Link>
@@ -173,10 +186,11 @@ export default function RootLayout({
                 ))}
               </NavbarMenu>
             </Navbar>
-          </Providers>
-          <div className="bg-black flex flex-grow justify-center items-center">
+            <div className="bg-black flex flex-grow justify-center items-center">
             {children}
           </div>
+          </Providers>
+          
         </div>
       </body>
     </html>

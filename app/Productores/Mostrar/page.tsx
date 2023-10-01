@@ -21,6 +21,7 @@ import { DeleteIcon } from "./DeleteIcon";
 import { EyeIcon } from "./EyeIcon";
 import { useRouter } from "next/navigation";
 import { Metadata } from "next";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 
 export const metadata: Metadata = {
   title: " Prodductores",
@@ -40,8 +41,13 @@ export default function Mostrar() {
     estado: 0,
     fechaActualizacion: new Date(new Date().toISOString()),
   };
+  const userToken = useAppSelector((state) => state.user.token);
 
+  
   useEffect(() => {
+    if( userToken === null){
+      router.push("/Login");
+    }
     axios
       .get("/api/productor")
       .then((response) => {
