@@ -6,6 +6,7 @@ import axios from "axios";
 import { useSearchParams } from "next/navigation";
 
 
+
 const mapContainerStyle = {
   width: "100%",
   height: "500px",
@@ -61,6 +62,9 @@ function page() {
         </div>
         <div className="mb-5">
           <strong>Correo Electrónico:</strong> {productor['usuario']['correo']}
+        </div>
+        <div className="mb-5">
+          <strong>Celular:</strong> {productor['usuario']['celular']}
         </div>
         <div className="mb-5">
           <strong>Puesto:</strong> {productor['puesto']}

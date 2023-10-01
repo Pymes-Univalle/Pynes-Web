@@ -34,7 +34,6 @@ export async function PUT(request: Request, { params }: Params) {
       correo,
       contrasena,
       celular,
-      fechaActualizacion,
       latitud,
       longitud,
       puesto,
@@ -61,8 +60,8 @@ export async function PUT(request: Request, { params }: Params) {
         data: {
           idProductor: Number(params.id),
           puesto: puesto,
-          latitud: latitud.toString(), // Convertir latitud a cadena
-          longitud: longitud.toString(), // Convertir longitud a cadena
+          latitud: parseFloat(latitud), // Convertir latitud a cadena
+          longitud: parseFloat(longitud), // Convertir longitud a cadena
           idOrganizacion: idOrganizacion,
           fechaActualizacion: new Date(new Date().toISOString()),
         },

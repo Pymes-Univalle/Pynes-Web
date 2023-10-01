@@ -1,13 +1,25 @@
 "use client";
-import React, { useState } from "react";
-import { Button, user } from "@nextui-org/react";
+import React, { useState, useEffect } from "react";
+import { Button, Link, user } from "@nextui-org/react";
 import { motion } from "framer-motion";
+import CryptoJS from "crypto-js";
+
+//redux
+import { useSelector, useDispatch } from "react-redux";
+import { addUser } from "../redux/features/userSlice";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
+import { useRouter } from "next/navigation";
 interface User {
   correo: string;
   contrasena: string;
 }
 export default function Login() {
+  const dispatch = useAppDispatch();
+  const router = useRouter();
 
+  const select = useAppSelector((state) => state.user);
+  console.log(select);
+  const [invalidMesasge, setInvalidMessage] = useState(false);
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formElements = event.currentTarget.elements;
@@ -21,6 +33,8 @@ export default function Login() {
     };
 
     const axios = require("axios");
+    var pass = CryptoJS.MD5(user.contrasena).toString(CryptoJS.enc.Hex);
+    user.contrasena = pass;
 
     try {
       var resp = await axios.post("/api/login/", {
@@ -29,19 +43,28 @@ export default function Login() {
       });
 
       if (resp.status === 200) {
-        console.log("TOKEN: ",resp.data);
-        //window.location.href = "/Productores/Mostrar/";
-      }
-      else if (resp.status === 404) {
-        alert("Contraseña o correo incorrecto");
+        console.log(resp.data);
+        const user = {
+          id: resp.data.user.id,
+          nombre: resp.data.user.nombre,
+          apellido: resp.data.user.apellido,
+          correo: resp.data.user.correo,
+          rol: resp.data.role,
+          token: resp.data.token,
+        };
+        dispatch(addUser(user));
+
+        router.push("/productor/mostrar");
+      } else if (resp.status === 404) {
+        setInvalidMessage(true);
       }
     } catch (error) {
-      
-        console.error(error);
-        // Manejar otros errores de solicitud si es necesario
-      
+      console.error(error);
+  
     }
   };
+
+  // console.log(useAppSelector((state) => state.user.id));
 
   return (
     <motion.div
@@ -64,10 +87,11 @@ export default function Login() {
             <div className="w-full">
               <h1 className="text-4xl font-bold text-white">INICIAR SESIÓN</h1>
 
-              {/* <p className="mt-4 text-gray-500 dark:text-gray-400">
-                Let’s get you all set up so you can verify your personal account
-                and begin setting up your profile.
-              </p> */}
+              {invalidMesasge && (
+                <p className="mt-4 text-red-500">
+                  Correo o contraseña incorrrecta
+                </p>
+              )}
 
               <form onSubmit={handleSubmit}>
                 <div className="mt-6">

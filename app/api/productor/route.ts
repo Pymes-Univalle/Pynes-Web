@@ -30,8 +30,8 @@ export async function POST(request: Request) {
       correo,
       apellido,
       contrasena,
-      celular,
       fechaActualizacion,
+      celular,
       latitud,
       longitud,
       puesto,
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
           correo: correo,
           contrasena: contrasena,
           celular: celular,
-          fechaActualizacion: fechaActualizacion,
+          fechaActualizacion: fechaActualizacion
         },
       });
 
@@ -54,9 +54,9 @@ export async function POST(request: Request) {
         data: {
           idProductor: usuario.id,
           puesto: puesto,
-          latitud: latitud.toString(),
-          longitud: longitud.toString(),
-          idOrganizacion: idOrganizacion,
+          latitud: parseFloat(latitud),
+          longitud: parseFloat(longitud),
+          idOrganizacion: idOrganizacion
         },
       });
 
