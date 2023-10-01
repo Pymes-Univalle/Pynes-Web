@@ -10,9 +10,26 @@ interface Provedores {
 
 export default function page() {
  
+  //Validacion
+  const [nombre, setNombreV] = React.useState("");
+
+  const handleNameChange = (value:any) => {
+    setNombreV(value);
+  }
+
+  const validateNombre = (value: any) => {
+    if(typeof value == "string"){
+      return value.match(/^[A-Za-z\s]{3,}$/i);
+    }
+    return false;
+  }
   
+  const validationNombre = React.useMemo(() => {
+    if(nombre == " ") return undefined;
 
-
+    return validateNombre(nombre) ? "valid" : "invalid";
+  }, [nombre])
+  //Fin de validacion
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
     const formElements = event.currentTarget.elements;
@@ -23,19 +40,28 @@ export default function page() {
       nombre
     }
 
-    try {
-      const resp = await axios.post('/api/categoria/', {
-        nombre: categoria.nombre       
-      });
-  
-      if (resp && resp.data) {
-        window.location.href = '/Categoria/Mostrar';
-       
-      }
+    if(validationNombre == "invalid"){
+      (formElements.namedItem("nombre") as HTMLInputElement).focus();
+      return;
+    }
+
+    if(validationNombre == "valid"){
+
+      try {
+        const resp = await axios.post('/api/categoria/', {
+          nombre: categoria.nombre       
+        });
     
-    }catch(error){
-      console.log('Error al inserte un proveedor');
-    }  
+        if (resp && resp.data) {
+          window.location.href = '/Categoria/Mostrar';
+         
+        }
+      
+      }catch(error){
+        console.log('Error al inserte un proveedor');
+      }  
+    }
+
   }
 
   return (
@@ -47,6 +73,10 @@ export default function page() {
           <div className="mb-5 mt-5">
            
             <Input id="nombre" key="outside" type="text" label="Nombre" required 
+              color={validationNombre === "invalid" ? "danger" : "success"}
+              errorMessage={validationNombre === "invalid" && "El campo nombre es obligatorio y solo letras"  }
+              validationState={validationNombre}
+              onValueChange={handleNameChange}
                />
             
           </div> 

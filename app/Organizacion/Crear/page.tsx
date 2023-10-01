@@ -7,6 +7,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import crypto from "crypto";
 import axios from "axios";
 import { CircularProgress } from "@nextui-org/react";
+import * as CryptoJS from 'crypto-js';
 
 const mapContainerStyle = {
   width: "100%",
@@ -103,6 +104,7 @@ export default function Crear() {
   //Generar la contraseña aleatoria
 
   contraseña = generateRandomPassword();
+  const hashPass = CryptoJS.MD5(contraseña).toString(CryptoJS.enc.Hex);
 
   const handleCrearProductosChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -223,7 +225,7 @@ export default function Crear() {
       nombre,
       apellido,
       correo,
-      contrasena: contraseña,
+      contrasena: hashPass,
       celular,
       estado: 1,
       fechaActualizacion: new Date(),

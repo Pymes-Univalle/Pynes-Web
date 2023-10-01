@@ -6,12 +6,18 @@ import { NextResponse } from "next/server";
 export async function GET() {
     try {
         const organizaciones = await prisma.usuario.findMany({
-          where:{
-            estado:1
+          where: {
+            estado: 1,
+            organizacion: {
+              NOT: {
+                idOrganizacion: {
+                  equals: undefined
+                },
+              },
+            },
           },
-         
           include: {
-            organizacion: true, // Cargar usuarios relacionados
+            organizacion: true,
           },
         });
     

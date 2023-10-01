@@ -11,6 +11,7 @@ import {
 import React, { use, useEffect, useState } from "react";
 
 import axios from "axios";
+import { Console } from "console";
 
 export default function Page() {
   const [tieneFechaVencimiento, setTieneFechaVencimiento] = useState(false);
@@ -54,7 +55,12 @@ export default function Page() {
   //Validaciones 
   const [nombre, setNombreV] = React.useState("");
   const [precio, setPrecioV] = React.useState("");
-
+  const [categoriaValidation, setCategoriaValidation] = useState("invalid");
+  const [cantidad , setCantidadV] = React.useState("");
+  const [productorValidation, setProductorValidation] = useState("invalid");
+  const [hasUploadedImages, setHasUploadedImages] = useState(false);
+  const [fechaVencimientoError, setFechaVencimientoError] = useState("La fecha de vencimiento es obligatoria.");
+  const [areAttributesValid, setAreAttributesValid] = useState(false);
 
   const handleNameChange = (value:any) => {
     setNombreV(value);
@@ -62,6 +68,15 @@ export default function Page() {
   const handlePriceChange = (value:any) =>{
     setPrecioV(value);
   }
+  const handleCantidadChange = (value : any) =>{
+    setCantidadV(value);
+  }
+
+  const validateAttributes = (attributes: any[]) => {
+  return attributes.every((atributo) => {
+    return atributo.nombre.trim() !== "" && atributo.valor.trim() !== "";
+  });
+  };
 
   const validateNombre = (value: any) => {
     if(typeof value == "string"){
@@ -71,7 +86,14 @@ export default function Page() {
   }
   const validatePrecio = (value: any) =>{
     if(typeof value == "string"){
-       return value.match(/^\d{2,}$/);
+       return value.match(/^[1-9]\d*(\.\d+)?$/);
+    }
+    return false;
+  }
+  const validateCantidad = (value:any)=>{
+    if (typeof value === "string") {
+      const regex = /^\d+(\.\d+)?$/;
+      return regex.test(value);
     }
     return false;
   }
@@ -87,6 +109,12 @@ export default function Page() {
     return validatePrecio(precio) ? "valid" : "invalid";
   } , [precio])
 
+  const validationCantidad = React.useMemo(() =>{
+    if(cantidad == " ") return undefined;
+    return validateCantidad(cantidad) ?  "valid" : "invalid";
+  }, [cantidad])
+
+ 
   //Fin de Validacion
 
   const handleCategoryChange = (
@@ -94,6 +122,7 @@ export default function Page() {
   ) => {
     const selectedValue = event.target.value;
     setIdCategoria(selectedValue);
+    setCategoriaValidation(selectedValue ? "valid" : "invalid");
   };
 
   const handleProductorChange = (
@@ -101,6 +130,7 @@ export default function Page() {
   ) => {
     const selectedValue = event.target.value;
     setIdProductor(selectedValue);
+    setProductorValidation(selectedValue ? "valid" : "invalid");
   };
 
   async function sumbit(
@@ -146,7 +176,37 @@ export default function Page() {
       cantidad
      
     );
+    const AtributosValidados = validateAttributes(atributos);
+    console.log("Atributos " , AtributosValidados);
 
+
+    if(validationNombre == "invalid"){
+      (formElements.namedItem("nombre") as HTMLInputElement).focus();
+      return;
+    }
+    if(validationPrecio == "invalid"){
+      (formElements.namedItem("precio") as HTMLInputElement).focus();
+      return;
+    }
+    if(validationCantidad == "invalid"){
+      (formElements.namedItem("cantidad") as HTMLInputElement).focus();
+      return;
+    }
+    if(categoriaValidation == "invalid"){
+      (formElements.namedItem("categoria") as HTMLInputElement).focus();
+      return;
+    }
+    if(productorValidation == "invalid"){
+      (formElements.namedItem("productor") as HTMLInputElement).focus();
+      return;
+    }
+    if(tieneFechaVencimiento && fechaVencimiento == ""){
+      (formElements.namedItem("fecha") as HTMLInputElement).focus();
+      return;
+    }
+    if(!AtributosValidados){
+      return;
+    }
     // Crear un objeto FormData
     const formData = new FormData();
 
@@ -170,28 +230,39 @@ export default function Page() {
       formData.append(`imagen_${index}`, preview.file);
     });
     
-    try {
-      // Realizar la solicitud a tu API utilizando axios
-      const response = await axios.post("/api/producto/", formData);
+    if(validationNombre == "valid" && validationPrecio == "valid" && validationCantidad == "valid" &&  categoriaValidation == "valid"
+      && productorValidation == "valid" || hasUploadedImages || tieneFechaVencimiento && fechaVencimiento == "" && AtributosValidados){
+        try {
+          // Realizar la solicitud a tu API utilizando axios
+         
+        const response = await axios.post("/api/producto/", formData );
+    
+          if (response.status === 200) {
+            console.log("Datos y imágenes enviados correctamente a la API");
+           
+            window.location.href = '/Producto/Mostrar';
+          
+          } else {
+            console.error("Error al enviar los datos y las imágenes a la API");
+          }
+         
+        } catch (error) {
+          console.error("Error al realizar la solicitud a la API:", error);
+        }
 
-      if (response.status === 200) {
-        console.log("Datos y imágenes enviados correctamente a la API");
-       
-        window.location.href = '/Producto/Mostrar';
-      
-      } else {
-        console.error("Error al enviar los datos y las imágenes a la API");
-      }
-    } catch (error) {
-      console.error("Error al realizar la solicitud a la API:", error);
+    }else{
+      console.log("Error en los datos");
     }
+   
 
   }
 
   useEffect(() => {
     // Este efecto se ejecutará cuando 'tieneFechaVencimiento' cambie
     if (!tieneFechaVencimiento) {
-      setFechaVencimiento(""); // Limpia la fecha de vencimiento cuando se desmarca el checkbox
+      setFechaVencimiento(""); 
+      
+   
     }
   }, [tieneFechaVencimiento]);
 
@@ -199,6 +270,8 @@ export default function Page() {
     const updatedImagePreviews = [...imagePreviews];
     updatedImagePreviews.splice(index, 1);
     setImagePreviews(updatedImagePreviews);
+     // Actualiza el estado booleano verificando si hay imágenes cargadas
+    setHasUploadedImages(updatedImagePreviews.length > 0);
   }
 
   async function handleFileChange(
@@ -215,6 +288,7 @@ export default function Page() {
         }))
       );
       setImagePreviews([...imagePreviews, ...newImagePreviews]);
+      setHasUploadedImages(true);
     }
   }
 
@@ -226,6 +300,11 @@ export default function Page() {
     const updatedAtributos = [...atributos];
     updatedAtributos[index][field] = value;
     setAtributos(updatedAtributos);
+  
+    // Validate attributes whenever an attribute is added or updated
+  const isValid = validateAttributes(updatedAtributos);
+  setAreAttributesValid(isValid);
+
   }
 
   function addAtributo(): void {
@@ -236,7 +315,34 @@ export default function Page() {
     const updatedAtributos = [...atributos];
     updatedAtributos.splice(index, 1);
     setAtributos(updatedAtributos);
+
+      // Validate attributes whenever an attribute is removed
+    const isValid = validateAttributes(updatedAtributos);
+    setAreAttributesValid(isValid);
   }
+
+  const handleFechaVencimientoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+    setFechaVencimiento(inputValue);
+  
+
+
+    if (inputValue === "") {
+      setFechaVencimientoError("La fecha de vencimiento es obligatoria.");
+    } else {
+      const fechaVencimientoDate = new Date(inputValue);
+      const currentDate = new Date();
+  
+      if (fechaVencimientoDate <= currentDate) {
+        setFechaVencimientoError("La fecha de vencimiento debe ser mayor que la fecha actual.");
+      } else {
+        setFechaVencimientoError(""); // Clear the error message if the date is valid
+        
+      }
+    }
+  };
+
+  
 
   return (
     <>
@@ -281,17 +387,21 @@ export default function Page() {
                 key="outside"
                 label="Descripcion"
                 required
+                color={"success"}
                
               />
             </div>
             <div>
               <Select
+                id="categoria"
                 label="Categoría"
                 placeholder="Selecciona una categoría"
                 value={idCategoria}
                 onChange={(selectedValue: any) =>
                   handleCategoryChange(selectedValue)
                 }
+                color={categoriaValidation === "invalid" ? "danger" : "success"}
+                errorMessage={categoriaValidation === "invalid" && "Por favor, selecciona una categoría válida"}
                 className="mb-5 max-w-xs"
               >
                 {categorias.map((category) => (
@@ -307,17 +417,28 @@ export default function Page() {
             </div>
 
             <div className="mb-5">
-              <Input id="cantidad" key="outside" label="Cantidad" required />
+              <Input id="cantidad" 
+              key="outside" 
+              label="Cantidad" 
+              required 
+              color={validationCantidad === "invalid" ? "danger" : "success"}
+              errorMessage={validationCantidad === "invalid" && "El campo precio es obligatorio"  }
+              validationState={validationCantidad}
+              onValueChange={handleCantidadChange}
+              />
             </div>
 
             <div>
               <Select
+              id="productor"
                 label="Productor"
                 placeholder="Selecciona un Productor"
                 value={idProductor}
                 onChange={(selectedValue: any) =>
                   handleProductorChange(selectedValue)
                 }
+                color={productorValidation === "invalid" ? "danger" : "success"}
+                errorMessage={productorValidation === "invalid" && "Por favor, selecciona un productor válida"}
                 className="mb-5 max-w-xs"
               >
                 {productores.map((productor) => (
@@ -345,7 +466,7 @@ export default function Page() {
               <div className="flex flex-wrap">
                 {imagePreviews.length > 0 && (
                   <div className="mb-5">
-                    <h2>Imágenes seleccionadas:</h2>
+                   
                     <div className="flex flex-wrap">
                       {imagePreviews.map((image, index) => (
                         <div key={index} className="flex-shrink-0 mr-2">
@@ -364,11 +485,16 @@ export default function Page() {
                         </div>
                       ))}
                     </div>
+                   
                   </div>
+                  
                 )}
               </div>
+              
             </div>
-
+            {!hasUploadedImages && (
+              <p className="text-danger">Por favor, suba al menos una imagen</p>
+            )}
             <div className="mb-5">
             <label>
               <Checkbox
@@ -388,11 +514,14 @@ export default function Page() {
                   disabled
                 />
                 <Input
+                  id="fecha"
                   type="date"
                   label="Fecha de Vencimiento - Valor"
                   placeholder="Ingrese la fecha de vencimiento"
                   value={fechaVencimiento}
-                  onChange={(e) => setFechaVencimiento(e.target.value)}
+                  onChange={handleFechaVencimientoChange}
+                  errorMessage={fechaVencimientoError} // Use the error message state
+                  color={fechaVencimientoError ? "danger" : "success"}
                 />
               </div>
             )}
@@ -408,6 +537,8 @@ export default function Page() {
                     onChange={(e) =>
                       handleAtributoChange(index, "nombre", e.target.value)
                     }
+                    color={atributo.nombre.trim() !== "" ? "success" : "danger"}
+                    errorMessage={atributo.nombre.trim() === "" ? "Este campo es obligatorio" : ""}
                   />
                   <Input
                     type="text"
@@ -416,6 +547,8 @@ export default function Page() {
                     onChange={(e) =>
                       handleAtributoChange(index, "valor", e.target.value)
                     }
+                    color={atributo.valor.trim() !== "" ? "success" : "danger"}
+                    errorMessage={atributo.valor.trim() === "" ? "Este campo es obligatorio" : ""}
                   />
                   <button type="button" onClick={() => removeAtributo(index)}>
                     Eliminar Atributo
@@ -428,7 +561,7 @@ export default function Page() {
                 Agregar Atributo
               </button>
             </div>
-            <Button type="submit">Enviar</Button>
+            <Button type="submit"  >Enviar</Button>
           </form>
         </div>
       </div>
