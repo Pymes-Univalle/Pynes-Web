@@ -29,7 +29,7 @@ export default function page() {
       });
   
       if (resp && resp.data) {
-        window.location.href = '/Categoria/Mostrar';
+        window.location.href = '/categoria/mostrar';
        
       }
     

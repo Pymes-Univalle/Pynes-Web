@@ -1,7 +1,7 @@
 'use client'
-import DeleteIcon from '@/DeleteIcon';
-import EditIcon from '@/EditIcon';
-import EyeIcon from '@/EyeIcon';
+import DeleteIcon from '@/components/DeleteIcon';
+import EditIcon from '@/components/EditIcon';
+import EyeIcon from '@/components/EyeIcon';
 import { Button, Link, Pagination, Popover, PopoverContent, PopoverTrigger, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
@@ -40,10 +40,10 @@ export default function page() {
 
 
       const clic = (id: any) => {
-        router.push(`/Categoria/Detalles?idProveedor=${id}`);
+        router.push(`/categoria/detalles?idProveedor=${id}`);
       };
       const clicEdit = (id: any) => {
-        router.push(`/Categoria/Editar?id=${id}`);
+        router.push(`/categoria/editar?id=${id}`);
       };  
 
       const handleDeleteConfirm = async (id: any) => {
@@ -53,7 +53,7 @@ export default function page() {
     <>
 <div className="text-black bg-blanco p-4">
       <h1 className="text-center text-2xl mb-4">Lista de Categorias</h1>
-      <Link href="/Categoria/Crear" className="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      <Link href="/categoria/crear" className="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
         Crear Categoria
       </Link>
       <Table
