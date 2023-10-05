@@ -6,7 +6,7 @@ import CryptoJS from "crypto-js";
 
 //redux
 import { useSelector, useDispatch } from "react-redux";
-import { addUser } from "../redux/features/userSlice";
+import { addUser, deleteUser } from "../redux/features/userSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { useRouter } from "next/navigation";
 interface User {
@@ -15,6 +15,12 @@ interface User {
 }
 export default function Login() {
   const dispatch = useAppDispatch();
+  //dispatch(deleteUser());
+
+useEffect(() => {
+    
+    dispatch(deleteUser());
+  }, []);
   const router = useRouter();
 
   const select = useAppSelector((state) => state.user);

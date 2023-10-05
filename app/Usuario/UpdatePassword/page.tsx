@@ -12,8 +12,10 @@ import {
 } from "@nextui-org/react";
 
 import CryptoJS from "crypto-js";
+import { useRouter } from "next/navigation";
 
 export default function UpdatePassword() {
+  const router = useRouter();
   const [modal, setModal] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [contrasenaActual, setContrasenaActual] = useState("");
@@ -26,6 +28,10 @@ export default function UpdatePassword() {
   });
   const [passwordsMatchError, setPasswordsMatchError] = useState("");
   const [currentPasswordError, setCurrentPasswordError] = useState("");
+
+  const handleActualizadoClick = () => {
+    router.push('/Usuario/MiPerfil');
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -160,8 +166,7 @@ export default function UpdatePassword() {
                   <ModalFooter>
                     <Button
                       color="success"
-                      as={Link}
-                      href="/Usuario/UpdatePassword"
+                      onClick={handleActualizadoClick}
                     >
                       Aceptar
                     </Button>

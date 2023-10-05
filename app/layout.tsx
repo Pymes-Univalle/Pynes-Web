@@ -6,6 +6,7 @@ import { Inter } from "next/font/google";
 import { Providers } from "./redux/provider"
 import { useRouter } from "next/navigation";
 
+
 import {
   Navbar,
   NavbarBrand,
@@ -53,6 +54,7 @@ export default function RootLayout({
     "Help & Feedback",
     "Log Out",
   ];
+
   const router = useRouter();
   const handleMyPerfil = () => {
     router.push('/Usuario/MiPerfil');
@@ -62,6 +64,10 @@ export default function RootLayout({
   };
   const handleProductores = () => {
     router.push('/Productores/Mostrar');
+  };
+  const handleLogOut = () => {
+   // dispatch(deleteUser());
+    router.push('/Login');
   };
 
 
@@ -157,6 +163,7 @@ export default function RootLayout({
                         key="delete"
                         className="text-danger"
                         color="danger"
+                        onClick={handleLogOut}
                       >
                         Cerrar Sesión
                       </DropdownItem>
