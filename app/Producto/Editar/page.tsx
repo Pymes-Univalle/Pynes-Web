@@ -1,26 +1,40 @@
 "use client";
-import {
-  Button,
-  Input,
-  Select,
-  SelectItem,
-  Textarea,
-  Image,
-  Checkbox,
-} from "@nextui-org/react";
+import { Button, Input, Select, SelectItem, Textarea, Image, Checkbox, CircularProgress, Progress } from "@nextui-org/react";
 import React, { use, useEffect, useState } from "react";
+import axios from 'axios';
+import { useSearchParams } from "next/navigation";
+import { useRouter } from 'next/router';
 
-import axios from "axios";
+export default function Editar() {
 
-export default function Page() {
-  const [tieneFechaVencimiento, setTieneFechaVencimiento] = useState(false);
-  const [fechaVencimiento, setFechaVencimiento] = useState("");
+  //const router = useRouter();
+  //const { id } = router.query; // Obtener el ID del producto de la URL
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [products, setProducts] = useState(null);
+  const [rutaData, setRutaData] = useState([]);
+  const [atributoData, setAtributoData] = useState([]);
+  const valor = useSearchParams();
+  const id = valor.get('id');
+
+
+  //Validaciones 
+  
+  const [descripcion, setDescripcion] = useState("");
+  const [cantidad, setCantidad] = useState("");
 
   const [idCategoria, setIdCategoria] = useState("");
-  const [categorias, setCategorias] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [categoriaActual, setCategoriaActual] = useState("");
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
+
+
   //Esto seria para el que hizo productor
-  const [idProductor, setIdProductor] = useState("");
-  const [productores, setProductor] = useState([]);
+  const [id_productor, setIdProductor] = useState("");
+  const [productores, setProductores] = useState([]);
+
+  const [tieneFechaVencimiento, setTieneFechaVencimiento] = useState(false);
+  const [fechaVencimiento, setFechaVencimiento] = useState("");
 
   const [atributos, setAtributos] = useState<
     { nombre: string; valor: string }[]
@@ -30,31 +44,111 @@ export default function Page() {
   >([]);
 
   useEffect(() => {
-    // Realiza la solicitud a la API utilizando Axios
-    axios
-      .get("/api/categoria")
-      .then((response) => {
-        // response.data debe contener la lista de categorías desde tu API
-        setCategorias(response.data.data);
-      })
-      .catch((error) => {
-        console.error("Error al cargar categorías desde la API:", error);
-      });
+    // Realiza la solicitud a la API para cargar datos de categorías y productores
+    axios.get("/api/categoria")
+    .then((response) => {
+      // response.data debe contener la lista de categorías desde tu API
+      setCategories(response.data.data);
 
-    axios
-      .get("/api/productor")
-      .then((response) => {
-        setProductor(response.data.data);
-      })
-      .catch((error) => {
-        console.log("Error al cargar productores desde la API", error);
-      });
+      // const categoriaProducto = response.data.data.find(({categoria} : any) => categoria.idCategoria === idCategoria);
+      
+      // if(categoriaProducto){
+      //   setIdCategoria(categoriaProducto.idCategoria);
+      // }
+    })
+    .catch((error) => {
+      console.error("Error al cargar categorías desde la API:", error);
+    });
+
+    axios.get("/api/productor")
+    .then((response) => {
+      setProductores(response.data.data);
+
+      // const productorProducto = response.data.data.find(({productor} : any) => productor.idProductor === id_productor);
+
+      // if (productorProducto) {
+      //   setIdProductor(productorProducto.idProductor);
+      // }
+
+    })
+    .catch((error) => {
+      console.log("Error al cargar productores desde la API", error);
+    });
   }, []);
 
-  //Validaciones 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`/api/producto/${id}`);
+
+        if (response.status === 200) {
+          const data = response.data;
+          const productoData = await data.productos;
+
+          setProducts(productoData);
+          setRutaData(productoData.ruta);
+          setAtributoData(productoData.atributo);
+
+          setNombreV(productoData.nombre);
+          setPrecioV(productoData.precio.toString());
+          setDescripcion(productoData.descripcion);
+          setCantidad(productoData.cantidad.toString());
+          //setIdCategoria(productoData.idCategoria);
+          //setCategoriaActual(productoData.idCategoria);
+          // Obtén el ID de la categoría actual del producto
+          const idCategoriaActual = productoData.idCategoria;
+          // Encuentra la categoría correspondiente en la lista de categorías
+          const categoriaSeleccionada = categories.find(
+            (category) => category["idCategoria"] === idCategoriaActual
+          );
+          // Verifica si se encontró la categoría y configura el estado 'categoriaActual'
+          if (categoriaSeleccionada) {
+            setCategoriaSeleccionada(categoriaSeleccionada["idCategoria"]);
+          } else {
+            console.error("No se encontró la categoría del producto.");
+          }
+          // Dentro del useEffect
+          setCategoriaSeleccionada(productoData.idCategoria);
+
+
+          setIdProductor(productoData.idProductor);
+          setAtributos(productoData.atributos || []);
+          setTieneFechaVencimiento(!!productoData.fechaVencimiento);
+          setFechaVencimiento(productoData.fechaVencimiento || "");
+
+          //#region Cargar las imágenes del producto
+          // const imagenesProducto = productoData.ruta.map((ruta: any, index : any) => ({
+          //   src: ruta.ruta,
+          //   alt: `Imagen ${index + 1}`,
+          //   file: null,
+          // }));
+
+          //setImagePreviews(imagenesProducto);
+          //#endregion
+
+          //#region Cargar los atributos del producto
+          // const atributosProducto = productoData.atributos.map((atributo: any) => ({
+          //   nombre: atributo.nombre,
+          //   valor: atributo.valor,
+          // }));
+
+          // setAtributos(atributosProducto);
+          //#endregion
+
+          console.log(productoData);
+        } else {
+          console.error("Error al obtener el producto:", response.data);
+        }
+
+      } catch (error) {
+        console.error("Error en la solicitud para obtener el producto:", error);
+      }
+    };
+    fetchData();
+  }, [id, categories]);
+
   const [nombre, setNombreV] = React.useState("");
   const [precio, setPrecioV] = React.useState("");
-
 
   const handleNameChange = (value:any) => {
     setNombreV(value);
@@ -92,6 +186,7 @@ export default function Page() {
   const handleCategoryChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
+
     const selectedValue = event.target.value;
     setIdCategoria(selectedValue);
   };
@@ -103,11 +198,13 @@ export default function Page() {
     setIdProductor(selectedValue);
   };
 
-  async function sumbit(
-    event: React.FormEvent<HTMLFormElement>
-  ): Promise<void> {
+  async function submit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
+
+    setIsLoading(true);
+
     const formElements = event.currentTarget.elements;
+    const id = (formElements.namedItem("idProducto") as HTMLInputElement)?.value || "";
     const nombre =
       (formElements.namedItem("nombre") as HTMLInputElement)?.value || "";
     const precio =
@@ -133,7 +230,7 @@ export default function Page() {
     console.log("Imágenes a enviar:", imagePreviews);
     console.log("Atributos:", atributos);
     console.log("Id Categoria", idCategoria);
-    console.log("Id Productor", idProductor);
+    console.log("Id Productor", id_productor);
     console.log("Fecha Vencimiento", fechaMysql);
     console.log(
       "Nombre: ",
@@ -158,7 +255,7 @@ export default function Page() {
     formData.append("idCategoria", idCategoria);
 
     //Aca adjuntamos el dato del idProductor
-    formData.append("idProductor", idProductor);
+    formData.append("idProductor", id_productor);
 
     formData.append("atributos", JSON.stringify(atributosArray));
     if(tieneFechaVencimiento){
@@ -172,9 +269,16 @@ export default function Page() {
     
     try {
       // Realizar la solicitud a tu API utilizando axios
-      const response = await axios.post("/api/producto/", formData, {headers: {'Content-Type': 'multipart/form-data',},});
+      const response = await axios.put(`/api/producto/${id}`, formData, {
+        headers: {'Content-Type': 'multipart/form-data',},
+      });
+
+      console.log(nombre, id);
 
       if (response.status === 200) {
+
+        setIsLoading(false);
+
         console.log("Datos y imágenes enviados correctamente a la API");
        
         window.location.href = '/Producto/Mostrar';
@@ -238,19 +342,28 @@ export default function Page() {
     setAtributos(updatedAtributos);
   }
 
+  if (!products) {
+    return <Progress
+      size="sm"
+      isIndeterminate
+      aria-label="Loading..."
+      className="max-w-md"
+    />
+  }
+
   return (
     <>
       <div className="bg-blanco min-h-screen text-black ">
         <div className="mx-auto max-w-5xl">
           <h1 className=" text-black text-2xl text-center font-bold mb-8 mt-5">
             {" "}
-            Crear Producto{" "}
+            Editar Producto{" "}
           </h1>
           <form
             id="miFormulario"
             method="post"
             className="p-5 border-1 shadow"
-            onSubmit={sumbit}
+            onSubmit={submit}
           >
             <div className="mb-5 mt-5">
               <Input
@@ -259,6 +372,7 @@ export default function Page() {
                 type="text"
                 label="Nombre"
                 required
+                value={products["nombre"]}
                 color={validationNombre === "invalid" ? "danger" : "success"}
                 errorMessage={validationNombre === "invalid" && "El campo nombre es obligatorio y solo letras"  }
                 validationState={validationNombre}
@@ -270,6 +384,7 @@ export default function Page() {
                key="outside" 
                label="Precio" 
                required
+               value={products["precio"]}
                color={validationPrecio === "invalid" ? "danger" : "success"}
                errorMessage={validationPrecio === "invalid" && "El campo precio es obligatorio"  }
                validationState={validationPrecio}
@@ -281,20 +396,28 @@ export default function Page() {
                 key="outside"
                 label="Descripcion"
                 required
-               
+                value={products["descripcion"]}
               />
             </div>
             <div>
               <Select
                 label="Categoría"
                 placeholder="Selecciona una categoría"
-                value={idCategoria}
-                onChange={(selectedValue: any) =>
-                  handleCategoryChange(selectedValue)
-                }
+                //value={products["idCategoria"]["nombre"]}
+                //value={idCategoria}
+                // onChange={(selectedValue: any) =>
+                //   handleCategoryChange(selectedValue)
+                // }
+                // onChange={(selectedValue: any) =>
+                //   setCategoriaActual(selectedValue)
+                // }
+                value={1}
+                
+                //value={1}
+                onChange={(selectedValue: any) => setCategoriaSeleccionada(selectedValue)}
                 className="mb-5 max-w-xs"
               >
-                {categorias.map((category) => (
+                {categories.map((category) => (
                   <SelectItem
                     className="text-black"
                     key={category["idCategoria"]}
@@ -307,14 +430,14 @@ export default function Page() {
             </div>
 
             <div className="mb-5">
-              <Input id="cantidad" key="outside" label="Cantidad" required />
+              <Input id="cantidad" key="outside" label="Cantidad" required value={products["cantidad"]}/>
             </div>
 
             <div>
               <Select
                 label="Productor"
                 placeholder="Selecciona un Productor"
-                value={idProductor}
+                value={id_productor}
                 onChange={(selectedValue: any) =>
                   handleProductorChange(selectedValue)
                 }
@@ -345,7 +468,6 @@ export default function Page() {
               <div className="flex flex-wrap">
                 {imagePreviews.length > 0 && (
                   <div className="mb-5">
-                    <h2>Imágenes seleccionadas:</h2>
                     <div className="flex flex-wrap">
                       {imagePreviews.map((image, index) => (
                         <div key={index} className="flex-shrink-0 mr-2">
@@ -428,7 +550,13 @@ export default function Page() {
                 Agregar Atributo
               </button>
             </div>
-            <Button type="submit">Enviar</Button>
+            <Button type="submit" color="primary">
+                {isLoading ? (
+                    <CircularProgress aria-label="Loading..." />
+                ): (
+                    "Enviar"
+                )}
+            </Button>
           </form>
         </div>
       </div>

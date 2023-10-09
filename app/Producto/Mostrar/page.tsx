@@ -20,6 +20,8 @@ export default function Mostrar() {
             if(res.data && res.data.data){
                 setProductor(res.data.data);
             }
+
+            
         })
         .catch((error) => {
             console.log("Error eal obtener los datos de la Api" + error);
@@ -35,7 +37,11 @@ export default function Mostrar() {
 
     const ClickDetalles = (id: any) => {
         router.push(`/Producto/Detalles?id=${id}`);
-      };
+    };
+
+    const ClickEditar = (id: any) => {
+        router.push(`/Producto/Editar?id=${id}`);
+    };
 
     return (
     <>
@@ -105,7 +111,7 @@ export default function Mostrar() {
                             <Button 
                                 className='flex items-center text-black hover:text-gray-800'
                                 color='success'
-                                onClick={() => ClickDetalles(item['idProductos']) }
+                                onClick={() => ClickEditar(item['idProductos']) }
                             >
                             <EditIcon className='w-6 h-6 text-black' />
                             Editar
@@ -125,10 +131,6 @@ export default function Mostrar() {
                             </Button>
                             
                         </TableCell>
-
-                     
-                 
-
                     </TableRow>
                 )}
 

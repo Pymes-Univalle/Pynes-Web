@@ -12,46 +12,60 @@ interface Categoria{
     nombre: String
 }
 
-export default function page() {
-    const router = useRouter();
-    const [page, setPage] = useState(1);
-    const rowsPerPage = 3;
-    const [Categoria , setCategoria] = useState([]);
+export default function Mostrar() {
+  const router = useRouter();
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 3;
+  const [categoria , setCategoria] = useState([]);
 
-    const pages = Math.ceil(Categoria.length / rowsPerPage);
+  const pages = Math.ceil(categoria.length / rowsPerPage);
 
-    const items = useMemo(() => {
-        const start = (page - 1) * rowsPerPage;
-        const end = start + rowsPerPage;
-        return Categoria.slice(start, end);
-    }, [page, Categoria]);
+  const items = useMemo(() => {
+      const start = (page - 1) * rowsPerPage;
+      const end = start + rowsPerPage;
+      return categoria.slice(start, end);
+  }, [page, categoria]);
 
-    useEffect(() => {
-        // Realizar la solicitud GET al servidor para obtener las organizaciones usando Axios
-        axios.get("/api/categoria")
-          .then((response) => {
-            if (response.data && response.data.data) {
-                setCategoria(response.data.data);
-            }
-          })
-          .catch((error) => console.error("Error al obtener las organizaciones:", error));
-      }, []);
+  useEffect(() => {
+    // Realizar la solicitud GET al servidor para obtener las organizaciones usando Axios
+    axios.get("/api/categoria")
+      .then((response) => {
+        if (response.data && response.data.data) {
+            setCategoria(response.data.data);
+        }
+      })
+      .catch((error) => console.error("Error al obtener las organizaciones:", error));
+  }, []);
 
 
 
-      const clic = (id: any) => {
-        router.push(`/Categoria/Detalles?idProveedor=${id}`);
-      };
-      const clicEdit = (id: any) => {
-        router.push(`/Categoria/Editar?id=${id}`);
-      };  
+  const clic = (id: any) => {
+    router.push(`/Categoria/Detalles?id=${id}`);
+  };
+  const clicEdit = (id: any) => {
+    router.push(`/Categoria/Editar?id=${id}`);
+  };  
 
-      const handleDeleteConfirm = async (id: any) => {
-        
+  const handleDeleteConfirm = async (id: any) => {
+    try {
+      const response = await axios.delete(`/api/categoria/${id}`); {
+
       }
-    return (
+
+      if (response.status === 200) {
+        window.location.reload();
+      } else {
+        console.error('Error al eliminar la categoria:', response.data);
+      }
+
+    } catch (error) {
+      console.error('Error en la solicitud para eliminar:', error);
+    }
+  };
+
+  return (
     <>
-<div className="text-black bg-blanco p-4">
+    <div className="text-black bg-blanco p-4">
       <h1 className="text-center text-2xl mb-4">Lista de Categorias</h1>
       <Link href="/Categoria/Crear" className="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
         Crear Categoria
@@ -76,11 +90,9 @@ export default function page() {
         }}
       >
         <TableHeader>
-          <TableColumn key="id">Id</TableColumn>
+          <TableColumn key="idCategoria">Id</TableColumn>
           <TableColumn key="nombre">Nombre</TableColumn>
           
-        
-          <TableColumn key="ver">Ver</TableColumn>
           <TableColumn key="editar">Editar</TableColumn>
           <TableColumn key="eliminar">Eliminar</TableColumn>
         </TableHeader>
@@ -92,24 +104,13 @@ export default function page() {
                 {item['idCategoria']}
                 </div>
               </TableCell>
-              <TableCell>{item['nombre']}</TableCell> 
-           
+              <TableCell>{item['nombre']}</TableCell>       
               
-              <TableCell>
-                <Button
-                  className="flex items-center text-black hover:text-gray-800"
-                  color="primary"
-                  onClick={() => clic(item['id'])}
-                >
-                  <EyeIcon className="w-6 h-6 text-black" />
-                  Ver
-                </Button>
-              </TableCell>
               <TableCell>
               <Button
                   className="flex items-center text-black hover:text-gray-800"
                   color="success"
-                  onClick={() => clicEdit(item['id'])}
+                  onClick={() => clicEdit(item['idCategoria'])}
                 >
                   <EditIcon className="w-6 h-6 text-black" />
                   Editar
@@ -142,7 +143,7 @@ export default function page() {
                           ¿Estás seguro de querer eliminar a {item["nombre"]}?
                         </p>
                         <div className="mt-2 flex flex-col gap-2 w-full">
-                          <Button color="success" onClick={ ()=> handleDeleteConfirm(item["id"])    }>
+                          <Button color="success" onClick={ ()=> handleDeleteConfirm(item["idCategoria"])    }>
                             Confirmar
                           </Button>
                           <Button >Cancelar</Button>
@@ -158,5 +159,5 @@ export default function page() {
       </Table>
     </div>
     </>
-    )
+  )
 }

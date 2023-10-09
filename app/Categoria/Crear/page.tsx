@@ -10,9 +10,6 @@ interface Provedores {
 
 export default function page() {
  
-  
-
-
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
     const formElements = event.currentTarget.elements;
