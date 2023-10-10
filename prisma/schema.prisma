@@ -12,8 +12,8 @@ model almaceninsumos {
   Proveedores_id     Int
   cantidad           String      @db.VarChar(45)
   estado             Int         @default(1) @db.TinyInt
-  fechaRegistro      DateTime?   @default(now()) @db.DateTime(0)
-  fechaActualizacion DateTime    @db.DateTime(0)
+  fechaRegistro      DateTime    @default(now()) @db.DateTime(0)
+  fechaActualizacion DateTime?   @db.DateTime(0)
   insumo             insumo      @relation(fields: [Insumos_id], references: [idInsumo], onDelete: NoAction, onUpdate: NoAction, map: "fk_Insumos_has_Proveedores_Insumos1")
   proveedores        proveedores @relation(fields: [Proveedores_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Insumos_has_Proveedores_Proveedores1")
 
@@ -59,8 +59,8 @@ model detalleventas {
   precioUnitario     Decimal   @db.Decimal(18, 2)
   inporte            Decimal   @db.Decimal(18, 2)
   estado             Int       @default(1) @db.TinyInt
-  fechaRegistro      DateTime? @default(now()) @db.DateTime(0)
-  fechaActualizacion DateTime  @db.DateTime(0)
+  fechaRegistro      DateTime  @default(now()) @db.DateTime(0)
+  fechaActualizacion DateTime? @db.DateTime(0)
   productos          productos @relation(fields: [idProducto], references: [idProductos], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_producto")
   venta              venta     @relation(fields: [idVenta], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_venta")
 
@@ -94,8 +94,8 @@ model produccion {
   idProductor        Int
   estado             Int       @default(1) @db.TinyInt
   canrtidad          Int
-  fechaRegistro      DateTime? @default(now()) @db.DateTime(0)
-  fechaActualizacion DateTime  @db.DateTime(0)
+  fechaRegistro      DateTime  @default(now()) @db.DateTime(0)
+  fechaActualizacion DateTime? @db.DateTime(0)
   insumo             insumo    @relation(fields: [idInsumo], references: [idInsumo], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_insumo")
   productor          productor @relation(fields: [idProductor], references: [idProductor], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_productor2")
   productos          productos @relation(fields: [idProductos], references: [idProductos], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_productos2")
@@ -131,8 +131,8 @@ model productos {
   cantidad           Int
   idProductor        Int
   estado             Int             @default(1) @db.TinyInt
-  fechaRegistro      DateTime?       @default(now()) @db.DateTime(0)
-  fechaActualizacion DateTime        @db.DateTime(0)
+  fechaRegistro      DateTime        @default(now()) @db.DateTime(0)
+  fechaActualizacion DateTime?       @db.DateTime(0)
   fechaVencimiento   DateTime?       @db.DateTime(0)
   atributo           atributo[]
   detalleventas      detalleventas[]
@@ -150,8 +150,8 @@ model proveedores {
   nombre             String           @db.VarChar(45)
   celular            String           @db.VarChar(45)
   estado             Int              @default(1) @db.TinyInt
-  fechaRegistro      DateTime?        @default(now()) @db.DateTime(0)
-  fechaActualizacion DateTime         @db.DateTime(0)
+  fechaRegistro      DateTime         @default(now()) @db.DateTime(0)
+  fechaActualizacion DateTime?        @db.DateTime(0)
   almaceninsumos     almaceninsumos[]
 }
 
@@ -160,8 +160,8 @@ model ruta {
   ruta               String    @db.VarChar(200)
   idProducto         Int
   estado             Int       @default(1) @db.TinyInt
-  fechaRegistro      DateTime? @default(now()) @db.DateTime(0)
-  fechaActualizacion DateTime  @db.DateTime(0)
+  fechaRegistro      DateTime  @default(now()) @db.DateTime(0)
+  fechaActualizacion DateTime? @db.DateTime(0)
   productos          productos @relation(fields: [idProducto], references: [idProductos], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_productos3")
 
   @@index([idProducto], map: "id_idx")

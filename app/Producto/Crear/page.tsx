@@ -177,7 +177,7 @@ export default function Page() {
       if (response.status === 200) {
         console.log("Datos y imágenes enviados correctamente a la API");
        
-        window.location.href = '/Producto/Mostrar';
+        window.location.href = '/producto/mostrar';
       
       } else {
         console.error("Error al enviar los datos y las imágenes a la API");

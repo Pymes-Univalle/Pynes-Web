@@ -1,7 +1,7 @@
 'use client'
-import DeleteIcon from '@/DeleteIcon';
-import EditIcon from '@/EditIcon';
-import EyeIcon from '@/EyeIcon';
+import DeleteIcon from '@/components/DeleteIcon';
+import EditIcon from '@/components/EditIcon';
+import EyeIcon from '@/components/EyeIcon';
 import { Button, Link, Pagination, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation'
@@ -34,14 +34,14 @@ export default function Mostrar() {
     }, [page, productosD]);
 
     const ClickDetalles = (id: any) => {
-        router.push(`/Producto/Detalles?id=${id}`);
+        router.push(`/producto/detalles?id=${id}`);
       };
 
     return (
     <>
         <div className="text-black bg-blanco p-4">
             <h1 className="text-center text-2x1 mb-4" > Lista de Productos</h1>
-            <Link href="/Producto/Crear" className="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            <Link href="/producto/crear" className="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             Crear Productos
         </Link>
         <Table
