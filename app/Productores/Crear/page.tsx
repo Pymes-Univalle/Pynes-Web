@@ -14,7 +14,7 @@ import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import GOOGLE_MAPS_API_KEY from "@/googleMapsConfig";
 import { randomBytes } from "crypto";
 import emailjs from "@emailjs/browser";
-import CryptoJS from "crypto-js";
+import CryptoJS from "crypto-js"; // npm i --save-dev @types/crypto-js
 import { useRouter } from "next/navigation";
 
 const mapContainerStyle = {
