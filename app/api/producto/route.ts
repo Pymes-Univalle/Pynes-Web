@@ -91,6 +91,7 @@ export async function POST(request: Request) {
        const imageFormData = new FormData();
        imageFormData.append('file', imageBlob, 'image.jpg');
        imageFormData.append('upload_preset', 'test_pymes');
+       
  
        // Subir la imagen a Cloudinary (o realizar la acción deseada con la imagen)
        const response = await fetch(

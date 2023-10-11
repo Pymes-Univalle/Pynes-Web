@@ -69,12 +69,12 @@ model detalleventas {
 }
 
 model insumo {
-  idInsumo       Int              @id @default(autoincrement())
-  nombre         String           @db.VarChar(45)
-  precio         Decimal          @db.Decimal(18, 2)
-  cantidad       Int
-  almaceninsumos almaceninsumos[]
-  produccion     produccion[]
+  idInsumo         Int                @id @default(autoincrement())
+  nombre           String             @db.VarChar(45)
+  precio           Decimal            @db.Decimal(18, 2)
+  cantidad         Int
+  almaceninsumos   almaceninsumos[]
+  insumoproduccion insumoproduccion[]
 }
 
 model organizacion {
@@ -88,19 +88,17 @@ model organizacion {
 }
 
 model produccion {
-  id                 Int       @id @default(autoincrement())
+  id                 Int                @id @default(autoincrement())
   idProductos        Int
-  idInsumo           Int
   idProductor        Int
-  estado             Int       @default(1) @db.TinyInt
+  estado             Int                @default(1) @db.TinyInt
   canrtidad          Int
-  fechaRegistro      DateTime? @default(now()) @db.DateTime(0)
-  fechaActualizacion DateTime  @db.DateTime(0)
-  insumo             insumo    @relation(fields: [idInsumo], references: [idInsumo], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_insumo")
-  productor          productor @relation(fields: [idProductor], references: [idProductor], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_productor2")
-  productos          productos @relation(fields: [idProductos], references: [idProductos], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_productos2")
+  fechaRegistro      DateTime?          @default(now()) @db.DateTime(0)
+  fechaActualizacion DateTime           @db.DateTime(0)
+  insumoproduccion   insumoproduccion[]
+  productor          productor          @relation(fields: [idProductor], references: [idProductor], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_productor2")
+  productos          productos          @relation(fields: [idProductos], references: [idProductos], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_productos2")
 
-  @@index([idInsumo], map: "fk_id_insumo_idx")
   @@index([idProductor], map: "fk_id_productor_idx")
   @@index([idProductos], map: "fk_id_productos_idx")
 }
@@ -192,4 +190,16 @@ model venta {
   cliente       cliente         @relation(fields: [idCliente], references: [idCliente], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_cliente")
 
   @@index([idCliente], map: "id_idx")
+}
+
+model insumoproduccion {
+  Insumo_idInsumo Int
+  Produccion_id   Int
+  cantidad        Int
+  insumo          insumo     @relation(fields: [Insumo_idInsumo], references: [idInsumo], onDelete: NoAction, onUpdate: NoAction, map: "fk_Insumo_has_Produccion_Insumo1")
+  produccion      produccion @relation(fields: [Produccion_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Insumo_has_Produccion_Produccion1")
+
+  @@id([Insumo_idInsumo, Produccion_id])
+  @@index([Insumo_idInsumo], map: "fk_Insumo_has_Produccion_Insumo1_idx")
+  @@index([Produccion_id], map: "fk_Insumo_has_Produccion_Produccion1_idx")
 }

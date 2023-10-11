@@ -422,7 +422,7 @@ export default function Page() {
               label="Cantidad" 
               required 
               color={validationCantidad === "invalid" ? "danger" : "success"}
-              errorMessage={validationCantidad === "invalid" && "El campo precio es obligatorio"  }
+              errorMessage={validationCantidad === "invalid" && "El campo cantidad es obligatorio"  }
               validationState={validationCantidad}
               onValueChange={handleCantidadChange}
               />
