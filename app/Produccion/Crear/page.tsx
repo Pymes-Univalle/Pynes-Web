@@ -5,14 +5,40 @@ import { Button, Select, SelectItem, Input } from "@nextui-org/react";
 
 export default function ProductionForm() {
   const [insumos, setInsumos] = useState([]);
+  const [idProductos, setIdProductos] = useState("");
   const [productos, setProductos] = useState([]);
+  const [idProductor, setIdProductor] = useState("");
   const [productores, setProductores] = useState([]);
   const [selectedItems, setSelectedItems] = useState([
     { insumo: "", cantidad: "" },
   ]);
-  const [selectedProducto, setSelectedProducto] = useState("");
-  const [selectedProductor, setSelectedProductor] = useState("");
+  //const [selectedProducto, setSelectedProducto] = useState("");
+  const [selectedProductor, setSelectedProductos] = useState("");
   const [cantidadProduccion, setCantidadProduccion] = useState(0);
+
+  //Validacion
+  const [cantidad, setCantidadV] = React.useState("");
+  const [productosValidation, setProductosValidation] = useState("invalid");
+
+
+  const [productorValidation, setProductorValidation] = useState("invalid");
+  const handleCantidadChange = (value:any) => {
+    setCantidadV(value);
+  };
+
+  const validateCantidad = (value: any) => {
+    if (typeof value === "string") {
+      // Esta expresión regular permite solo números
+      return value.match(/^\d{2}$/);
+    }
+    return false;
+  };
+  const validationCantidad = React.useMemo(() => {
+    if (cantidad === " ") return undefined;
+
+    return validateCantidad(cantidad) ? "valid" : "invalid" ;
+
+  }, [cantidad]);
 
   useEffect(() => {
     // Obtener la lista de insumos, productos y productores desde tu API
@@ -38,10 +64,30 @@ export default function ProductionForm() {
     setSelectedItems([...selectedItems, { insumo: "", cantidad: "" }]);
   };
 
+
+  const handleProductosChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const selectedValue = event.target.value;
+    setIdProductos(selectedValue);
+    setProductosValidation(selectedValue ? "valid" : "invalid");
+  };
+
+  const handleProductorChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const selectedValue = event.target.value;
+    setIdProductor(selectedValue);
+    setProductorValidation(selectedValue ? "valid" : "invalid");
+  };
   async function handleSave(
     event: React.FormEvent<HTMLFormElement>
   ): Promise<void> {
     event.preventDefault();
+
+    const formElements = event.currentTarget.elements;
+    const cantidad =
+      (formElements.namedItem("cantidad") as HTMLInputElement)?.value || "";
 
     // Crear la lista de insumos con sus cantidades
     const insumosProduccion = selectedItems.map((item) => ({
@@ -51,9 +97,9 @@ export default function ProductionForm() {
 
     // Datos para crear una producción
     const productionData = {
-      idProductos: parseInt(selectedProducto),
-      idProductor: parseInt(selectedProductor),
-      canrtidad: cantidadProduccion,
+      idProductos: parseInt(idProductos),
+      idProductor: parseInt(idProductor),
+      canrtidad: parseInt(cantidad),
       insumoproduccion: { create: insumosProduccion }, // Relacionar insumosProduccion
     };
 
@@ -64,6 +110,7 @@ export default function ProductionForm() {
       .post("/api/insumosProduccion", productionData)
       .then((response) => {
         console.log("Producción registrada con éxito." );
+        window.location.href = '/Produccion/Mostrar';
       })
       .catch((error) => {
         console.error("Error al registrar la producción:", error);
@@ -131,19 +178,38 @@ export default function ProductionForm() {
                 Agregar Insumo
               </button>
             </div>
-            <Input
+
+            {/* <Input
               label="Cantidad de Producción"
               placeholder="Ingrese la cantidad de producción"
               value={cantidadProduccion.toString()}
-              onChange={(event) => setCantidadProduccion( parseInt(event.target.value))}
-            />
+              onChange={(event) => setCantidadProduccion(parseInt(event.target.value))}
+            /> */}
+
+            <div>
+              <Input 
+              id="cantidad" 
+              key="outside" 
+              label="Cantidad" 
+              required 
+              color={validationCantidad === "invalid" ? "danger" : "success"}
+              errorMessage={validationCantidad === "invalid" && "El campo cantidad es obligatorio"  }
+              validationState={validationCantidad}
+              onValueChange={handleCantidadChange}
+              />
+            </div>
             <div>
               <Select
                 id="productos"
                 label="Productos"
                 placeholder="Selecciona un Producto"
-                value={selectedProducto}
-                onChange={(event) => setSelectedProducto(event.target.value)}
+                value={idProductos}
+                onChange={(selectedValue: any) =>
+                  handleProductosChange(selectedValue)
+                }
+                color={productosValidation === "invalid" ? "danger" : "success"}
+                errorMessage={productosValidation === "invalid" && "Por favor, selecciona un productor válida"}
+                className="mb-5 max-w-xs"
               >
                 {productos.map((producto) => (
                   <SelectItem
@@ -161,8 +227,13 @@ export default function ProductionForm() {
                 id="productor"
                 label="Productor"
                 placeholder="Selecciona un Productor"
-                value={selectedProductor}
-                onChange={(event) => setSelectedProductor(event.target.value)}
+                value={idProductor}
+                onChange={(selectedValue: any) =>
+                  handleProductorChange(selectedValue)
+                }
+                color={productorValidation === "invalid" ? "danger" : "success"}
+                errorMessage={productorValidation === "invalid" && "Por favor, selecciona un productor válida"}
+                className="mb-5 max-w-xs"
               >
                 {productores.map((productor) => (
                   <SelectItem
