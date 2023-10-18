@@ -41,8 +41,8 @@ export default function Mostrar() {
     <>
         <div className="text-black bg-blanco p-4">
             <h1 className="text-center text-2x1 mb-4" > Lista de Producciones</h1>
-            <Link href="/Producto/Crear" className="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Crear Productos
+            <Link href="/Produccion/Crear" className="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Crear Producciones
         </Link>
         <Table
           aria-label="Example table with client side pagination"
