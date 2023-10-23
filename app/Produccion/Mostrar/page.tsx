@@ -69,7 +69,7 @@ export default function Mostrar() {
                 <TableColumn key="nombre">Nombre</TableColumn>
                 
                 <TableColumn key="cantidad">Cantidad</TableColumn>
-                <TableColumn key="productor">Categoria</TableColumn>
+                <TableColumn key="productor">Productor</TableColumn>
                 
                 <TableColumn key="ver">Ver</TableColumn>
                 <TableColumn key="editar">Editar</TableColumn>
