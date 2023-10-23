@@ -5,9 +5,9 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
     try {
-        const proveedor = await prisma.categoria.findMany();
+        const categoria = await prisma.categoria.findMany();
     
-        return NextResponse.json({ data: proveedor }, { status: 200 });
+        return NextResponse.json({ data: categoria }, { status: 200 });
       } catch (error) {
         console.log(error);
         if (error instanceof Error) {
@@ -20,13 +20,13 @@ export async function POST(request: Request) {
     try {
         const {nombre} =  await request.json();
 
-        const proveedor = await prisma.categoria.create({
+        const categoria = await prisma.categoria.create({
             data:{
                 nombre: nombre
             }
         })
     
-        return NextResponse.json({ proveedor }, { status: 200 });
+        return NextResponse.json({ categoria }, { status: 200 });
       } catch (error) {
         console.log(error);
         if (error instanceof Error) {

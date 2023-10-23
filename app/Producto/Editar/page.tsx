@@ -3,25 +3,16 @@ import { Button, Input, Select, SelectItem, Textarea, Image, Checkbox, CircularP
 import React, { use, useEffect, useState } from "react";
 import axios from 'axios';
 import { useSearchParams } from "next/navigation";
-import { useRouter } from 'next/router';
 
 export default function Editar() {
 
-  //const router = useRouter();
-  //const { id } = router.query; // Obtener el ID del producto de la URL
-
+  //#region Atributos
   const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState(null);
   const [rutaData, setRutaData] = useState([]);
   const [atributoData, setAtributoData] = useState([]);
   const valor = useSearchParams();
   const id = valor.get('id');
-
-
-  //Validaciones 
-  
-  const [descripcion, setDescripcion] = useState("");
-  const [cantidad, setCantidad] = useState("");
 
   const [idCategoria, setIdCategoria] = useState("");
   const [categories, setCategories] = useState([]);
@@ -42,40 +33,33 @@ export default function Editar() {
   const [imagePreviews, setImagePreviews] = useState<
     { src: string; alt: string; file: File }[]
   >([]);
+  //#endregion
 
   useEffect(() => {
+    //#region Obtener el ID de la "categoría" actual del producto
     // Realiza la solicitud a la API para cargar datos de categorías y productores
     axios.get("/api/categoria")
     .then((response) => {
       // response.data debe contener la lista de categorías desde tu API
       setCategories(response.data.data);
-
-      // const categoriaProducto = response.data.data.find(({categoria} : any) => categoria.idCategoria === idCategoria);
-      
-      // if(categoriaProducto){
-      //   setIdCategoria(categoriaProducto.idCategoria);
-      // }
     })
     .catch((error) => {
       console.error("Error al cargar categorías desde la API:", error);
     });
+    //#endregion
 
+    //#region Obtener el ID del productor actual del producto
     axios.get("/api/productor")
     .then((response) => {
       setProductores(response.data.data);
-
-      // const productorProducto = response.data.data.find(({productor} : any) => productor.idProductor === id_productor);
-
-      // if (productorProducto) {
-      //   setIdProductor(productorProducto.idProductor);
-      // }
-
     })
     .catch((error) => {
       console.log("Error al cargar productores desde la API", error);
     });
+    //#endregion
   }, []);
 
+  //#region Obtener los datos del producto
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -85,6 +69,8 @@ export default function Editar() {
           const data = response.data;
           const productoData = await data.productos;
 
+          console.log('Product data:', productoData); // Log the product data
+
           setProducts(productoData);
           setRutaData(productoData.ruta);
           setAtributoData(productoData.atributo);
@@ -93,8 +79,9 @@ export default function Editar() {
           setPrecioV(productoData.precio.toString());
           setDescripcion(productoData.descripcion);
           setCantidad(productoData.cantidad.toString());
-          //setIdCategoria(productoData.idCategoria);
-          //setCategoriaActual(productoData.idCategoria);
+          setIdProductor(productoData.idProductor);
+
+          //#region Obtener el ID de la "categoría" actual del producto
           // Obtén el ID de la categoría actual del producto
           const idCategoriaActual = productoData.idCategoria;
           // Encuentra la categoría correspondiente en la lista de categorías
@@ -107,35 +94,48 @@ export default function Editar() {
           } else {
             console.error("No se encontró la categoría del producto.");
           }
-          // Dentro del useEffect
+
+          console.log('Categoria Seleccionada:', categoriaSeleccionada);
+          
           setCategoriaSeleccionada(productoData.idCategoria);
+          //#endregion
 
-
-          setIdProductor(productoData.idProductor);
-          setAtributos(productoData.atributos || []);
+          //#region Obtener la fecha de vencimiento del producto
           setTieneFechaVencimiento(!!productoData.fechaVencimiento);
-          setFechaVencimiento(productoData.fechaVencimiento || "");
+
+          if (productoData.fechaVencimiento) {
+            const fecha = new Date(productoData.fechaVencimiento);
+            const fechaFormatoCorrecto = fecha.toISOString().slice(0, 10);
+            setFechaVencimiento(fechaFormatoCorrecto);
+          }
+          else{
+            setFechaVencimiento("");
+          }
+          //#endregion
 
           //#region Cargar las imágenes del producto
-          // const imagenesProducto = productoData.ruta.map((ruta: any, index : any) => ({
-          //   src: ruta.ruta,
-          //   alt: `Imagen ${index + 1}`,
-          //   file: null,
-          // }));
+          const imagenesProducto = productoData.ruta.map((ruta: any, index : any) => ({
+            src: ruta.ruta,
+            alt: `Imagen ${index + 1}`,
+            file: null,
+          }));
 
-          //setImagePreviews(imagenesProducto);
+          console.log('Image previews:', imagenesProducto); // Log the image previews
+
+          setImagePreviews(imagenesProducto);
           //#endregion
 
           //#region Cargar los atributos del producto
-          // const atributosProducto = productoData.atributos.map((atributo: any) => ({
-          //   nombre: atributo.nombre,
-          //   valor: atributo.valor,
-          // }));
+          const atributosProducto = productoData.atributo.map((atributo: any) => ({
+            nombre: atributo.nombre,
+            valor: atributo.valor,
+          }));
 
-          // setAtributos(atributosProducto);
+          console.log('Atributos del producto:', atributosProducto);
+
+          setAtributos(atributosProducto);
           //#endregion
 
-          console.log(productoData);
         } else {
           console.error("Error al obtener el producto:", response.data);
         }
@@ -146,42 +146,21 @@ export default function Editar() {
     };
     fetchData();
   }, [id, categories]);
+  //#endregion
 
+    //Atributos 
   const [nombre, setNombreV] = React.useState("");
   const [precio, setPrecioV] = React.useState("");
+  const [descripcion, setDescripcion] = React.useState("");
+  const [cantidad, setCantidad] = React.useState("");
 
+  //#region HandleChanges
   const handleNameChange = (value:any) => {
     setNombreV(value);
   }
   const handlePriceChange = (value:any) =>{
     setPrecioV(value);
   }
-
-  const validateNombre = (value: any) => {
-    if(typeof value == "string"){
-      return value.match(/^[A-Za-z\s]{3,}$/i);
-    }
-    return false;
-  }
-  const validatePrecio = (value: any) =>{
-    if(typeof value == "string"){
-       return value.match(/^\d{2,}$/);
-    }
-    return false;
-  }
-
-  const validationNombre = React.useMemo(() => {
-    if(nombre == " ") return undefined;
-
-    return validateNombre(nombre) ? "valid" : "invalid";
-  }, [nombre])
-
-  const validationPrecio = React.useMemo(() => {
-    if(precio == " ") return undefined;
-    return validatePrecio(precio) ? "valid" : "invalid";
-  } , [precio])
-
-  //Fin de Validacion
 
   const handleCategoryChange = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -192,19 +171,50 @@ export default function Editar() {
   };
 
   const handleProductorChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
+    event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const selectedValue = event.target.value;
     setIdProductor(selectedValue);
   };
+  //#endregion
 
+  //#region "Validate" de Campos
+  const validateNombre = (value: any) => {
+    if(typeof value == "string"){
+      // Esta expresión regular permite solo letras (mayúsculas y minúsculas) y espacios
+      return value.match(/^[A-Za-z\s]{3,}$/i);
+    }
+    return false;
+  }
+  const validatePrecio = (value: any) =>{
+    if(typeof value == "string"){
+       return value.match(/^\d{2,}$/);
+    }
+    return false;
+  }
+  //#endregion
+
+  //#region "Validation" de Campos
+  const validationNombre = React.useMemo(() => {
+    if(nombre === " ") return undefined;
+
+    return validateNombre(nombre) ? "valid" : "invalid";
+  }, [nombre])
+
+  const validationPrecio = React.useMemo(() => {
+    if(precio === " ") return undefined;
+    return validatePrecio(precio) ? "valid" : "invalid";
+  } , [precio])
+  //#endregion
+
+  //Fin de Validacion 
+
+  //#region Subiendo las respuestas del formulario a la base de datos (Submitting)
   async function submit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
-
     setIsLoading(true);
-
     const formElements = event.currentTarget.elements;
-    const id = (formElements.namedItem("idProducto") as HTMLInputElement)?.value || "";
+    //const id = (formElements.namedItem("idProductos") as HTMLInputElement)?.value || "";
     const nombre =
       (formElements.namedItem("nombre") as HTMLInputElement)?.value || "";
     const precio =
@@ -227,9 +237,10 @@ export default function Editar() {
     }
     
     console.log("CLick en el submit");
+    console.log("Id Producto", id);
     console.log("Imágenes a enviar:", imagePreviews);
     console.log("Atributos:", atributos);
-    console.log("Id Categoria", idCategoria);
+    console.log("Id Categoria", categoriaSeleccionada);
     console.log("Id Productor", id_productor);
     console.log("Fecha Vencimiento", fechaMysql);
     console.log(
@@ -252,7 +263,7 @@ export default function Editar() {
     formData.append("precio", precio);
     formData.append("descripcion", descripcion);
     formData.append("cantidad", cantidad);
-    formData.append("idCategoria", idCategoria);
+    formData.append("idCategoria", categoriaSeleccionada);
 
     //Aca adjuntamos el dato del idProductor
     formData.append("idProductor", id_productor);
@@ -269,11 +280,7 @@ export default function Editar() {
     
     try {
       // Realizar la solicitud a tu API utilizando axios
-      const response = await axios.put(`/api/producto/${id}`, formData, {
-        headers: {'Content-Type': 'multipart/form-data',},
-      });
-
-      console.log(nombre, id);
+      const response = await axios.put(`/api/producto/${id}`, formData, {headers: {'Content-Type': 'multipart/form-data',},});
 
       if (response.status === 200) {
 
@@ -291,6 +298,7 @@ export default function Editar() {
     }
 
   }
+  //#endregion
 
   useEffect(() => {
     // Este efecto se ejecutará cuando 'tieneFechaVencimiento' cambie
@@ -372,7 +380,8 @@ export default function Editar() {
                 type="text"
                 label="Nombre"
                 required
-                value={products["nombre"]}
+                value={nombre}
+                onChange={(e) => setNombreV(e.target.value)}
                 color={validationNombre === "invalid" ? "danger" : "success"}
                 errorMessage={validationNombre === "invalid" && "El campo nombre es obligatorio y solo letras"  }
                 validationState={validationNombre}
@@ -384,7 +393,8 @@ export default function Editar() {
                key="outside" 
                label="Precio" 
                required
-               value={products["precio"]}
+               value={precio}
+               onChange={(e) => setPrecioV(e.target.value)}
                color={validationPrecio === "invalid" ? "danger" : "success"}
                errorMessage={validationPrecio === "invalid" && "El campo precio es obligatorio"  }
                validationState={validationPrecio}
@@ -396,25 +406,16 @@ export default function Editar() {
                 key="outside"
                 label="Descripcion"
                 required
-                value={products["descripcion"]}
+                value={descripcion}
+                onChange={(e) => setDescripcion(e.target.value)}
               />
             </div>
             <div>
               <Select
                 label="Categoría"
                 placeholder="Selecciona una categoría"
-                //value={products["idCategoria"]["nombre"]}
-                //value={idCategoria}
-                // onChange={(selectedValue: any) =>
-                //   handleCategoryChange(selectedValue)
-                // }
-                // onChange={(selectedValue: any) =>
-                //   setCategoriaActual(selectedValue)
-                // }
-                value={1}
-                
-                //value={1}
-                onChange={(selectedValue: any) => setCategoriaSeleccionada(selectedValue)}
+                defaultSelectedKeys={[`${categoriaSeleccionada}`]}
+                onChange={(selectedValue: any) => setCategoriaSeleccionada(selectedValue.target.value)}
                 className="mb-5 max-w-xs"
               >
                 {categories.map((category) => (
@@ -430,14 +431,15 @@ export default function Editar() {
             </div>
 
             <div className="mb-5">
-              <Input id="cantidad" key="outside" label="Cantidad" required value={products["cantidad"]}/>
+              <Input id="cantidad" key="outside" label="Cantidad" required value={cantidad} onChange={(e) => setCantidad(e.target.value)}/>
             </div>
 
             <div>
               <Select
                 label="Productor"
                 placeholder="Selecciona un Productor"
-                value={id_productor}
+                //value={id_productor}
+                defaultSelectedKeys={[`${id_productor}`]}
                 onChange={(selectedValue: any) =>
                   handleProductorChange(selectedValue)
                 }
@@ -454,10 +456,6 @@ export default function Editar() {
                 ))}
               </Select>
             </div>
-
-            {/*<div className="mb-5">
-              <Input type="file" onChange={handleFile}  />
-                </div>*/}
 
             <div className="mb-5">
               <Input type="file" onChange={handleFileChange} multiple />
@@ -501,7 +499,7 @@ export default function Editar() {
               Tiene Fecha de Vencimiento
             </label>
           </div>
-          {tieneFechaVencimiento && (
+            {tieneFechaVencimiento && (
               <div>
                 <Input
                   type="text"

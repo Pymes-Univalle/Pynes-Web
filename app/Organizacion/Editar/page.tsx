@@ -202,14 +202,7 @@ export default function Editar() {
       />
     }
     
-   
-
-    
-
-   
-  
-
-  
+    //#region Submit
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
     setIsLoading(true);
@@ -310,13 +303,8 @@ export default function Editar() {
         console.error('Error en la solicitud PUT:', error);
       }
     }
-
-  
-    
-
-
-
   }
+  //#endregion
 
 
   return (

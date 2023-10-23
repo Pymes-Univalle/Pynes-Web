@@ -42,20 +42,6 @@ export async function PUT(request: Request, {params}: Params) {
     const formData = await request.formData();
     const productoId = Number(params.id); // Identificador del producto a actualizar
 
-    // Verifica si el producto existe en la base de datos
-    const producto = await prisma.productos.findUnique({
-      where: { idProductos: productoId },
-      include: {
-        ruta: true,
-        categoria: true,
-        atributo: true,
-      },
-    });
-
-    if (!producto) {
-      return NextResponse.json({ message: 'Producto no encontrado' }, { status: 404 });
-    }
-
     // Procesa los campos a actualizar, por ejemplo: nombre, precio, descripción, etc.
     const nombre = formData.get('nombre');
     const precio = formData.get('precio');
@@ -70,9 +56,9 @@ export async function PUT(request: Request, {params}: Params) {
       // Convertir la cadena de fecha a un objeto de fecha
       fechaVencimiento = new Date(fechaVencimientoValue);
     }
-      
+
     const atributosJSON = formData.get('atributos');
-    const atributos = atributosJSON ? JSON.parse(atributosJSON as string) : [];
+    const atributos = atributosJSON ? JSON.parse(atributosJSON as string) : [];    
 
     const productoActualizado = await prisma.productos.update({
       where: { idProductos: productoId },
@@ -89,18 +75,29 @@ export async function PUT(request: Request, {params}: Params) {
     });
 
     await Promise.all(
-      atributos.map(async (atributo: { nombre: string; valor: string }) => {
-        await prisma.atributo.create({
-          data: {
+      atributos.map(async (atributo: { idAtributo:number, nombre: string; valor: string }) => {
+        const existingAtributo = await prisma.atributo.findUnique({
+          where: {
+            idAtributo: atributo.idAtributo,
             nombre: atributo.nombre,
-            valor: atributo.valor,
-            idProducto: productoActualizado.idProductos, // Asociar el atributo con el producto recién creado
+            idProducto: productoActualizado.idProductos,
           },
         });
+
+        if (!existingAtributo) {
+          await prisma.atributo.create({
+            data: {
+              nombre: atributo.nombre,
+              valor: atributo.valor,
+              idProducto: productoActualizado.idProductos,
+            },
+          });
+        }
       })
     );
 
-    const ulrs: string[] = [];
+    // Procesar imágenes
+    const urls: string[] = [];
 
     for (let index = 0; ; index++) {
       const fieldName = `imagen_${index}`;
@@ -111,52 +108,43 @@ export async function PUT(request: Request, {params}: Params) {
         break;
       }
 
+      // Convertir la imagen a un formato que puedas usar, como Blob
       const imageBlob = new Blob([imageData as unknown as Buffer], { type: 'image/jpeg' });
 
       // Crear un nuevo FormData para la imagen y agregarla a él
       const imageFormData = new FormData();
       imageFormData.append('file', imageBlob, 'image.jpg');
       imageFormData.append('upload_preset', 'test_pymes');
-      
-    }
 
-    // Actualiza la imagen en Cloudinary (supongamos que tienes la URL de la imagen antigua)
-    const newImageData = formData.get('nuevaImagen');
-    if (newImageData) {
-      // Elimina la imagen antigua de Cloudinary (opcional)
-      // await cloudinary.v2.uploader.destroy(producto.imagenPublicId);
-
-      // Sube la nueva imagen a Cloudinary
+      // Subir la imagen a Cloudinary (o realizar la acción deseada con la imagen)
       const response = await fetch(
         'https://api.cloudinary.com/v1_1/di9vckxy5/image/upload',
         {
           method: 'POST',
-          body: newImageData,
+          body: imageFormData,
         }
       );
 
       if (response.ok) {
         const responseData = await response.json() as { secure_url: string };
-        const newImageUrl = responseData.secure_url;
-        ulrs.push(newImageUrl);
-        console.log("Imagen subida a Cloudinary:", newImageUrl);
+        const imageUrl = responseData.secure_url;
+        urls.push(imageUrl);
+        console.log("Imagen subida a Cloudinary:", imageUrl);
+      }
+    }
 
-        // Actualiza el producto en la base de datos
-        // Actualiza la referencia de la imagen en tu base de datos con la nueva URL
-        await prisma.productos.update({
-          where: { idProductos: productoId },
+    // Guardar las URL de las imágenes en la base de datos
+    await Promise.all(
+      urls.map(async (url) => {
+        await prisma.ruta.create({
           data: {
-            nombre: nombre as string,
-            precio: precio as string,
-            descripcion: descripcion as string,
-            fechaActualizacion: new Date(),
-            // imagen: newImageUrl,
+            ruta: url,
+            idProducto: productoActualizado.idProductos,
+            fechaActualizacion: new Date().toISOString(),
           },
         });
-      }
-
-      return NextResponse.json({ message: 'Producto actualizado con éxito' }, { status: 200 });
-    }
+      })
+    );
 
     return NextResponse.json({ message: 'Producto actualizado con éxito' }, { status: 200 });
   } catch (error) {
