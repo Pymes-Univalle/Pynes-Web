@@ -5,6 +5,9 @@ import { Inter } from "next/font/google";
 //import { Providers } from "./providers";
 import { Providers } from "./redux/provider"
 import { useRouter } from "next/navigation";
+import { deleteUser } from "./redux/features/userSlice";
+import { useAppDispatch } from "./redux/hooks";
+
 
 import {
   Navbar,
@@ -53,6 +56,7 @@ export default function RootLayout({
     "Help & Feedback",
     "Log Out",
   ];
+  //const dispatch = useAppDispatch();
   const router = useRouter();
   const handleMyPerfil = () => {
     router.push('/Usuario/MiPerfil');
@@ -62,6 +66,10 @@ export default function RootLayout({
   };
   const handleProductores = () => {
     router.push('/Productores/Mostrar');
+  };
+  const handleCerrarSesion = () => {
+   // dispatch(deleteUser());
+    router.push('/Login');
   };
 
 
@@ -155,10 +163,17 @@ export default function RootLayout({
                       </DropdownItem>
                       <DropdownItem
                         key="delete"
-                        className="text-danger"
+                        className="text-white"
                         color="danger"
                       >
+                        <Link
+                          className="text-danger w-full hover:text-white"
+                          color="danger"
+                          onClick={handleCerrarSesion}
+                        >
                         Cerrar Sesión
+                        </Link>
+                        
                       </DropdownItem>
                     </DropdownMenu>
                   </Dropdown>

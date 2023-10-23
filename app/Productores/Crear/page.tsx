@@ -56,9 +56,9 @@ export default function Crear() {
     celular: true,
     puesto: true,
   });
-  const [mapValidation, setMapValidation] = useState(false); 
-  const [mapError, setMapError] = useState(false); 
-
+  const [mapValidation, setMapValidation] = useState(false);
+  const [mapError, setMapError] = useState(false);
+  const [emailExists, setEmailExists] = useState(false);
 
   var pass: string;
 
@@ -78,13 +78,13 @@ export default function Crear() {
     if (event.latLng) {
       const newMarker = event.latLng.toJSON();
       setMarkers([newMarker]);
-      setMapValidation(true)
+      setMapValidation(true);
     }
   };
 
   const handleAceparClick = () => {
     router.push("/Productores/Mostrar");
- }
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -129,7 +129,10 @@ export default function Crear() {
 
     setFieldValidations(newValidations);
 
-    if (Object.values(newValidations).every((valid) => valid) && mapValidation) {
+    if (
+      Object.values(newValidations).every((valid) => valid) &&
+      mapValidation
+    ) {
       const axios = require("axios");
       var templateParams = {
         from_name: "Totem",
@@ -139,41 +142,48 @@ export default function Crear() {
       };
 
       try {
-        emailjs
-          .send(
-            "service_7xh4aqx",
-            "template_soj79xk",
-            templateParams,
-            "BQzfsMnH6-p-UBfyg"
-          )
-          .then(
-            (result) => {
-              console.log(result.text);
-            },
-            (error) => {
-              console.log(error.text);
-            }
-          );
+        const validar = await axios.get(`/api/validarCorreo/${user.correo}`);
+        const validarCorreo = validar.data;
+        if (validarCorreo) {
+          setEmailExists(true); 
+        } else {
+          setEmailExists(false); 
+          emailjs
+            .send(
+              "service_7xh4aqx",
+              "template_soj79xk",
+              templateParams,
+              "BQzfsMnH6-p-UBfyg"
+            )
+            .then(
+              (result) => {
+                console.log(result.text);
+              },
+              (error) => {
+                console.log(error.text);
+              }
+            );
 
-        const resp = await axios.post("/api/productor/", {
-          nombre: user.nombre,
-          apellido: user.apellido,
-          correo: user.correo,
-          contrasena: user.contrasena,
-          celular: user.celular,
-          latitud: productor.latitud.toString(),
-          longitud: productor.longitud.toString(),
-          puesto: productor.puesto,
-          idOrganizacion: productor.idOrganizacion,
-        });
+          const resp = await axios.post("/api/productor/", {
+            nombre: user.nombre,
+            apellido: user.apellido,
+            correo: user.correo,
+            contrasena: user.contrasena,
+            celular: user.celular,
+            latitud: productor.latitud.toString(),
+            longitud: productor.longitud.toString(),
+            puesto: productor.puesto,
+            idOrganizacion: productor.idOrganizacion,
+          });
 
-        if (resp.status === 200) {
-          setModal(true);
+          if (resp.status === 200) {
+            setModal(true);
+          }
         }
       } catch (error: any) {
         console.log(error.message);
       }
-    } else if (!mapValidation){
+    } else if (!mapValidation) {
       setMapError(true);
     }
   };
@@ -220,20 +230,20 @@ export default function Crear() {
             />
           </div>
           <div className="mt-10">
-            <Input
-              id="correo"
-              name="correo"
-              key="outside"
-              type="email"
-              label="Correo Electrónico"
-              labelPlacement="outside"
-              required
-              validationState={fieldValidations.correo ? "valid" : "invalid"}
-              errorMessage={
-                !fieldValidations.correo ? "Campo requerido" : undefined
-              }
-            />
-          </div>
+          <Input
+            id="correo"
+            name="correo"
+            key="outside"
+            type="email"
+            label="Correo Electrónico"
+            labelPlacement="outside"
+            required
+            color={emailExists ? "danger" : "default"}
+            validationState={fieldValidations.correo ? "valid" : "invalid" || !emailExists ? "valid" : "invalid"}
+            errorMessage={!fieldValidations.correo ? "Campo requerido" : undefined || emailExists ?  "El correo electrónico esta siendo utilizado por otro usuario." : undefined }
+          />
+         
+        </div>
 
           <div className="mt-10">
             <Input
@@ -268,7 +278,7 @@ export default function Crear() {
           <div className="mt-10 mb-10">
             <label>Ubicación:</label>
             <div>
-              <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY} >
+              <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
                 <GoogleMap
                   mapContainerStyle={mapContainerStyle}
                   center={center}
@@ -281,7 +291,9 @@ export default function Crear() {
                 </GoogleMap>
               </LoadScript>
               {mapError && (
-                 <p className="text-red-500">Debe seleccionar una ubicación en el mapa.</p>
+                <p className="text-red-500">
+                  Debe seleccionar una ubicación en el mapa.
+                </p>
               )}
             </div>
           </div>
@@ -298,10 +310,7 @@ export default function Crear() {
                   </ModalHeader>
 
                   <ModalFooter>
-                    <Button
-                      color="success"
-                      onClick={handleAceparClick}
-                    >
+                    <Button color="success" onClick={handleAceparClick}>
                       Aceptar
                     </Button>
                   </ModalFooter>

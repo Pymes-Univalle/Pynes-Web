@@ -17,8 +17,8 @@ export default function Login() {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const select = useAppSelector((state) => state.user);
-  console.log(select);
+  // const select = useAppSelector((state) => state.user);
+  // console.log(select);
   const [invalidMesasge, setInvalidMessage] = useState(false);
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -43,7 +43,7 @@ export default function Login() {
       });
 
       if (resp.status === 200) {
-        console.log(resp.data);
+        //console.log(resp.data);
         const user = {
           id: resp.data.user.id,
           nombre: resp.data.user.nombre,
@@ -55,11 +55,12 @@ export default function Login() {
         dispatch(addUser(user));
 
         router.push("/Productores/Mostrar");
-      } else if (resp.status === 404) {
+      } else if (resp.status === 401) {
         setInvalidMessage(true);
       }
     } catch (error) {
-      console.error(error);
+     // console.error(error);
+      setInvalidMessage(true);
   
     }
   };
@@ -88,7 +89,7 @@ export default function Login() {
               <h1 className="text-4xl font-bold text-white">INICIAR SESIÓN</h1>
 
               {invalidMesasge && (
-                <p className="mt-4 text-red-500">
+                <p className="mt-5 text-red-500 font-bold">
                   Correo o contraseña incorrrecta
                 </p>
               )}

@@ -25,6 +25,7 @@ export async function POST(request: Request) {
       where: {
         correo: body.correo,
         contrasena: body.contrasena,
+        estado: 1,
       },
     });
 

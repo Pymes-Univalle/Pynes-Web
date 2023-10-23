@@ -22,7 +22,7 @@ import { EyeIcon } from "./EyeIcon";
 import { useRouter } from "next/navigation";
 import { Metadata } from "next";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import authenticateMiddleware from '../../middleware/auth';
+
 
 export const metadata: Metadata = {
   title: " Prodductores",
@@ -46,9 +46,9 @@ export default function Mostrar() {
 
   
   useEffect(() => {
-    if(!userToken){
-      router.push("/Login");
-    }
+    // if(!userToken){
+    //   router.push("/Login");
+    // }
 
 
    

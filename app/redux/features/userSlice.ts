@@ -23,7 +23,7 @@ export const userSlice = createSlice({
             state.rol = action.payload.rol;
             state.token = action.payload.token;
         },
-        deleteUser:(state, action) => {
+        deleteUser:(state) => {
             state.id = null;
             state.nombre = null;
             state.apellido = null;
