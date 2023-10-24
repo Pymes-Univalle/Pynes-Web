@@ -22,6 +22,7 @@ import { EyeIcon } from "./EyeIcon";
 import { useRouter } from "next/navigation";
 import { Metadata } from "next";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import Cookies from 'js-cookie';
 
 
 export const metadata: Metadata = {
@@ -49,7 +50,7 @@ export default function Mostrar() {
     // if(!userToken){
     //   router.push("/Login");
     // }
-
+    
 
    
     axios

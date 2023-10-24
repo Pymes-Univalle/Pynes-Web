@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Button, Link, user } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import CryptoJS from "crypto-js";
+import Cookies from 'js-cookie'; // npm i --save-dev @types/js-cookie
 
 //redux
 import { useSelector, useDispatch } from "react-redux";
@@ -16,6 +17,10 @@ interface User {
 export default function Login() {
   const dispatch = useAppDispatch();
   const router = useRouter();
+
+  useEffect(() => {   
+    //Cookies.remove('userToken')
+  }, []);
 
   // const select = useAppSelector((state) => state.user);
   // console.log(select);
@@ -53,8 +58,10 @@ export default function Login() {
           token: resp.data.token,
         };
         dispatch(addUser(user));
-
-        router.push("/Productores/Mostrar");
+        Cookies.remove('userToken')
+        Cookies.set('userToken', user.token, { expires: 2 / 24 });
+        console.log(Cookies.get('userToken'));
+        router.push(`/Productores/Mostrar`);
       } else if (resp.status === 401) {
         setInvalidMessage(true);
       }
