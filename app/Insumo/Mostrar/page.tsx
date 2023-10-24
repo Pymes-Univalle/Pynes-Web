@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
-import axios from "axios"; // Importa Axios
+import axios from "axios";
 import {
   Table,
   TableHeader,
@@ -18,78 +18,62 @@ import {
   PopoverContent,
   Input,
 } from "@nextui-org/react";
+import { useRouter } from "next/navigation";
 import EditIcon from "@/EditIcon";
 import DeleteIcon from "@/DeleteIcon";
 import EyeIcon from "@/EyeIcon";
-import { useRouter } from "next/navigation";
-import { Metadata } from "next";
 
-interface User {
- 
-  estado: number;
-  fechaActualizacion: Date;
-}
+// interface User {
+//   estado: number;
+//   fechaActualizacion: Date;
+// }
+
 export default function Mostrar() {
   const router = useRouter();
   const [page, setPage] = useState(1);
   const rowsPerPage = 3;
-  const [organizacion, setOrganizations] = useState([]); // Estado para almacenar las organizaciones
+  const [insumo, setInsumo] = useState([]); // Estado para almacenar los insumos
 
-
-  const user: User = {
-      
-   
-    estado: 0,
-    fechaActualizacion: new Date(new Date().toISOString()), 
-  };
-
-
-
+//   const user: User = {
+//     estado: 0,
+//     fechaActualizacion: new Date(new Date().toISOString()), 
+//   };
 
   useEffect(() => {
-    // Realizar la solicitud GET al servidor para obtener las organizaciones usando Axios
+    // Realizar la solicitud GET al servidor para obtener los insumos usando Axios
     axios
-      .get("/api/organizacion")
+      .get("/api/insumo")
       .then((response) => {
         if (response.data && response.data.data) {
-          setOrganizations(response.data.data);
+            setInsumo(response.data.data);
         }
       })
       .catch((error) =>
-        console.error("Error al obtener las organizaciones:", error)
-      );
+        console.error("Error al obtener a los insumos:", error)
+    );
   }, []);
 
-  const pages = Math.ceil(organizacion.length / rowsPerPage);
+  const pages = Math.ceil(insumo.length / rowsPerPage);
 
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
-    return organizacion.slice(start, end);
-  }, [page, organizacion]);
+    return insumo.slice(start, end);
+  }, [page, insumo]);
 
   const clic = (id: any) => {
-    router.push(`/Organizacion/Detalles?id=${id}`);
+    router.push(`/Insumo/Detalles?id=${id}`);
   };
   const clicEdit = (id: any) => {
-    router.push(`/Organizacion/Editar?id=${id}`);
+    router.push(`/Insumo/Editar?id=${id}`);
   };
-
-
 
   const handleDeleteConfirm = async (id: any) => {
     try {
-      const response = await axios.delete(`/api/organizacion/${id}`, {
-        data:{
-          estado:user.estado
-        }
-        
-
-      });
+      const response = await axios.delete(`/api/insumo/${id}`);
   
       if (response.status === 200) {
         // Maneja la respuesta exitosa aquí, por ejemplo, muestra un mensaje de éxito o redirige a otra página
-        //console.log("Has eliminado a un usuario" + id);
 
         window.location.reload();
       } else {
@@ -106,12 +90,12 @@ export default function Mostrar() {
 
   return (
     <div className="text-black bg-blanco p-4">
-      <h1 className="text-center text-2xl mb-4">Lista de Organizaciones</h1>
+      <h1 className="text-center text-2xl mb-4">Lista de Insumos</h1>
       <Link
-        href="/Organizacion/Crear"
+        href="/Insumo/Crear"
         className="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
-        Crear Organizacion
+        Crear Insumo
       </Link>
       <Table
         aria-label="Example table with client side pagination"
@@ -133,34 +117,24 @@ export default function Mostrar() {
         }}
       >
         <TableHeader>
-          <TableColumn key="idOrganizacion">Id</TableColumn>
+          <TableColumn key="idInsumo">Id</TableColumn>
           <TableColumn key="nombre">Nombre</TableColumn>
-          <TableColumn key="apellido">Apellido</TableColumn>
-          <TableColumn key="correo">Correo</TableColumn>
-          <TableColumn key="celular">Celular</TableColumn>
-          <TableColumn key="latitud">Latitud</TableColumn>
-          <TableColumn key="longitud">Longitud</TableColumn>
-          <TableColumn key="crearProductos">CrearProductos</TableColumn>
-          <TableColumn key="nit">Nit</TableColumn>
+          <TableColumn key="precio">Precio</TableColumn>
+          <TableColumn key="cantidad">Cantidad</TableColumn>
           <TableColumn key="ver">Ver</TableColumn>
           <TableColumn key="editar">Editar</TableColumn>
           <TableColumn key="eliminar">Eliminar</TableColumn>
         </TableHeader>
         <TableBody items={items}>
           {(item) => (
-            <TableRow key={item["id"]}>
+            <TableRow key={item["idInsumo"]}>
               <TableCell>
                 <div className="flex gap-4">{item["id"]}</div>
               </TableCell>
               <TableCell>{item["nombre"]}</TableCell>
-              <TableCell>{item["apellido"]}</TableCell>
-              <TableCell>{item["correo"]}</TableCell>
+              <TableCell>{item["precio"]}</TableCell>
+              <TableCell>{item["cantidad"]}</TableCell>
 
-              <TableCell>{item["celular"]}</TableCell>
-              <TableCell>{item["organizacion"]["latitud"]}</TableCell>
-              <TableCell>{item["organizacion"]["longitud"]}</TableCell>
-              <TableCell>{item["organizacion"]["crearProductos"]}</TableCell>
-              <TableCell>{item["organizacion"]["nit"]}</TableCell>
               <TableCell>
                 <Button
                   className="flex items-center text-black hover:text-gray-800"
@@ -205,7 +179,7 @@ export default function Mostrar() {
                           className="text-small font-bold text-foreground"
                           {...titleProps}
                         >
-                          ¿Estás seguro de querer eliminar a {item["nombre"]}?
+                          ¿Estás seguro de querer eliminar el insumo: {item["nombre"]}?
                         </p>
                         <div className="mt-2 flex flex-col gap-2 w-full">
                           <Button color="success" onClick={ ()=> handleDeleteConfirm(item["id"])    }>

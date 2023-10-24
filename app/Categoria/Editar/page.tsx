@@ -1,0 +1,123 @@
+'use client'
+import { Button, Input } from '@nextui-org/react'
+import axios from 'axios';
+import { useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react'
+
+interface Categoria {
+  nombre: string;
+  
+}
+
+export default function Editar() {
+
+  //Atributo
+  const axios = require('axios');
+  const [category, setCategory] = useState(null);
+  const valor = useSearchParams();
+  const id = valor.get('id');
+  const [nombre, setNombreV] = React.useState("");
+
+  //#region Validacion Nombre
+  const handleNombreChange = (value:any) => {
+    setNombreV(value);
+  };
+  const validateNombre = (value: any) => {
+    if (typeof value === "string") {
+      // Esta expresión regular permite solo letras (mayúsculas y minúsculas) y espacios
+      return value.match(/^[A-Za-z\s]{3,}$/i);
+    }
+    return false;
+  };
+  const validationNombre = React.useMemo(() => {
+    if (nombre === " ") return undefined;
+
+    return validateNombre(nombre) ? "valid" : "invalid" ;
+
+  }, [nombre]);
+  //#endregion
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`/api/categoria/${id}`);
+        if (response.status === 200) {
+          const data = await response.data;
+          const categoriaData = await data.administrador;
+
+          setCategory(categoriaData);
+
+          console.log(categoriaData)
+        } else {
+          console.error("Error al obtener al Administrador");
+        }
+      } catch (error) {
+        console.error("Error al obtener al Administrador:", error);
+      }
+    };
+        fetchData();
+    }, []);
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
+    event.preventDefault();
+    const formElements = event.currentTarget.elements;
+
+    const id = (formElements.namedItem("id") as HTMLInputElement)?.value || "";
+    const nombre = (formElements.namedItem("nombre") as HTMLInputElement)?.value || "";
+
+    const categoria: Categoria = {
+      nombre 
+    };
+
+    if(validationNombre == "valid"){
+      try {
+        const response = await axios.put(`/api/categoria/${id}`, {
+          nombre: categoria.nombre,
+        });
+    
+        if (response.status === 200) {
+          // Maneja la respuesta exitosa aquí, por ejemplo, muestra un mensaje de éxito o redirige a otra página
+          window.location.href = '/Categoria/Mostrar';
+  
+        } else {
+          // Maneja la respuesta en caso de error aquí
+          console.error('Error al actualizar:', response.data);
+        }
+      } catch (error) {
+        // Maneja los errores de red o del servidor aquí
+        console.error('Error en la solicitud PUT:', error);
+      }
+    }
+  }
+
+
+  return (
+    <div className="bg-blanco min-h-screen text-black ">
+      <div className="mx-auto max-w-5xl">
+        <h1 className=" text-black text-2xl text-center font-bold mb-8 mt-5"> Editar Administrador </h1>
+        <form className=" p-5 border-1 shadow " onSubmit={handleSubmit}>
+
+        <div className="mb-5 mt-5" >
+           
+           <Input id="id" key="outside" type="text" label="ID"  value={category['id']}  />
+         </div>
+
+          <div className="mb-5 mt-5">
+           
+            <Input id="nombre" key="outside" type="text" label="Nombre" required value={nombre} 
+             onChange={(event) => setNombreV(event.target.value)} 
+             color={validationNombre === "invalid" ? "danger" : "success"}
+             errorMessage={validationNombre === "invalid" && "El campo nombre es obligatorio y solo letras"  }
+             validationState={validationNombre}
+             onValueChange={handleNombreChange}
+             />
+          </div>
+
+          <Button type="submit" color="primary">
+            Enviar
+          </Button>
+        </form>
+      </div>
+    </div>
+  );
+}

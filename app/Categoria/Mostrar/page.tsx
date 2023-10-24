@@ -1,8 +1,6 @@
 'use client'
-import DeleteIcon from '@/DeleteIcon';
 import EditIcon from '@/EditIcon';
-import EyeIcon from '@/EyeIcon';
-import { Button, Link, Pagination, Popover, PopoverContent, PopoverTrigger, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react';
+import { Button, Link, Pagination, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useMemo, useState } from 'react'
@@ -37,18 +35,10 @@ export default function page() {
           .catch((error) => console.error("Error al obtener las organizaciones:", error));
       }, []);
 
-
-
-      const clic = (id: any) => {
-        router.push(`/Categoria/Detalles?idProveedor=${id}`);
-      };
       const clicEdit = (id: any) => {
         router.push(`/Categoria/Editar?id=${id}`);
       };  
 
-      const handleDeleteConfirm = async (id: any) => {
-        
-      }
     return (
     <>
 <div className="text-black bg-blanco p-4">
@@ -79,10 +69,8 @@ export default function page() {
           <TableColumn key="id">Id</TableColumn>
           <TableColumn key="nombre">Nombre</TableColumn>
           
-        
-          <TableColumn key="ver">Ver</TableColumn>
           <TableColumn key="editar">Editar</TableColumn>
-          <TableColumn key="eliminar">Eliminar</TableColumn>
+
         </TableHeader>
         <TableBody items={items}>
           {(item) => (
@@ -94,17 +82,6 @@ export default function page() {
               </TableCell>
               <TableCell>{item['nombre']}</TableCell> 
            
-              
-              <TableCell>
-                <Button
-                  className="flex items-center text-black hover:text-gray-800"
-                  color="primary"
-                  onClick={() => clic(item['id'])}
-                >
-                  <EyeIcon className="w-6 h-6 text-black" />
-                  Ver
-                </Button>
-              </TableCell>
               <TableCell>
               <Button
                   className="flex items-center text-black hover:text-gray-800"
@@ -114,43 +91,6 @@ export default function page() {
                   <EditIcon className="w-6 h-6 text-black" />
                   Editar
                 </Button>
-              </TableCell>
-              <TableCell>
-              <Popover
-                  
-                  showArrow
-                  backdrop="opaque"
-                  placement="right"
-                  classNames={{
-                    base: "py-3 px-4 border border-default-200 bg-gradient-to-br from-white to-default-300 dark:from-default-100 dark:to-default-50",
-                    arrow: "bg-default-200",
-                  }}
-                >
-                  <PopoverTrigger>
-                    <Button color="danger">
-                      Eliminar
-                      <DeleteIcon />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent>
-                    {(titleProps) => (
-                      <div className="px-1 py-2 w-full">
-                        <p
-                          className="text-small font-bold text-foreground"
-                          {...titleProps}
-                        >
-                          ¿Estás seguro de querer eliminar a {item["nombre"]}?
-                        </p>
-                        <div className="mt-2 flex flex-col gap-2 w-full">
-                          <Button color="success" onClick={ ()=> handleDeleteConfirm(item["id"])    }>
-                            Confirmar
-                          </Button>
-                          <Button >Cancelar</Button>
-                        </div>
-                      </div>
-                    )}
-                  </PopoverContent>
-                </Popover>
               </TableCell>
             </TableRow>
           )}

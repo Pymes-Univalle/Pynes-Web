@@ -3,7 +3,7 @@ import { Button, Input } from '@nextui-org/react'
 import axios from 'axios';
 import React from 'react'
 
-interface Provedores {
+interface Categoria {
   nombre: string;
   
 }
@@ -36,7 +36,7 @@ export default function page() {
 
     const nombre = (formElements.namedItem("nombre") as HTMLInputElement)?.value || "";
 
-    const categoria: Provedores = {
+    const categoria: Categoria = {
       nombre
     }
 

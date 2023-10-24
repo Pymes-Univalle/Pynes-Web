@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
-import axios from "axios"; // Importa Axios
+import axios from "axios";
 import {
   Table,
   TableHeader,
@@ -25,61 +25,56 @@ import { useRouter } from "next/navigation";
 import { Metadata } from "next";
 
 interface User {
- 
   estado: number;
   fechaActualizacion: Date;
 }
+
 export default function Mostrar() {
   const router = useRouter();
   const [page, setPage] = useState(1);
   const rowsPerPage = 3;
-  const [organizacion, setOrganizations] = useState([]); // Estado para almacenar las organizaciones
-
+  const [administrador, setAdmins] = useState([]); // Estado para almacenar los admins
 
   const user: User = {
-      
-   
     estado: 0,
     fechaActualizacion: new Date(new Date().toISOString()), 
   };
 
-
-
-
   useEffect(() => {
-    // Realizar la solicitud GET al servidor para obtener las organizaciones usando Axios
+    // Realizar la solicitud GET al servidor para obtener los admins usando Axios
     axios
-      .get("/api/organizacion")
+      .get("/api/administrador")
       .then((response) => {
         if (response.data && response.data.data) {
-          setOrganizations(response.data.data);
+            setAdmins(response.data.data);
         }
       })
       .catch((error) =>
-        console.error("Error al obtener las organizaciones:", error)
+        console.error("Error al obtener a los administradores:", error)
       );
   }, []);
 
-  const pages = Math.ceil(organizacion.length / rowsPerPage);
+  console.log(administrador);
+  const pages = Math.ceil(administrador.length / rowsPerPage);
 
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
-    return organizacion.slice(start, end);
-  }, [page, organizacion]);
+    return administrador.slice(start, end);
+  }, [page, administrador]);
 
   const clic = (id: any) => {
-    router.push(`/Organizacion/Detalles?id=${id}`);
+    router.push(`/Administrador/Detalles?id=${id}`);
   };
   const clicEdit = (id: any) => {
-    router.push(`/Organizacion/Editar?id=${id}`);
+    router.push(`/Administrador/Editar?id=${id}`);
   };
 
 
 
   const handleDeleteConfirm = async (id: any) => {
     try {
-      const response = await axios.delete(`/api/organizacion/${id}`, {
+      const response = await axios.delete(`/api/administrador/${id}`, {
         data:{
           estado:user.estado
         }
@@ -89,7 +84,6 @@ export default function Mostrar() {
   
       if (response.status === 200) {
         // Maneja la respuesta exitosa aquí, por ejemplo, muestra un mensaje de éxito o redirige a otra página
-        //console.log("Has eliminado a un usuario" + id);
 
         window.location.reload();
       } else {
@@ -106,12 +100,12 @@ export default function Mostrar() {
 
   return (
     <div className="text-black bg-blanco p-4">
-      <h1 className="text-center text-2xl mb-4">Lista de Organizaciones</h1>
+      <h1 className="text-center text-2xl mb-4">Lista de Administradores</h1>
       <Link
-        href="/Organizacion/Crear"
+        href="/Administrador/Crear"
         className="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
-        Crear Organizacion
+        Crear Administrador
       </Link>
       <Table
         aria-label="Example table with client side pagination"
@@ -133,15 +127,11 @@ export default function Mostrar() {
         }}
       >
         <TableHeader>
-          <TableColumn key="idOrganizacion">Id</TableColumn>
+          <TableColumn key="idAdministrador">Id</TableColumn>
           <TableColumn key="nombre">Nombre</TableColumn>
           <TableColumn key="apellido">Apellido</TableColumn>
           <TableColumn key="correo">Correo</TableColumn>
           <TableColumn key="celular">Celular</TableColumn>
-          <TableColumn key="latitud">Latitud</TableColumn>
-          <TableColumn key="longitud">Longitud</TableColumn>
-          <TableColumn key="crearProductos">CrearProductos</TableColumn>
-          <TableColumn key="nit">Nit</TableColumn>
           <TableColumn key="ver">Ver</TableColumn>
           <TableColumn key="editar">Editar</TableColumn>
           <TableColumn key="eliminar">Eliminar</TableColumn>
@@ -157,10 +147,6 @@ export default function Mostrar() {
               <TableCell>{item["correo"]}</TableCell>
 
               <TableCell>{item["celular"]}</TableCell>
-              <TableCell>{item["organizacion"]["latitud"]}</TableCell>
-              <TableCell>{item["organizacion"]["longitud"]}</TableCell>
-              <TableCell>{item["organizacion"]["crearProductos"]}</TableCell>
-              <TableCell>{item["organizacion"]["nit"]}</TableCell>
               <TableCell>
                 <Button
                   className="flex items-center text-black hover:text-gray-800"
