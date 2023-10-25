@@ -3,10 +3,11 @@ import React, { useState, useEffect } from "react";
 import { Button, Link, user } from "@nextui-org/react";
 import { motion } from "framer-motion";
 import CryptoJS from "crypto-js";
+import Cookies from 'js-cookie'; // npm i --save-dev @types/js-cookie
 
 //redux
 import { useSelector, useDispatch } from "react-redux";
-import { addUser } from "../redux/features/userSlice";
+import { addUser, deleteUser } from "../redux/features/userSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { useRouter } from "next/navigation";
 interface User {
@@ -17,8 +18,18 @@ export default function Login() {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const select = useAppSelector((state) => state.user);
-  console.log(select);
+  useEffect(() => {   
+    //
+    Cookies.remove('userToken')
+    dispatch(deleteUser());
+  }, []);
+
+  const ForgotPassword = () => {
+    router.push("/forgot_password");
+  }
+
+  // const select = useAppSelector((state) => state.user);
+  // console.log(select);
   const [invalidMesasge, setInvalidMessage] = useState(false);
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -43,7 +54,7 @@ export default function Login() {
       });
 
       if (resp.status === 200) {
-        console.log(resp.data);
+        //console.log(resp.data);
         const user = {
           id: resp.data.user.id,
           nombre: resp.data.user.nombre,
@@ -52,14 +63,27 @@ export default function Login() {
           rol: resp.data.role,
           token: resp.data.token,
         };
-        dispatch(addUser(user));
 
-        router.push("/productor/mostrar");
-      } else if (resp.status === 404) {
+        if(user.rol === 3){
+          setInvalidMessage(true);
+          return;
+        }
+       
+        dispatch(addUser(user));
+        localStorage.setItem("rol", user.rol);
+        //Cookies.remove('userToken')
+        Cookies.set('userToken', user.token, { expires: 2 / 24 });
+        console.log(Cookies.get('userToken'));
+       
+       
+
+        router.push(`/Principal`);
+      } else if (resp.status === 401) {
         setInvalidMessage(true);
       }
     } catch (error) {
-      console.error(error);
+     // console.error(error);
+      setInvalidMessage(true);
   
     }
   };
@@ -68,12 +92,12 @@ export default function Login() {
 
   return (
     <motion.div
-      className="w-screen content-center items-center"
+      className="w-full content-center items-center"
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1 }}
     >
-      <div className="bg-white dark:bg-gray-900">
+      <div className="bg-gray-900">
         <div className="flex justify-center min-h-screen">
           <div className="hidden bg-cover lg:block lg:w-1/2">
             <img
@@ -83,12 +107,12 @@ export default function Login() {
             ></img>
           </div>
 
-          <div className="flex items-center w-full max-w-2xl p-8 mx-auto lg:px-12 lg:w-1/2">
+          <div className="flex items-center w-full max-w-3xl p-8 mx-auto lg:px-12 lg:w-1/2">
             <div className="w-full">
               <h1 className="text-4xl font-bold text-white">INICIAR SESIÓN</h1>
 
               {invalidMesasge && (
-                <p className="mt-4 text-red-500">
+                <p className="mt-5 text-red-500 font-bold">
                   Correo o contraseña incorrrecta
                 </p>
               )}
@@ -130,7 +154,7 @@ export default function Login() {
 
                 <div className="mt-2 justify-end">
                   <a
-                    href="/ForgotPassword/"
+                    onClick={ForgotPassword}
                     className="font-bold text-blue-500  hover:underline hover:p-2 cursor-pointer"
                   >
                     ¿Olvidaste tu contraseña?

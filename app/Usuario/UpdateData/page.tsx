@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 
 export default function UpdateData() {
+  
   const [modal, setModal] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [nombre, setNombre] = useState("");
@@ -30,6 +31,7 @@ export default function UpdateData() {
   });
     const router = useRouter();
   const id = useAppSelector((state) => state.user.id);
+  console.log(id);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -70,7 +72,7 @@ export default function UpdateData() {
 
     if (Object.values(newValidations).every((valid) => valid)) {
       try {
-        const resp = await axios.put(`/api/usuario/11`, {
+        const resp = await axios.put(`/api/usuario/${id}`, {
           nombre: nombre.trim(),
           apellido: apellido.trim(),
           correo: correo.trim(),

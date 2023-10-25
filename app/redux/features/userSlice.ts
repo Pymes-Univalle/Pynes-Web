@@ -1,12 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState= {
-    id: null,
-    nombre: null,
-    apellido: null,
-    correo: null,
-    rol: null,
-    token: null,
+    id: 0,
+    nombre: "",
+    apellido: "",
+    correo: "",
+    rol: 0,
+    token: "",
 
 }
 
@@ -23,13 +23,13 @@ export const userSlice = createSlice({
             state.rol = action.payload.rol;
             state.token = action.payload.token;
         },
-        deleteUser:(state, action) => {
-            state.id = null;
-            state.nombre = null;
-            state.apellido = null;
-            state.correo = null;
-            state.rol = null;
-            state.token = null;
+        deleteUser:(state) => {
+            state.id = 0;
+            state.nombre = "";
+            state.apellido = "";
+            state.correo = "";
+            state.rol = 0;
+            state.token = "";
         },
         updateUser:(state, action) => {
             state.id = action.payload.id;

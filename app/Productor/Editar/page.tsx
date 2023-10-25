@@ -116,7 +116,7 @@ export default function Editar() {
     fetchData();
   }, []);
  const handleAceparClick = () => {
-    router.push("/Productores/Mostrar");
+    router.push("/Productor/Mostrar");
  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {

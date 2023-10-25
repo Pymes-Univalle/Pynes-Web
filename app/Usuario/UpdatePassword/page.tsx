@@ -12,8 +12,12 @@ import {
 } from "@nextui-org/react";
 
 import CryptoJS from "crypto-js";
+import { useAppSelector } from "@/app/redux/hooks";
+import { useRouter } from "next/navigation";
 
 export default function UpdatePassword() {
+  const router = useRouter();
+  const idUser = useAppSelector((state) => state.user.id)
   const [modal, setModal] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [contrasenaActual, setContrasenaActual] = useState("");
@@ -26,7 +30,9 @@ export default function UpdatePassword() {
   });
   const [passwordsMatchError, setPasswordsMatchError] = useState("");
   const [currentPasswordError, setCurrentPasswordError] = useState("");
-
+const handleClick = () => {
+    router.push("/Usuario/MiPerfil");
+}
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const newValidations = {
@@ -44,7 +50,7 @@ export default function UpdatePassword() {
         const axios = require("axios");
 
         try {
-          const response = await axios.get(`/api/usuario/11`);
+          const response = await axios.get(`/api/usuario/${idUser}`);
           if (response.status === 200) {
             var usario = response.data;
             console.log(usario);
@@ -53,7 +59,7 @@ export default function UpdatePassword() {
             usario.usuario.contrasena ==
             CryptoJS.MD5(contrasenaActual.trim()).toString(CryptoJS.enc.Hex)
           ) {
-            const resp = await axios.delete("/api/usuario/11", {
+            const resp = await axios.delete(`/api/usuario/${idUser}`, {
               data: {
                 contrasena: CryptoJS.MD5(contrasena).toString(CryptoJS.enc.Hex),
               },
@@ -161,7 +167,7 @@ export default function UpdatePassword() {
                     <Button
                       color="success"
                       as={Link}
-                      href="/Usuario/UpdatePassword"
+                      onClick={handleClick}
                     >
                       Aceptar
                     </Button>

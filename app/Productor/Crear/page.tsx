@@ -19,6 +19,8 @@ import emailjs from "@emailjs/browser";
 import CryptoJS from "crypto-js";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { useAppSelector } from "@/app/redux/hooks";
+import { Console } from "console";
 
 const mapContainerStyle = {
   width: "100%",
@@ -48,6 +50,8 @@ interface Productor {
 }
 
 export default function Crear() {
+  console.log(useAppSelector((state) => state.user.id));
+  const idOrganizacion = useAppSelector((state) => state.user.id);
   const router = useRouter();
   const [modal, setModal] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -59,12 +63,9 @@ export default function Crear() {
     celular: true,
     puesto: true,
   });
-  const [mapValidation, setMapValidation] = useState(false); 
-  const [mapError, setMapError] = useState(false); 
-
-  const [idOrganizacion, setIdOrganizacion] = useState("");
-  const [organizaciones, setOrganizacion] = useState([]);
-
+  const [mapValidation, setMapValidation] = useState(false);
+  const [mapError, setMapError] = useState(false);
+  const [emailExists, setEmailExists] = useState(false);
 
   var pass: string;
 
@@ -84,13 +85,13 @@ export default function Crear() {
     if (event.latLng) {
       const newMarker = event.latLng.toJSON();
       setMarkers([newMarker]);
-      setMapValidation(true)
+      setMapValidation(true);
     }
   };
 
   const handleAceparClick = () => {
     router.push("/Productor/Mostrar");
- }
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -121,7 +122,7 @@ export default function Crear() {
       latitud: markers[0]?.lat || 0,
       longitud: markers[0]?.lng || 0,
       puesto,
-      idOrganizacion: parseInt(idOrganizacion),
+      idOrganizacion: idOrganizacion,
     };
 
     console.log(productor);
@@ -136,7 +137,10 @@ export default function Crear() {
 
     setFieldValidations(newValidations);
 
-    if (Object.values(newValidations).every((valid) => valid) && mapValidation) {
+    if (
+      Object.values(newValidations).every((valid) => valid) &&
+      mapValidation
+    ) {
       const axios = require("axios");
       var templateParams = {
         from_name: "Totem",
@@ -146,62 +150,54 @@ export default function Crear() {
       };
 
       try {
-        emailjs
-          .send(
-            "service_7xh4aqx",
-            "template_soj79xk",
-            templateParams,
-            "BQzfsMnH6-p-UBfyg"
-          )
-          .then(
-            (result) => {
-              console.log(result.text);
-            },
-            (error) => {
-              console.log(error.text);
-            }
-          );
+        const validar = await axios.get(`/api/validarCorreo/${user.correo}`);
+        const validarCorreo = validar.data.user;
+        console.log("validarCorreo ", validar);
+        if (validarCorreo != null) {
+          setEmailExists(true);
+          console.log("si existe")
+        } else {
+          setEmailExists(false);
+          emailjs
+            .send(
+              "service_7xh4aqx",
+              "template_soj79xk",
+              templateParams,
+              "BQzfsMnH6-p-UBfyg"
+            )
+            .then(
+              (result) => {
+                console.log(result.text);
+              },
+              (error) => {
+                console.log(error.text);
+              }
+            );
 
-        const resp = await axios.post("/api/productor/", {
-          nombre: user.nombre,
-          apellido: user.apellido,
-          correo: user.correo,
-          contrasena: user.contrasena,
-          celular: user.celular,
-          latitud: productor.latitud.toString(),
-          longitud: productor.longitud.toString(),
-          puesto: productor.puesto,
-          idOrganizacion: productor.idOrganizacion,
-          fechaActualizacion: new Date(),
-        });
+          const resp = await axios.post("/api/productor/", {
+            nombre: user.nombre,
+            apellido: user.apellido,
+            correo: user.correo,
+            contrasena: user.contrasena,
+            celular: user.celular,
+            latitud: productor.latitud.toString(),
+            longitud: productor.longitud.toString(),
+            puesto: productor.puesto,
+            idOrganizacion: productor.idOrganizacion,
+            fechaActualizacion: new Date(),
+          });
 
-        if (resp.status === 200) {
-          setModal(true);
+          if (resp.status === 200) {
+            setModal(true);
+          }
         }
       } catch (error: any) {
         console.log(error.message);
       }
-    } else if (!mapValidation){
+    } else if (!mapValidation) {
       setMapError(true);
     }
   };
-
-  const handleOrganizacionChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const selectedValue = event.target.value;
-    setIdOrganizacion(selectedValue);
-
-  };
-
-  useEffect(() => {
-    axios
-      .get("/api/organizacion")
-      .then((response) => {
-        setOrganizacion(response.data.data);
-      });
-
-  }, []);
 
   return (
     <div className="bg-black min-h-screen text-black ">
@@ -245,20 +241,20 @@ export default function Crear() {
             />
           </div>
           <div className="mt-10">
-            <Input
-              id="correo"
-              name="correo"
-              key="outside"
-              type="email"
-              label="Correo Electrónico"
-              labelPlacement="outside"
-              required
-              validationState={fieldValidations.correo ? "valid" : "invalid"}
-              errorMessage={
-                !fieldValidations.correo ? "Campo requerido" : undefined
-              }
-            />
-          </div>
+          <Input
+            id="correo"
+            name="correo"
+            key="outside"
+            type="email"
+            label="Correo Electrónico"
+            labelPlacement="outside"
+            required
+            color={emailExists ? "danger" : "default"}
+            validationState={fieldValidations.correo ? "valid" : "invalid" || !emailExists ? "valid" : "invalid"}
+            errorMessage={!fieldValidations.correo ? "Campo requerido" : undefined || emailExists ?  "El correo electrónico esta siendo utilizado por otro usuario." : undefined }
+          />
+         
+        </div>
 
           <div className="mt-10">
             <Input
@@ -293,7 +289,7 @@ export default function Crear() {
           <div className="mt-10 mb-10">
             <label>Ubicación:</label>
             <div>
-              <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY} >
+              <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
                 <GoogleMap
                   mapContainerStyle={mapContainerStyle}
                   center={center}
@@ -306,33 +302,11 @@ export default function Crear() {
                 </GoogleMap>
               </LoadScript>
               {mapError && (
-                 <p className="text-red-500">Debe seleccionar una ubicación en el mapa.</p>
+                <p className="text-red-500">
+                  Debe seleccionar una ubicación en el mapa.
+                </p>
               )}
             </div>
-          </div>
-
-          <div>
-            <Select
-              id="organizacion"
-              label="Organizacion"
-              placeholder="Selecciona una Organizacion"
-              value={idOrganizacion}
-              onChange={(selectedValue: any) =>
-                handleOrganizacionChange(selectedValue)
-              }
-
-              className="mb-5 max-w-xs"
-            >
-              {organizaciones.map((organizacion) => (
-                <SelectItem
-                  className="text-black"
-                  key={organizacion['organizacion']["idOrganizacion"]}
-                  value={organizacion['organizacion']["idOrganizacion"]}
-                >
-                  {organizacion["nombre"]}
-                </SelectItem>
-              ))}
-            </Select>
           </div>
 
           <Button type="submit" radius="full" className="bg-amarillo">
@@ -347,10 +321,7 @@ export default function Crear() {
                   </ModalHeader>
 
                   <ModalFooter>
-                    <Button
-                      color="success"
-                      onClick={handleAceparClick}
-                    >
+                    <Button color="success" onClick={handleAceparClick}>
                       Aceptar
                     </Button>
                   </ModalFooter>

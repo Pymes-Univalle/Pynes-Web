@@ -70,6 +70,9 @@ export default function Mostrar() {
   const editar = (id: any) => {
     router.push(`/Productor/Editar?id=${id}`);
   };
+  const registrar = () => {
+    router.push(`/Productor/Crear`);
+  };
 
   const handleDeleteConfirm = async (id: any) => {
     try {
@@ -81,7 +84,7 @@ export default function Mostrar() {
       });
 
       if (response.status === 200) {
-        window.location.reload();
+        router.refresh();
       } else {
         console.error("Error al actualizar:", response.data);
       }
@@ -97,7 +100,7 @@ export default function Mostrar() {
         color="success"
         variant="solid"
         as={Link}
-        href="/Productor/Crear"
+        onClick={registrar}
         className="btn mb-5 text-white font-bold py-2 px-4 rounded-lg"
       >
         Registrar Productor

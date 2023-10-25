@@ -28,6 +28,7 @@ export default function ForgotPassword() {
   const [modal, setModal] = useState(false);
 
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+  const [invalidMesasge, setInvalidMessage] = useState(false);
   const [usuarioEncontrado, setUsuarioEncontrado] = useState<Usuario | null>(
     null
   );
@@ -46,7 +47,7 @@ export default function ForgotPassword() {
         }
       })
       .catch((error) => console.error(error));
-    console.log(usuarios);
+   // console.log(usuarios);
 
     const usuarioEncontrado = usuarios.find(
       (usuario) => usuario.correo === correo
@@ -54,7 +55,7 @@ export default function ForgotPassword() {
 
     if (usuarioEncontrado) {
       // Aquí tienes el usuario encontrado
-      console.log("Usuario encontrado:");
+     // console.log("Usuario encontrado:");
       var contrasenaNueva: string;
 
       const generarContraseña = (longitud: number = 6) =>
@@ -94,8 +95,8 @@ export default function ForgotPassword() {
               console.log(error.text);
             }
           );
-        console.log(usuarioEncontrado.id);
-        console.log(contrasenaNueva);
+        // console.log(usuarioEncontrado.id);
+        // console.log(contrasenaNueva);
 
         // Define los datos que deseas enviar en la solicitud PUT
         const data = {
@@ -122,7 +123,7 @@ export default function ForgotPassword() {
         console.log(error.message);
       }
     } else {
-      console.log("No se encontró un usuario con ese correo.");
+      setInvalidMessage(true);
     }
   };
 
@@ -140,9 +141,14 @@ export default function ForgotPassword() {
               <h1 className="text-4xl font-bold text-white">
                 ¿Olvidaste tu contraseña?
               </h1>
+              {invalidMesasge && (
+                <p className="mt-5 text-red-500 font-bold">
+                  No se encontró un usuario con ese correo electrónico.
+                </p>
+              )}
 
-              <p className="mt-4 text-gray-500 dark:text-gray-400">
-                No te preocupes, ingresa tu correo Electrónico y te enviaremos
+              <p className="mt-5 text-gray-500 dark:text-gray-400">
+                No te preocupes, ingresa tu correo electrónico y te enviaremos
                 una nueva contraseña.
               </p>
 
