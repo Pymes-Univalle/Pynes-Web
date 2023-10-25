@@ -86,7 +86,7 @@ export default function page() {
               <Button
                   className="flex items-center text-black hover:text-gray-800"
                   color="success"
-                  onClick={() => clicEdit(item['id'])}
+                  onClick={() => clicEdit(item['idCategoria'])}
                 >
                   <EditIcon className="w-6 h-6 text-black" />
                   Editar

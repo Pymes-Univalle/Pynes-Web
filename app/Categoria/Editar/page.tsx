@@ -1,6 +1,5 @@
 'use client'
-import { Button, Input } from '@nextui-org/react'
-import axios from 'axios';
+import { Button, Input, Progress } from '@nextui-org/react'
 import { useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
@@ -11,7 +10,7 @@ interface Categoria {
 
 export default function Editar() {
 
-  //Atributo
+  //Atributos
   const axios = require('axios');
   const [category, setCategory] = useState(null);
   const valor = useSearchParams();
@@ -43,16 +42,17 @@ export default function Editar() {
         const response = await axios.get(`/api/categoria/${id}`);
         if (response.status === 200) {
           const data = await response.data;
-          const categoriaData = await data.administrador;
+          const categoriaData = await data.categoria;
 
           setCategory(categoriaData);
+          setNombreV(categoriaData['nombre']);
 
           console.log(categoriaData)
         } else {
-          console.error("Error al obtener al Administrador");
+          console.error("Error al obtener la Categoria");
         }
       } catch (error) {
-        console.error("Error al obtener al Administrador:", error);
+        console.error("Error al obtener la Categoria:", error);
       }
     };
         fetchData();
@@ -62,7 +62,6 @@ export default function Editar() {
     event.preventDefault();
     const formElements = event.currentTarget.elements;
 
-    const id = (formElements.namedItem("id") as HTMLInputElement)?.value || "";
     const nombre = (formElements.namedItem("nombre") as HTMLInputElement)?.value || "";
 
     const categoria: Categoria = {
@@ -90,11 +89,21 @@ export default function Editar() {
     }
   }
 
+  if (!category) {
+    return  
+    <Progress
+    size="sm"
+    isIndeterminate
+    aria-label="Loading..."
+    className="max-w-md"
+  />
+}
+
 
   return (
     <div className="bg-blanco min-h-screen text-black ">
       <div className="mx-auto max-w-5xl">
-        <h1 className=" text-black text-2xl text-center font-bold mb-8 mt-5"> Editar Administrador </h1>
+        <h1 className=" text-black text-2xl text-center font-bold mb-8 mt-5"> Editar Categoria </h1>
         <form className=" p-5 border-1 shadow " onSubmit={handleSubmit}>
 
         <div className="mb-5 mt-5" >
