@@ -96,11 +96,14 @@ export default function RootLayout({
   const handleProveedores = () => {
     router.push("/Proveedor/Mostrar");
   };
+  const handleProduccion = () => {
+    router.push("/Produccion/Mostrar");
+  };
   
   return (
     <html lang="en" className="dark">
       <body className="bg-white h-screen w-screen">
-        <div className="h-full flex flex-col">
+        <div className="h-full w-full flex flex-col">
           <Providers>
             <Navbar
               isBordered
@@ -163,6 +166,17 @@ export default function RootLayout({
                      aria-current="page"
                    >
                      Productos
+                   </Link>
+                 </NavbarItem>
+                )}
+                  {rol === 2 && (
+                   <NavbarItem>
+                   <Link
+                     color="foreground"
+                     onClick={handleProduccion}
+                     aria-current="page"
+                   >
+                     Producción
                    </Link>
                  </NavbarItem>
                 )}
@@ -279,7 +293,7 @@ export default function RootLayout({
                 ))}
               </NavbarMenu>
             </Navbar>
-            <div className="bg-black flex flex-grow justify-center items-center">
+            <div className="bg-black flex flex-grow w-full h-full justify-center items-center">
               {children}
             </div>
           </Providers>
