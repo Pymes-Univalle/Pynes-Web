@@ -119,7 +119,7 @@ export default function ProductionForm() {
 
   return (
     <>
-      <div className="bg-blanco min-h-screen text-black ">
+      <div className="bg-blanco min-h-screen min-w-screen text-black ">
         <div className="mx-auto max-w-5xl">
           <h1 className=" text-black text-2xl text-center font-bold mb-8 mt-5">
             {" "}

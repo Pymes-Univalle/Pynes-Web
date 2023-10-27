@@ -4,10 +4,11 @@ import { Input, Checkbox, Button, Progress } from "@nextui-org/react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import GOOGLE_MAPS_API_KEY from "@/googleMapsConfig";
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { text } from "node:stream/consumers";
 import { CircularProgress } from "@nextui-org/react";
+import router from "next/navigation";
 
 
 const mapContainerStyle = {
@@ -203,7 +204,11 @@ export default function Editar() {
     }
     
    
-
+    const router = useRouter();
+  
+    const MostrarOrganizacion = () => {
+      router.push(`/Organizacion/Mostrar`);
+    };
     
 
    
@@ -298,7 +303,7 @@ export default function Editar() {
           // Maneja la respuesta exitosa aquí, por ejemplo, muestra un mensaje de éxito o redirige a otra página
           setIsLoading(false);
         
-          window.location.href = '/Organizacion/Mostrar';
+          MostrarOrganizacion();
   
   
         } else {
@@ -310,9 +315,7 @@ export default function Editar() {
         console.error('Error en la solicitud PUT:', error);
       }
     }
-
-  
-    
+   
 
 
 

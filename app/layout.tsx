@@ -296,7 +296,7 @@ export default function RootLayout({
               </NavbarMenu>
             </Navbar>
           
-            <div className="bg-black flex flex-grow w-full h-full justify-center items-center">
+            <div className="bg-black  w-screen h-full justify-center items-center">
            
               {children}
               

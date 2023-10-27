@@ -74,6 +74,9 @@ export default function Mostrar() {
   const clicEdit = (id: any) => {
     router.push(`/Organizacion/Editar?id=${id}`);
   };
+  const CrearOrganizacion = () => {
+    router.push(`/Organizacion/Crear`);
+  };
 
 
 
@@ -104,15 +107,27 @@ export default function Mostrar() {
   
   };
 
+
+
   return (
     <div className="text-black bg-blanco p-4">
       <h1 className="text-center text-2xl mb-4">Lista de Organizaciones</h1>
-      <Link
+      {/* <Link
         href="/Organizacion/Crear"
         className="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
         Crear Organizacion
-      </Link>
+      </Link> */}
+
+      <Button
+        className="flex items-center text-black hover:text-gray-800"
+        color="success"
+        onClick={() => CrearOrganizacion()}
+      >
+        <EditIcon className="w-6 h-6 text-black" />
+        Crear Organizacion
+      </Button>
+
       <Table
         aria-label="Example table with client side pagination"
         bottomContent={

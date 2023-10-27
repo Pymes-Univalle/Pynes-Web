@@ -12,6 +12,7 @@ import React, { use, useEffect, useState } from "react";
 
 import axios from "axios";
 import { Console } from "console";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [tieneFechaVencimiento, setTieneFechaVencimiento] = useState(false);
@@ -133,6 +134,12 @@ export default function Page() {
     setProductorValidation(selectedValue ? "valid" : "invalid");
   };
 
+  const router = useRouter();
+  
+  const MostrarProducto = () => {
+    router.push(`/Producto/Mostrar`);
+  };
+
   async function sumbit(
     event: React.FormEvent<HTMLFormElement>
   ): Promise<void> {
@@ -240,7 +247,7 @@ export default function Page() {
           if (response.status === 200) {
             console.log("Datos y imágenes enviados correctamente a la API");
            
-            window.location.href = '/Producto/Mostrar';
+            MostrarProducto();
           
           } else {
             console.error("Error al enviar los datos y las imágenes a la API");
@@ -346,7 +353,7 @@ export default function Page() {
 
   return (
     <>
-      <div className="bg-blanco min-h-screen text-black ">
+      <div className="bg-blanco h-full text-black ">
         <div className="mx-auto max-w-5xl">
           <h1 className=" text-black text-2xl text-center font-bold mb-8 mt-5">
             {" "}

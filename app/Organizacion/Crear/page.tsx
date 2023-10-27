@@ -308,6 +308,7 @@ export default function Crear() {
                   setIsLoading(false);
                   
                   window.location.href = '/Organizacion/Mostrar';
+                  
                 } else {
                   console.error("Error al enviar el correo electrónico");
                 }
