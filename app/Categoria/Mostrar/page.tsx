@@ -24,6 +24,10 @@ export default function page() {
         return Categoria.slice(start, end);
     }, [page, Categoria]);
 
+    const crearCategoria = () => {
+        router.push("/Categoria/Crear");
+    }
+
     useEffect(() => {
         // Realizar la solicitud GET al servidor para obtener las organizaciones usando Axios
         axios.get("/api/categoria")
@@ -43,7 +47,7 @@ export default function page() {
     <>
 <div className="text-black bg-blanco p-4">
       <h1 className="text-center text-2xl mb-4">Lista de Categorias</h1>
-      <Link href="/Categoria/Crear" className="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      <Link onClick={crearCategoria} className="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
         Crear Categoria
       </Link>
       <Table
@@ -86,7 +90,7 @@ export default function page() {
               <Button
                   className="flex items-center text-black hover:text-gray-800"
                   color="success"
-                  onClick={() => clicEdit(item['id'])}
+                  onClick={() => clicEdit(item['idCategoria'])}
                 >
                   <EditIcon className="w-6 h-6 text-black" />
                   Editar

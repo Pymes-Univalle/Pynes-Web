@@ -289,7 +289,7 @@ export default function Crear() {
           <div className="mt-10 mb-10">
             <label>Ubicación:</label>
             <div>
-              <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
+            
                 <GoogleMap
                   mapContainerStyle={mapContainerStyle}
                   center={center}
@@ -300,7 +300,7 @@ export default function Crear() {
                     <Marker key={index} position={marker} />
                   ))}
                 </GoogleMap>
-              </LoadScript>
+             
               {mapError && (
                 <p className="text-red-500">
                   Debe seleccionar una ubicación en el mapa.

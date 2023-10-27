@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { deleteUser } from "./redux/features/userSlice";
 import { useAppDispatch } from "./redux/hooks";
+import { GoogleMap, LoadScript } from "@react-google-maps/api";
+import GOOGLE_MAPS_API_KEY from "@/googleMapsConfig";
 
 import {
   Navbar,
@@ -293,9 +295,13 @@ export default function RootLayout({
                 ))}
               </NavbarMenu>
             </Navbar>
+          
             <div className="bg-black flex flex-grow w-full h-full justify-center items-center">
+           
               {children}
+              
             </div>
+           
           </Providers>
         </div>
       </body>

@@ -2,6 +2,7 @@
 import { Button, Input } from '@nextui-org/react'
 import axios from 'axios';
 import React from 'react'
+import { useRouter } from 'next/navigation';
 
 interface Categoria {
   nombre: string;
@@ -11,6 +12,7 @@ interface Categoria {
 export default function page() {
  
   //Validacion
+  const router = useRouter();
   const [nombre, setNombreV] = React.useState("");
 
   const handleNameChange = (value:any) => {
@@ -53,7 +55,8 @@ export default function page() {
         });
     
         if (resp && resp.data) {
-          window.location.href = '/Categoria/Mostrar';
+          
+          router.push('/Categoria/Mostrar');
          
         }
       

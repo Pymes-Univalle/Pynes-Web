@@ -197,7 +197,7 @@ export default function Editar() {
         <section className="col-span-1 flex flex-col items-center">
           <div className="w-full">
             <h1 className=" text-white text-2xl text-center font-bold mb-2 mt-5">
-              Registrar Productor
+              Actualizar Productor
             </h1>
             <div className="mt-10">
               <Input
@@ -318,7 +318,7 @@ export default function Editar() {
         </section>
         <section className="col-span-1 flex flex-col justify-center">
           <div className="h-fit">
-            <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
+           
               <GoogleMap
                 mapContainerStyle={mapContainerStyle}
                 center={center}
@@ -329,7 +329,7 @@ export default function Editar() {
                   <Marker key={index} position={marker} />
                 ))}
               </GoogleMap>
-            </LoadScript>
+           
           </div>
           <Button
             type="submit"

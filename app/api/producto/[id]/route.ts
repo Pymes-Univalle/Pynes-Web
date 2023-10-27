@@ -103,17 +103,32 @@ export async function PUT(request: Request, {params}: Params) {
     });
 
     await Promise.all(
-      atributos.map(async (atributo: { idAtributo:number, nombre: string; valor: string }) => {
-        const existingAtributo = await prisma.atributo.findUnique({
+      atributos.map(async (atributo: { idAtributo: number, nombre: string; valor: string }) => {
+        const existingAtributo = await prisma.atributo.findFirst({
+          // Buscar un atributo con el mismo ID o nombre
           where: {
-            idAtributo: atributo.idAtributo,
-            nombre: atributo.nombre,
-            idProducto: productoActualizado.idProductos,
+            OR: [
+              { idAtributo: atributo.idAtributo },
+              { nombre: atributo.nombre },
+            ],
           },
         });
 
+        if (existingAtributo) {
+          // Si existe un atributo con el mismo ID o nombre, actualízalo
+          const updatedAtributo = await prisma.atributo.update({
+            where: {
+              idAtributo: existingAtributo.idAtributo,
+            },
+            data: {
+              nombre: atributo.nombre,
+              valor: atributo.valor,
+            },
+          });
+        }
         if (!existingAtributo) {
-          await prisma.atributo.create({
+          // Si no existe un atributo con el mismo ID o nombre, créalo
+          const newAtributo = await prisma.atributo.create({
             data: {
               nombre: atributo.nombre,
               valor: atributo.valor,

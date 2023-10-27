@@ -1,4 +1,3 @@
-// Importa tus modelos de Prisma
 import prisma from "@/lib/prisma";
 import { data } from "autoprefixer";
 import { NextResponse } from "next/server";

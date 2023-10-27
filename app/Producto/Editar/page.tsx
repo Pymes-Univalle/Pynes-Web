@@ -3,10 +3,12 @@ import { Button, Input, Select, SelectItem, Textarea, Image, Checkbox, CircularP
 import React, { use, useEffect, useState } from "react";
 import axios from 'axios';
 import { useSearchParams } from "next/navigation";
+import { useRouter } from 'next/navigation';
 
 export default function Editar() {
 
   //#region Atributos
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState(null);
   const [rutaData, setRutaData] = useState([]);
@@ -28,13 +30,14 @@ export default function Editar() {
   const [fechaVencimiento, setFechaVencimiento] = useState("");
 
   const [atributos, setAtributos] = useState<
-    { nombre: string; valor: string }[]
-  >([{ nombre: "", valor: "" }]);
+    { IdAtributo: string, nombre: string; valor: string }[]
+  >([{ IdAtributo: "", nombre: "", valor: "" }]);
   const [imagePreviews, setImagePreviews] = useState<
     { src: string; alt: string; file: File }[]
   >([]);
   //#endregion
 
+  //#region Cargar datos de categorías y productores
   useEffect(() => {
     //#region Obtener el ID de la "categoría" actual del producto
     // Realiza la solicitud a la API para cargar datos de categorías y productores
@@ -58,6 +61,7 @@ export default function Editar() {
     });
     //#endregion
   }, []);
+  //#endregion
 
   //#region Obtener los datos del producto
   useEffect(() => {
@@ -68,8 +72,6 @@ export default function Editar() {
         if (response.status === 200) {
           const data = response.data;
           const productoData = await data.productos;
-
-          console.log('Product data:', productoData); // Log the product data
 
           setProducts(productoData);
           setRutaData(productoData.ruta);
@@ -127,6 +129,7 @@ export default function Editar() {
 
           //#region Cargar los atributos del producto
           const atributosProducto = productoData.atributo.map((atributo: any) => ({
+            idAtributo: atributo.idAtributo,
             nombre: atributo.nombre,
             valor: atributo.valor,
           }));
@@ -224,6 +227,7 @@ export default function Editar() {
     const cantidad =
       (formElements.namedItem("cantidad") as HTMLInputElement)?.value || "";
     const atributosArray = atributos.map((atributo) => ({
+      idAtributo: atributo.IdAtributo,
       nombre: atributo.nombre,
       valor: atributo.valor,
     }));
@@ -269,6 +273,7 @@ export default function Editar() {
     formData.append("idProductor", id_productor);
 
     formData.append("atributos", JSON.stringify(atributosArray));
+
     if(tieneFechaVencimiento){
       formData.append("fechaVencimineto" , fechaMysql);
     }
@@ -287,8 +292,8 @@ export default function Editar() {
         setIsLoading(false);
 
         console.log("Datos y imágenes enviados correctamente a la API");
-       
-        window.location.href = '/Producto/Mostrar';
+        router.push('/Producto/Mostrar');
+        //window.location.href = '/Producto/Mostrar';
       
       } else {
         console.error("Error al enviar los datos y las imágenes a la API");
@@ -341,7 +346,7 @@ export default function Editar() {
   }
 
   function addAtributo(): void {
-    setAtributos([...atributos, { nombre: "", valor: "" }]);
+    setAtributos([...atributos, { IdAtributo: "", nombre: "", valor: "" }]);
   }
 
   function removeAtributo(index: number): void {
