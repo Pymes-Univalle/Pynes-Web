@@ -72,7 +72,7 @@ function page() {
         <div className="mb-5">
           <label>Ubicación:</label>
           <div style={mapContainerStyle}>
-          <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
+        
               <GoogleMap
                 mapContainerStyle={mapContainerStyle}
                 center={{
@@ -85,7 +85,7 @@ function page() {
                   <Marker position={{ lat: parsedLatitud, lng: parsedLongitud }} />
                 )}
               </GoogleMap>
-            </LoadScript>
+            
           </div>
         </div>
        

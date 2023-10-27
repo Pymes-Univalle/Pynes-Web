@@ -92,6 +92,9 @@ export default function RootLayout({
     router.push("/Categoria/Mostrar");
   };
 
+  const handleOrganizaciones = () => {
+    router.push("/Organizacion/Mostrar");
+  };
   const handleInsumos = () => { 
     router.push("/Insumo/Mostrar");
   };
@@ -131,7 +134,7 @@ export default function RootLayout({
                   <NavbarItem>
                     <Link
                       color="foreground"
-                      onClick={handleProductores}
+                      onClick={handleOrganizaciones}
                       aria-current="page"
                     >
                       Organizaciones
@@ -222,11 +225,7 @@ export default function RootLayout({
 
               <NavbarContent justify="end">
                 
-                {/* <NavbarItem>
-                  <Button as={Link} color="warning" href="#" variant="flat">
-                    Sign Up
-                  </Button>
-                </NavbarItem> */}
+              
                 <NavbarItem>
                   <Dropdown>
                     <DropdownTrigger>

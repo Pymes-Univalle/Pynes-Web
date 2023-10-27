@@ -43,21 +43,25 @@ export default function Mostrar() {
     fechaActualizacion: new Date(new Date().toISOString()), 
   };
 
-
+  const Carga = () =>{
+    axios
+    .get("/api/organizacion")
+    .then((response) => {
+      if (response.data && response.data.data) {
+        setOrganizations(response.data.data);
+      }
+    })
+    .catch((error) =>
+      console.error("Error al obtener las organizaciones:", error)
+    );
+  }
 
 
   useEffect(() => {
     // Realizar la solicitud GET al servidor para obtener las organizaciones usando Axios
-    axios
-      .get("/api/organizacion")
-      .then((response) => {
-        if (response.data && response.data.data) {
-          setOrganizations(response.data.data);
-        }
-      })
-      .catch((error) =>
-        console.error("Error al obtener las organizaciones:", error)
-      );
+
+    Carga();
+   
   }, []);
 
   const pages = Math.ceil(organizacion.length / rowsPerPage);
@@ -94,7 +98,8 @@ export default function Mostrar() {
         // Maneja la respuesta exitosa aquí, por ejemplo, muestra un mensaje de éxito o redirige a otra página
         //console.log("Has eliminado a un usuario" + id);
 
-        window.location.reload();
+        //window.location.reload();
+        Carga();
       } else {
         // Maneja la respuesta en caso de error aquí
         console.error('Error al actualizar:', response.data);
@@ -112,12 +117,7 @@ export default function Mostrar() {
   return (
     <div className="text-black bg-blanco p-4">
       <h1 className="text-center text-2xl mb-4">Lista de Organizaciones</h1>
-      {/* <Link
-        href="/Organizacion/Crear"
-        className="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      >
-        Crear Organizacion
-      </Link> */}
+     
 
       <Button
         className="flex items-center text-black hover:text-gray-800"

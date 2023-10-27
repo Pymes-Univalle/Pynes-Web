@@ -15,6 +15,8 @@ import { motion } from "framer-motion";
 import { randomBytes } from "crypto";
 import emailjs from "@emailjs/browser";
 import CryptoJS from "crypto-js";
+import { useRouter } from "next/navigation";
+
 
 interface Usuario {
   id: number;
@@ -26,12 +28,18 @@ interface Usuario {
 }
 export default function ForgotPassword() {
   const [modal, setModal] = useState(false);
+  const router = useRouter();
+
 
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [invalidMesasge, setInvalidMessage] = useState(false);
   const [usuarioEncontrado, setUsuarioEncontrado] = useState<Usuario | null>(
     null
   );
+
+  const accept = () =>{
+    router.push('/Login')
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -185,7 +193,7 @@ export default function ForgotPassword() {
                           <Button
                             color="success"
                             as={Link}
-                            href="/Login/"
+                            onClick={accept}
                           >
                             Aceptar
                           </Button>
@@ -196,7 +204,7 @@ export default function ForgotPassword() {
                 </Modal>
                 <div className="mt-2 justify-end">
                   <a
-                    href="/Login/"
+                   onClick={accept}
                     className="font-bold text-blue-500  hover:underline hover:p-2 cursor-pointer"
                   >
                     ← Iniciar Sesión

@@ -8,6 +8,8 @@ import crypto from "crypto";
 import axios from "axios";
 import { CircularProgress } from "@nextui-org/react";
 import * as CryptoJS from 'crypto-js';
+import { useRouter } from "next/navigation";
+
 
 const mapContainerStyle = {
   width: "100%",
@@ -37,6 +39,8 @@ interface Organization {
 }
 
 export default function Crear() {
+  const router = useRouter();
+
   const [crearProductos, setCrearProductos] = React.useState(false);
   const [CorreoU, setOrganization] = useState(null);
   const [correoExiste, setCorreoExiste] = useState(false);
@@ -158,7 +162,7 @@ export default function Crear() {
     return validateCelular(nit) ? "valid" : "invalid" ;
 
   }, [nit]);
-
+  
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -306,8 +310,8 @@ export default function Crear() {
   
                 if (response.status === 200) {
                   setIsLoading(false);
-                  
-                  window.location.href = '/Organizacion/Mostrar';
+                  router.push('Organizacion/Mostrar')
+                 
                   
                 } else {
                   console.error("Error al enviar el correo electrónico");
@@ -432,7 +436,7 @@ export default function Crear() {
           <div className="mb-5">
             <label>Ubicación:</label>
             <div  style={mapContainerStyle}>
-              <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
+            
                 <GoogleMap
                 
                   mapContainerStyle={mapContainerStyle}
@@ -444,7 +448,7 @@ export default function Crear() {
                     <Marker key={index} position={marker} />
                   ))}
                 </GoogleMap>
-              </LoadScript>
+              
             </div>
             {!mapValid && (
               <p className="text-red-500">Debes seleccionar una ubicación en el mapa.</p>

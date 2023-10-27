@@ -6,6 +6,9 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     const producto = await prisma.productos.findMany({
+      where: {
+        estado: 1,
+      },
       include:{
         ruta:true,
         categoria: true,

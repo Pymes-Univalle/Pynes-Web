@@ -12,6 +12,7 @@ import { data } from "autoprefixer";
 
 
 
+
 interface Proveedor {
  
   estado: number;
@@ -50,6 +51,10 @@ export default function Mostrar() {
     router.push(`/Proveedor/Editar?id=${id}`);
   };
 
+  const volver = () => {
+    router.push('/Proveedor/Crear');
+  }
+
   const proveedor: Proveedor = {
     estado: 0,
     fechaActualizacion: new Date(new Date().toISOString()), 
@@ -86,7 +91,7 @@ export default function Mostrar() {
   return (
     <div className="text-black bg-blanco p-4">
       <h1 className="text-center text-2xl mb-4">Lista de Proveedores</h1>
-      <Link href="/Proveedor/Crear" className="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      <Link onClick={volver} className="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
         Crear Proveedor
       </Link>
       <Table

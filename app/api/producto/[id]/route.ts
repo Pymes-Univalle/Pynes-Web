@@ -197,3 +197,29 @@ export async function PUT(request: Request, {params}: Params) {
     }
   }
 }
+
+export async function DELETE(request: Request, { params }: Params) {
+  try {
+    const { estado } = await request.json();
+
+    const updateProducto = await prisma.productos.update({
+        where: {
+            idProductos: Number(params.id),
+        },
+        data: {
+            estado:estado,
+            fechaActualizacion: new Date(new Date().toISOString())
+        },
+    });
+
+    return NextResponse.json({
+      updateProducto,
+    });
+
+  } catch (error) {
+    console.log(error);
+    if (error instanceof Error) {
+      return NextResponse.json({ message: error.message }, { status: 500 });
+    }
+  }
+}

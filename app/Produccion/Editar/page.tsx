@@ -3,8 +3,12 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Button, Select, SelectItem, Input } from "@nextui-org/react";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+
 
 export default function Editar() {
+  const router = useRouter();
+
   const valor = useSearchParams();
   const id = valor.get('id');
   const [produccion, setProduccion] = useState("");
@@ -140,7 +144,7 @@ export default function Editar() {
       .put(`/api/insumosProduccion/${id}`, productionData)
       .then((response) => {
         console.log("Producción actualizado con éxito." );
-        window.location.href = '/Produccion/Mostrar';
+        router.push('/Produccion/Mostrar');
       })
       .catch((error) => {
         console.error("Error al registrar la producción:", error);

@@ -6,6 +6,9 @@ import {
   Button,
   Link,
   Pagination,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   Table,
   TableBody,
   TableCell,
@@ -17,23 +20,36 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 
+interface Producto {
+  estado:number;
+  fechaActualizacion: Date;
+}
+
 export default function Mostrar() {
   const router = useRouter();
   const [page, setPage] = useState(1);
   const rowsPerPage = 3;
   const [productosD, setProductor] = useState([]);
 
-  useEffect(() => {
-    axios
-      .get("/api/producto")
-      .then((res) => {
-        if (res.data && res.data.data) {
-          setProductor(res.data.data);
+  const producto: Producto = {
+    estado: 0,
+    fechaActualizacion: new Date(new Date().toISOString()),
+  };
+
+  const Reload = () => {
+    axios.get("/api/producto")
+    .then((res) =>{
+        if(res.data && res.data.data){
+            setProductor(res.data.data);
         }
-      })
-      .catch((error) => {
+    })
+    .catch((error) => {
         console.log("Error eal obtener los datos de la Api" + error);
-      });
+    })
+  }
+
+  useEffect(() => {
+    Reload();
   }, []);
 
   const pages = Math.ceil(productosD.length / rowsPerPage);
@@ -54,6 +70,21 @@ export default function Mostrar() {
     router.push("/Producto/Crear");
   };
   
+  const handleDeleteConfirm = async (id: any) => {
+    try {
+        await axios.delete(`/api/producto/${id}`, {
+            data: {
+
+                estado: producto.estado,
+            }
+        });
+
+       Reload();
+
+    } catch (error) {
+        console.log("Error en la solicitud PUT(Delete)" + error);
+    }
+  };
 
   return (
     <>
@@ -129,14 +160,41 @@ export default function Mostrar() {
                 </TableCell>
 
                 <TableCell>
-                  <Button
-                    className="flex items-center text-black hover:text-gray-800"
-                    color="danger"
-                    onClick={() => ClickDetalles(item["idProductos"])}
-                  >
-                    <DeleteIcon className="w-6 h-6 text-black" />
-                    Eliminar
-                  </Button>
+                  <Popover
+
+                    showArrow
+                    backdrop="opaque"
+                    placement="right"
+                    classNames={{
+                        base: "py-3 px-4 border border-default-200 bg-gradient-to-br from-white to-default-300 dark:from-default-100 dark:to-default-50",
+                        arrow: "bg-default-200",
+                    }}
+                    >
+                    <PopoverTrigger>
+                        <Button color="danger">
+                        Eliminar
+                        <DeleteIcon />
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent>
+                        {(titleProps) => (
+                        <div className="px-1 py-2 w-full">
+                            <p
+                            className="text-small font-bold text-foreground"
+                            {...titleProps}
+                            >
+                            ¿Estás seguro de querer eliminar a {item["nombre"]}?
+                            </p>
+                            <div className="mt-2 flex flex-col gap-2 w-full">
+                            <Button color="success" onClick={ ()=> handleDeleteConfirm(item["idProductos"])    }>
+                                Confirmar
+                            </Button>
+                            <Button >Cancelar</Button>
+                            </div>
+                        </div>
+                        )}
+                    </PopoverContent>
+                  </Popover>
                 </TableCell>
               </TableRow>
             )}

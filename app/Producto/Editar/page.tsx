@@ -296,7 +296,7 @@ export default function Editar() {
 
         console.log("Datos y imágenes enviados correctamente a la API");
         router.push('/Producto/Mostrar');
-        //window.location.href = '/Producto/Mostrar';
+     
       
       } else {
         console.error("Error al enviar los datos y las imágenes a la API");

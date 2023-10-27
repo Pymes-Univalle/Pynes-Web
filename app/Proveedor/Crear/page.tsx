@@ -3,6 +3,8 @@ import { Button, Input } from '@nextui-org/react'
 import { proveedores } from '@prisma/client';
 import axios from 'axios';
 import React from 'react'
+import { useRouter } from "next/navigation";
+
 
 
 interface Provedores {
@@ -12,6 +14,8 @@ interface Provedores {
   
 }
 export default function page() {
+  const router = useRouter();
+
   //Validacion
   const [nombre, setNombre] = React.useState("");
   const [celular, setCelular] = React.useState("");
@@ -92,8 +96,7 @@ export default function page() {
         });
     
         if (resp && resp.data) {
-          window.location.href = '/Proveedor/Mostrar';
-         
+         router.push('/Proveedor/Mostrar')
         }
       
       }catch(error){

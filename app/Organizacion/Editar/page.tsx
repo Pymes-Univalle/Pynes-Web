@@ -402,7 +402,6 @@ export default function Editar() {
           <div className="mb-5">
             <label>Ubicación:</label>
             <div style={mapContainerStyle}>
-              <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
                 <GoogleMap
                   mapContainerStyle={mapContainerStyle}
                   center={mapCenter}
@@ -416,7 +415,6 @@ export default function Editar() {
                   ))}
                  
                 </GoogleMap>
-              </LoadScript>
             </div>
           </div>
           <div className="mb-5">

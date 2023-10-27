@@ -2,8 +2,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Button, Select, SelectItem, Input } from "@nextui-org/react";
+import { useRouter } from "next/navigation";
 
 export default function ProductionForm() {
+  const router = useRouter();
+
   const [insumos, setInsumos] = useState([]);
   const [idProductos, setIdProductos] = useState("");
   const [productos, setProductos] = useState([]);
@@ -110,7 +113,8 @@ export default function ProductionForm() {
       .post("/api/insumosProduccion", productionData)
       .then((response) => {
         console.log("Producción registrada con éxito." );
-        window.location.href = '/Produccion/Mostrar';
+ 
+        router.push('/Produccion/Mostrar')
       })
       .catch((error) => {
         console.error("Error al registrar la producción:", error);

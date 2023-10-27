@@ -3,6 +3,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { Input, Checkbox, Button } from "@nextui-org/react";
 import axios from "axios";
 import { CircularProgress } from "@nextui-org/react";
+import { useRouter } from "next/navigation";
+
 
 interface Insumo {
   nombre: string;
@@ -12,6 +14,8 @@ interface Insumo {
 
 export default function Crear() {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
   //Validacion
   const [nombre, setNombreV] = React.useState("");
   const [precio, setPrecioV] = React.useState("");
@@ -129,7 +133,7 @@ export default function Crear() {
               setNombreV("");
               
               try {
-                window.location.href = '/Insumo/Mostrar';
+                router.push('/Insumo/Mostrar');
 
               } catch (error) {
                 console.error("Error al querer mostrar:", error);

@@ -68,6 +68,10 @@ export default function Mostrar() {
     router.push(`/Insumo/Editar?id=${id}`);
   };
 
+  const crear = () => {
+    router.push("/Insumo/Crear");
+  }
+
   const handleDeleteConfirm = async (id: any) => {
     try {
       const response = await axios.delete(`/api/insumo/${id}`);
@@ -92,7 +96,7 @@ export default function Mostrar() {
     <div className="text-black bg-blanco p-4">
       <h1 className="text-center text-2xl mb-4">Lista de Insumos</h1>
       <Link
-        href="/Insumo/Crear"
+        onClick={crear}
         className="btn bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
       >
         Crear Insumo
