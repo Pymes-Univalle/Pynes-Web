@@ -2,10 +2,15 @@
 import DeleteIcon from '@/DeleteIcon';
 import EditIcon from '@/EditIcon';
 import EyeIcon from '@/EyeIcon';
-import { Button, Link, Pagination, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react';
+import { Button, Link, Pagination, Popover, PopoverContent, PopoverTrigger, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useMemo, useState } from 'react'
+
+interface Producto {
+    estado:number;
+    fechaActualizacion: Date;
+}
 
 export default function Mostrar() {
 
@@ -13,6 +18,25 @@ export default function Mostrar() {
     const [page, setPage] = useState(1);
     const rowsPerPage = 3;
     const [productosD , setProductor] = useState([]);
+
+    const producto: Producto = {
+        estado: 0,
+        fechaActualizacion: new Date(new Date().toISOString()),
+    };
+
+    const Reload = () => {
+        axios.get("/api/producto")
+        .then((res) =>{
+            if(res.data && res.data.data){
+                setProductor(res.data.data);
+            }
+
+            
+        })
+        .catch((error) => {
+            console.log("Error eal obtener los datos de la Api" + error);
+        })    
+    }
 
     useEffect(() => {
         axios.get("/api/producto")
@@ -41,6 +65,27 @@ export default function Mostrar() {
 
     const ClickEditar = (id: any) => {
         router.push(`/Producto/Editar?id=${id}`);
+    };
+
+    const handleDeleteConfirm = async (id: any) => {
+        try {
+            await axios.delete(`/api/producto/${id}`, {
+                data: {
+
+                    estado: producto.estado,
+                }
+            });
+
+            // if (response.status === 200) {
+            //     window.location.reload();
+            // } else {
+            //     console.log("Error al actualizar el producto");
+            // }
+           Reload();
+
+        } catch (error) {
+            console.log("Error en la solicitud PUT(Delete)" + error);
+        }
     };
 
     return (
@@ -121,15 +166,41 @@ export default function Mostrar() {
 
                         
                         <TableCell>
-                            <Button 
-                                className='flex items-center text-black hover:text-gray-800'
-                                color='danger'
-                                onClick={() => ClickDetalles(item['idProductos']) }
-                            >
-                            <DeleteIcon className='w-6 h-6 text-black' />
-                            Eliminar
-                            </Button>
-                            
+                            <Popover
+                  
+                                showArrow
+                                backdrop="opaque"
+                                placement="right"
+                                classNames={{
+                                    base: "py-3 px-4 border border-default-200 bg-gradient-to-br from-white to-default-300 dark:from-default-100 dark:to-default-50",
+                                    arrow: "bg-default-200",
+                                }}
+                                >
+                                <PopoverTrigger>
+                                    <Button color="danger">
+                                    Eliminar
+                                    <DeleteIcon />
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent>
+                                    {(titleProps) => (
+                                    <div className="px-1 py-2 w-full">
+                                        <p
+                                        className="text-small font-bold text-foreground"
+                                        {...titleProps}
+                                        >
+                                        ¿Estás seguro de querer eliminar a {item["nombre"]}?
+                                        </p>
+                                        <div className="mt-2 flex flex-col gap-2 w-full">
+                                        <Button color="success" onClick={ ()=> handleDeleteConfirm(item["idProductos"])    }>
+                                            Confirmar
+                                        </Button>
+                                        <Button >Cancelar</Button>
+                                        </div>
+                                    </div>
+                                    )}
+                                </PopoverContent>
+                            </Popover>
                         </TableCell>
                     </TableRow>
                 )}

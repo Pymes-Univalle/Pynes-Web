@@ -35,16 +35,10 @@ export default function Mostrar() {
   const rowsPerPage = 3;
   const [organizacion, setOrganizations] = useState([]); // Estado para almacenar las organizaciones
 
-
   const user: User = {
-      
-   
     estado: 0,
     fechaActualizacion: new Date(new Date().toISOString()), 
   };
-
-
-
 
   useEffect(() => {
     // Realizar la solicitud GET al servidor para obtener las organizaciones usando Axios
@@ -83,7 +77,6 @@ export default function Mostrar() {
         data:{
           estado:user.estado
         }
-        
 
       });
   

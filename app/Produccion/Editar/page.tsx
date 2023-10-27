@@ -18,7 +18,7 @@ export default function Editar() {
   const [idProductor, setIdProductor] = useState("");
   const [productores, setProductores] = useState([]);
   const [selectedItems, setSelectedItems] = useState([
-    { insumo: "", cantidad: "" },
+    {  insumo: "", cantidad: "" },
   ]);
   //const [selectedProducto, setSelectedProducto] = useState("");
   const [selectedProductor, setSelectedProductos] = useState("");
@@ -79,7 +79,15 @@ export default function Editar() {
 
           setProduccion(produccionData);
           //setIdInsumo(produccionData)
+          setCantidadV(produccionData.cantidad);
+
+          const insumosProduccion = selectedItems.map((item) => ({
+            Insumo_idInsumo: parseInt(item.insumo),
+            cantidad: parseInt(item.cantidad),
+          }));
           
+          console.log('Insumos de produccion:', insumosProduccion)
+          //setSelectedItems(insumosProduccion);
           console.log('Datos de produccion:', produccionData)
         }
 
