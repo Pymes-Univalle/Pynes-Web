@@ -41,17 +41,29 @@ export async function POST(request: Request) {
 
     //Crear las relaciones en la tabla 'insumoproduccion'
     for (const insumo of data.insumoproduccion.create) {
-      await prisma.insumoproduccion.create({
+      const insumos = await prisma.insumoproduccion.create({
         data: {
           Insumo_idInsumo: insumo.Insumo_idInsumo,
           Produccion_id: nuevaProduccion.id, // Usamos el ID de la nueva producción
-          cantidad: insumo.cantidad,
+          cantidadEntrada: insumo.CantidadEntrada,
+          cantidadSalida: insumo.cantidadSalida,
+          cantidadTotal: insumo.CantidadEntrada - insumo.cantidadSalida
           // Agregar otras propiedades según tu modelo
         },
       });
+
+      await prisma.insumo.update({
+        where:{
+          idInsumo: insumos.Insumo_idInsumo
+        },
+
+        data:{
+          cantidad: insumos.cantidadTotal,
+        }
+      })
     }
 
-    return NextResponse.json({ message: data.insumoproduccion}, { status: 200 });
+    return NextResponse.json({ message: data.insumoproduccion }, { status: 200 });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error }, { status: 500 });

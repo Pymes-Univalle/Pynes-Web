@@ -10,7 +10,9 @@ function page() {
   const valor = useSearchParams();
   const id = valor.get("id");
   const [products, setProducts] = useState(null);
+
   const [rutaData, setRutaData] = useState([]); 
+  
   const [atributoData, setAtributoData] = useState([]); 
 
   useEffect(() => {

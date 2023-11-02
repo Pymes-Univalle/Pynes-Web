@@ -4,6 +4,9 @@ import axios from "axios";
 import { Button, Select, SelectItem, Input } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 
+
+
+
 export default function ProductionForm() {
   const router = useRouter();
 
@@ -11,9 +14,12 @@ export default function ProductionForm() {
   const [idProductos, setIdProductos] = useState("");
   const [productos, setProductos] = useState([]);
   const [idProductor, setIdProductor] = useState("");
+
+  const [producto, setProducto] = useState(null);
+
   const [productores, setProductores] = useState([]);
   const [selectedItems, setSelectedItems] = useState([
-    { insumo: "", cantidad: "" },
+    { insumo: "", cantidadEntrada: ""  ,  cantidadSalida: "" , cantidadTotal: ""},
   ]);
   //const [selectedProducto, setSelectedProducto] = useState("");
   const [selectedProductor, setSelectedProductos] = useState("");
@@ -32,7 +38,7 @@ export default function ProductionForm() {
   const validateCantidad = (value: any) => {
     if (typeof value === "string") {
       // Esta expresión regular permite solo números
-      return value.match(/^\d{2}$/);
+      return value.match(/^\d{2,}$/);
     }
     return false;
   };
@@ -61,20 +67,44 @@ export default function ProductionForm() {
       .catch((error) => {
         console.log("Error al cargar productores desde la API", error);
       });
+
+      
+   
+
   }, []);
 
   const handleAddItem = () => {
-    setSelectedItems([...selectedItems, { insumo: "", cantidad: "" }]);
+    setSelectedItems([...selectedItems, { insumo: "", cantidadEntrada: "" , cantidadSalida : "" , cantidadTotal: "" }]);
+   
   };
 
 
-  const handleProductosChange = (
+  const handleProductosChange = async (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     const selectedValue = event.target.value;
     setIdProductos(selectedValue);
     setProductosValidation(selectedValue ? "valid" : "invalid");
+
   };
+
+  useEffect(() => {
+    // Este efecto se ejecutará cuando idProductos cambie
+    // Realiza la solicitud HTTP y actualiza producto
+    axios
+      .get(`/api/producto/${idProductos}`)
+      .then((response) => {
+        setProducto(response.data.productos);
+      })
+      .catch((error) => {
+        console.log("Error al cargar productores desde la API", error);
+      });
+
+    console.log("Añaaaaaaaaaa" + producto)
+    
+  }, [idProductos]);
+
+ 
 
   const handleProductorChange = (
     event: React.ChangeEvent<HTMLSelectElement>
@@ -83,6 +113,7 @@ export default function ProductionForm() {
     setIdProductor(selectedValue);
     setProductorValidation(selectedValue ? "valid" : "invalid");
   };
+  
   async function handleSave(
     event: React.FormEvent<HTMLFormElement>
   ): Promise<void> {
@@ -92,10 +123,23 @@ export default function ProductionForm() {
     const cantidad =
       (formElements.namedItem("cantidad") as HTMLInputElement)?.value || "";
 
+    // Validar que la cantidad de salida no sea mayor que la cantidad de entrada
+    const isCantidadValid = selectedItems.every((item) => {
+      return parseInt(item.cantidadSalida) <= parseInt(item.cantidadEntrada);
+    });
+
+    if (!isCantidadValid) {
+      // Mostrar un mensaje de error o realizar alguna acción si la validación falla
+      console.error('La cantidad de salida no puede ser mayor que la cantidad de entrada');
+      return;
+    }
+
     // Crear la lista de insumos con sus cantidades
     const insumosProduccion = selectedItems.map((item) => ({
       Insumo_idInsumo: parseInt(item.insumo),
-      cantidad: parseInt(item.cantidad),
+      CantidadEntrada: parseInt(item.cantidadEntrada),
+      cantidadSalida: parseInt(item.cantidadSalida),
+      
     }));
 
     // Datos para crear una producción
@@ -104,11 +148,43 @@ export default function ProductionForm() {
       idProductor: parseInt(idProductor),
       canrtidad: parseInt(cantidad),
       insumoproduccion: { create: insumosProduccion }, // Relacionar insumosProduccion
+      producto: producto
     };
 
-    console.log("Datos de Producción:", productionData);
+    console.log("Datos de Producción:", productionData );
+
+  
+
+    try {
+      const response = await axios.put(`/api/ProductoStock/${idProductos}`, {
+        nombre: producto ? producto['nombre'] : undefined,
+        precio: producto ? producto['precio'] : undefined,
+        descripcion : producto ? producto['descripcion'] : undefined,
+        idCategoria :producto ? producto['idCategoria'] : undefined,
+        cantidadActual : producto ? producto['cantidad'] : undefined ,
+        cantidadNueva: cantidad,
+        idProductor : producto ? producto['idProductor'] : undefined,
+        estado : producto ? producto['estado'] : undefined,
+        fechaRegistro: producto ? producto['fechaRegistro'] : undefined
+      });
+  
+      if (response.status === 200) {
+       
+
+
+      } else {
+        // Maneja la respuesta en caso de error aquí
+        console.error('Error al actualizar:', response.data);
+      }
+    } catch (error) {
+      // Maneja los errores de red o del servidor aquí
+      console.error('Error en la solicitud PUT:', error);
+    }
+
+
 
     // Envía los datos al servidor para crear la producción
+    
     axios
       .post("/api/insumosProduccion", productionData)
       .then((response) => {
@@ -120,6 +196,45 @@ export default function ProductionForm() {
         console.error("Error al registrar la producción:", error);
       });
   }
+  const [insumoCantidades, setInsumoCantidades] = useState([]);
+
+   // Función para manejar el cambio en el input de Insumos
+   const handleInsumoChange = async (index:any, value:any) => {
+    const updatedItems = [...selectedItems];
+    updatedItems[index] = {
+      ...selectedItems[index],
+      insumo: value,
+    };
+    setSelectedItems(updatedItems);
+      
+  // Realiza una solicitud para obtener la cantidad de insumos
+
+    const insumoId = parseInt(value);
+    if (!isNaN(insumoId)) {
+      const response = await axios.get(`/api/insumo/${insumoId}`);
+    const cantidadEntrada = response.data.insumo.cantidad; // Ajusta esto según la estructura de tu respuesta
+  
+    console.log( cantidadEntrada)
+    
+    // Actualiza el estado de selectedItems con la cantidad de entrada
+    updatedItems[index].cantidadEntrada = cantidadEntrada;
+    setSelectedItems(updatedItems);
+    }
+    
+  
+  
+  
+  };
+
+  // Función para manejar el cambio en el input de Cantidad
+  const handleCantidadChange2 = (index:any, value:any) => {
+    const updatedItems = [...selectedItems];
+    updatedItems[index] = {
+      ...selectedItems[index],
+      cantidadSalida: value,
+    };
+    setSelectedItems(updatedItems);
+  };
 
   return (
     <>
@@ -142,15 +257,7 @@ export default function ProductionForm() {
                     label="Insumos"
                     placeholder="Selecciona un Insumo"
                     value={selectedItem.insumo}
-                    onChange={(event) => {
-                      const value = event.target.value;
-                      const updatedItems = [...selectedItems];
-                      updatedItems[index] = {
-                        ...selectedItem,
-                        insumo: value,
-                      };
-                      setSelectedItems(updatedItems);
-                    }}
+                    onChange={(event) => handleInsumoChange(index, event.target.value)}
                   >
                     {insumos.map((insumo) => (
                       <SelectItem
@@ -165,16 +272,9 @@ export default function ProductionForm() {
                   <Input
                     label="Cantidad"
                     placeholder="Ingrese la cantidad"
-                    value={selectedItem.cantidad}
-                    onChange={(event) => {
-                      const value = event.target.value;
-                      const updatedItems = [...selectedItems];
-                      updatedItems[index] = {
-                        ...selectedItem,
-                        cantidad: value,
-                      };
-                      setSelectedItems(updatedItems);
-                    }}
+                    value={selectedItem.cantidadSalida}
+                    onChange={(event) => handleCantidadChange2(index, event.target.value)}
+
                   />
                 </div>
               ))}

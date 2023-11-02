@@ -7,6 +7,8 @@ import {
   Textarea,
   Image,
   Checkbox,
+  RadioGroup,
+  Radio,
 } from "@nextui-org/react";
 import React, { use, useEffect, useState } from "react";
 
@@ -91,13 +93,8 @@ export default function Page() {
     }
     return false;
   }
-  const validateCantidad = (value:any)=>{
-    if (typeof value === "string") {
-      const regex = /^\d+(\.\d+)?$/;
-      return regex.test(value);
-    }
-    return false;
-  }
+
+
 
   const validationNombre = React.useMemo(() => {
     if(nombre == " ") return undefined;
@@ -110,10 +107,7 @@ export default function Page() {
     return validatePrecio(precio) ? "valid" : "invalid";
   } , [precio])
 
-  const validationCantidad = React.useMemo(() =>{
-    if(cantidad == " ") return undefined;
-    return validateCantidad(cantidad) ?  "valid" : "invalid";
-  }, [cantidad])
+ 
 
  
   //Fin de Validacion
@@ -151,8 +145,7 @@ export default function Page() {
       (formElements.namedItem("precio") as HTMLInputElement)?.value || "";
     const descripcion =
       (formElements.namedItem("descripcion") as HTMLInputElement)?.value || "";
-    const cantidad =
-      (formElements.namedItem("cantidad") as HTMLInputElement)?.value || "";
+    
     const atributosArray = atributos.map((atributo) => ({
       nombre: atributo.nombre,
       valor: atributo.valor,
@@ -166,6 +159,8 @@ export default function Page() {
       fechaMysql = fecha.toISOString().slice(0, 19).replace("T", " ");
     }
     
+    const cantidad = 0;
+
     console.log("CLick en el submit");
     console.log("Imágenes a enviar:", imagePreviews);
     console.log("Atributos:", atributos);
@@ -195,10 +190,8 @@ export default function Page() {
       (formElements.namedItem("precio") as HTMLInputElement).focus();
       return;
     }
-    if(validationCantidad == "invalid"){
-      (formElements.namedItem("cantidad") as HTMLInputElement).focus();
-      return;
-    }
+
+  
     if(categoriaValidation == "invalid"){
       (formElements.namedItem("categoria") as HTMLInputElement).focus();
       return;
@@ -221,7 +214,9 @@ export default function Page() {
     formData.append("nombre", nombre);
     formData.append("precio", precio);
     formData.append("descripcion", descripcion);
-    formData.append("cantidad", cantidad);
+
+    formData.append("cantidad", "0");
+
     formData.append("idCategoria", idCategoria);
 
     //Aca adjuntamos el dato del idProductor
@@ -237,7 +232,7 @@ export default function Page() {
       formData.append(`imagen_${index}`, preview.file);
     });
     
-    if(validationNombre == "valid" && validationPrecio == "valid" && validationCantidad == "valid" &&  categoriaValidation == "valid"
+    if(validationNombre == "valid" && validationPrecio == "valid" &&  categoriaValidation == "valid"
       && productorValidation == "valid" || hasUploadedImages || tieneFechaVencimiento && fechaVencimiento == "" && AtributosValidados){
         try {
           // Realizar la solicitud a tu API utilizando axios
@@ -351,6 +346,10 @@ export default function Page() {
 
   
 
+  function Marcador(index: number): void {
+    console.log("Holaaaaaaa" + index);
+  }
+
   return (
     <>
       <div className="bg-blanco h-full text-black ">
@@ -423,7 +422,7 @@ export default function Page() {
               </Select>
             </div>
 
-            <div className="mb-5">
+            {/* <div className="mb-5">
               <Input id="cantidad" 
               key="outside" 
               label="Cantidad" 
@@ -433,7 +432,7 @@ export default function Page() {
               validationState={validationCantidad}
               onValueChange={handleCantidadChange}
               />
-            </div>
+            </div> */}
 
             <div>
               <Select
@@ -475,6 +474,9 @@ export default function Page() {
                   <div className="mb-5">
                    
                     <div className="flex flex-wrap">
+                    <RadioGroup
+                            label="Select your favorite city"
+                          >
                       {imagePreviews.map((image, index) => (
                         <div key={index} className="flex-shrink-0 mr-2">
                           <Image
@@ -489,8 +491,17 @@ export default function Page() {
                           >
                             Eliminar
                           </button>
+
+                        
+                          <Radio value={index.toString()} onChange={() => Marcador(index)} >Imagen Previsualizada {index} </Radio>
+                            
+                          
+                        );
+
+
                         </div>
                       ))}
+                    </RadioGroup>
                     </div>
                    
                   </div>

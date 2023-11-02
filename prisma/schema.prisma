@@ -195,7 +195,10 @@ model venta {
 model insumoproduccion {
   Insumo_idInsumo Int
   Produccion_id   Int
-  cantidad        Int
+  cantidadEntrada Int
+  cantidadSalida  Int
+  cantidadTotal   Int
+  fechaRegistro   DateTime?  @default(now()) @db.DateTime(0)
   insumo          insumo     @relation(fields: [Insumo_idInsumo], references: [idInsumo], onDelete: NoAction, onUpdate: NoAction, map: "fk_Insumo_has_Produccion_Insumo1")
   produccion      produccion @relation(fields: [Produccion_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Insumo_has_Produccion_Produccion1")
 

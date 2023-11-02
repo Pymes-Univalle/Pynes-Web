@@ -120,6 +120,7 @@ export async function POST(request: Request) {
              ruta: url,
              idProducto: nuevoProducto.idProductos,
              fechaActualizacion: new Date().toISOString(),
+             
            },
          });
        })

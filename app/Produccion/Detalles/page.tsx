@@ -65,7 +65,7 @@ function page() {
                 {insumosData.map((insumoItem, index) => (
                   <li key={index}>
                     <strong>{insumoItem['insumo']["nombre"]}:</strong>{" "}
-                    {insumoItem["cantidad"]}
+                    {insumoItem["cantidadSalida"]}
                   </li>
                 ))}
               </ul>
