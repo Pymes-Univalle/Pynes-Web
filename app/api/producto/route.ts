@@ -7,7 +7,7 @@ export async function GET() {
   try {
     const producto = await prisma.productos.findMany({
       where: {
-        estado: 1,
+        estado: 1
       },
       include:{
         ruta:true,
