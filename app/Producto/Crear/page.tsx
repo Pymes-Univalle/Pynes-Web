@@ -1,12 +1,7 @@
 "use client";
 import {
-  Button,
-  Input,
-  Select,
-  SelectItem,
-  Textarea,
-  Image,
-  Checkbox,
+  Button, Input, Select, SelectItem, Textarea,
+  Image, Checkbox, RadioGroup, Radio,
 } from "@nextui-org/react";
 import React, { use, useEffect, useState } from "react";
 
@@ -30,6 +25,7 @@ export default function Page() {
   const [imagePreviews, setImagePreviews] = useState<
     { src: string; alt: string; file: File }[]
   >([]);
+  const [choosenIndex, setChoosenIndex] = useState(0);
 
   useEffect(() => {
     // Realiza la solicitud a la API utilizando Axios
@@ -140,7 +136,7 @@ export default function Page() {
     router.push(`/Producto/Mostrar`);
   };
 
-  async function sumbit(
+  async function submit(
     event: React.FormEvent<HTMLFormElement>
   ): Promise<void> {
     event.preventDefault();
@@ -236,6 +232,8 @@ export default function Page() {
     imagePreviews.forEach((preview, index) => {
       formData.append(`imagen_${index}`, preview.file);
     });
+
+    formData.append("mainIndex", choosenIndex.toString());
     
     if(validationNombre == "valid" && validationPrecio == "valid" && validationCantidad == "valid" &&  categoriaValidation == "valid"
       && productorValidation == "valid" || hasUploadedImages || tieneFechaVencimiento && fechaVencimiento == "" && AtributosValidados){
@@ -291,7 +289,7 @@ export default function Page() {
         Array.from(files).map(async (file) => ({
           src: URL.createObjectURL(file),
           alt: file.name,
-          file,
+          file
         }))
       );
       setImagePreviews([...imagePreviews, ...newImagePreviews]);
@@ -351,6 +349,11 @@ export default function Page() {
 
   
 
+  function Marcador(index: number): void {
+    console.log("Holaaaaaaa" + index);
+    setChoosenIndex(index);
+  }
+
   return (
     <>
       <div className="bg-blanco h-full text-black ">
@@ -363,7 +366,7 @@ export default function Page() {
             id="miFormulario"
             method="post"
             className="p-5 border-1 shadow"
-            onSubmit={sumbit}
+            onSubmit={submit}
           >
             <div className="mb-5 mt-5">
               <Input
@@ -460,10 +463,6 @@ export default function Page() {
               </Select>
             </div>
 
-            {/*<div className="mb-5">
-              <Input type="file" onChange={handleFile}  />
-                </div>*/}
-
             <div className="mb-5">
               <Input type="file" onChange={handleFileChange} multiple />
             </div>
@@ -473,13 +472,16 @@ export default function Page() {
               <div className="flex flex-wrap">
                 {imagePreviews.length > 0 && (
                   <div className="mb-5">
-                   
+
                     <div className="flex flex-wrap">
+                    <RadioGroup
+                            label="Select your favorite city"
+                          >
                       {imagePreviews.map((image, index) => (
                         <div key={index} className="flex-shrink-0 mr-2">
                           <Image
                             src={image.src}
-                            alt={`Previsualización ${index + 1}`}
+                            alt={"Previsualización ${index + 1}"}
                             width={200}
                             height={200}
                           />
@@ -489,15 +491,15 @@ export default function Page() {
                           >
                             Eliminar
                           </button>
+
+                          <Radio value={index.toString()} onChange={() => Marcador(index)} >Imagen Previsualizada {index} </Radio>
                         </div>
                       ))}
+                    </RadioGroup>
                     </div>
-                   
                   </div>
-                  
                 )}
               </div>
-              
             </div>
             {!hasUploadedImages && (
               <p className="text-danger">Por favor, suba al menos una imagen</p>

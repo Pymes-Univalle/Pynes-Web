@@ -37,6 +37,7 @@ export async function POST(request: Request) {
     const idCategoria = formData.get('idCategoria');
     const idProductor = formData.get('idProductor');
     const fechaVencimientoValue  = formData.get('fechaVencimineto');
+    const mainIndex = formData.get('mainIndex');
     let fechaVencimiento: Date | undefined;
 
     if (fechaVencimientoValue && typeof fechaVencimientoValue === 'string') {
@@ -120,6 +121,7 @@ export async function POST(request: Request) {
              ruta: url,
              idProducto: nuevoProducto.idProductos,
              fechaActualizacion: new Date().toISOString(),
+             mainIndex: parseInt(mainIndex as string),
            },
          });
        })

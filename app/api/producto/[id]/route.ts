@@ -6,34 +6,6 @@ interface Params{
     params: {id:string};
 }
 
-// export async function GET(request:Request, {params}: Params) {
-//     try {
-        
-//         console.log(params.id)
-    
-//         const productos = await prisma.productos.findFirst({
-//             where:{
-//                 idProductos: Number(params.id)
-                
-//             },
-//             include:{
-//                 ruta:true,
-//                 categoria: true,
-//                 atributo: true
-//               }
-//         })
-
-//         return NextResponse.json({
-//             productos
-//         })
-//       } catch (error) {
-//         console.log(error);
-//         if (error instanceof Error) {
-//           return NextResponse.json({ message: error.message }, { status: 500 });
-//         }
-//       }
-// }
-
 export async function GET(request:Request, {params}: Params) {
   try {
       
@@ -42,7 +14,6 @@ export async function GET(request:Request, {params}: Params) {
     const productos = await prisma.productos.findFirst({
       where:{
         idProductos: productoId,
-          
       },
       include:{
         ruta:true,
