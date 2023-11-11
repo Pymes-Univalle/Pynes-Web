@@ -73,6 +73,7 @@ export default function Login() {
         localStorage.setItem("rol", user.rol);
         //Cookies.remove('userToken')
         Cookies.set('userToken', user.token, { expires: 2 / 24 });
+        Cookies.set('userId', user.id, { expires: 2 / 24 });
         console.log(Cookies.get('userToken'));
        
        

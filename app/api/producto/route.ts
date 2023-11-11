@@ -1,13 +1,21 @@
 import prisma from "@/lib/prisma";
 import { data } from "autoprefixer";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-
-export async function GET() {
+export async function GET( request: NextRequest  ) {
+  
   try {
+    let userRatingString = request.cookies.get('userId')?.value;
+    let userRating: number | undefined;
+
+    if (userRatingString) {
+      userRating = parseFloat(userRatingString);
+    }
     const producto = await prisma.productos.findMany({
       where: {
-        estado: 1
+        estado: 1,
+        idProductor: userRating
       },
       include:{
         ruta:true,
@@ -15,6 +23,8 @@ export async function GET() {
         atributo: true
       }
     })
+
+    
     return NextResponse.json({ data: producto }, { status: 200 });
   } catch (error) {
     console.log(error);

@@ -16,6 +16,8 @@ import axios from "axios";
 import { Console } from "console";
 import { useRouter } from "next/navigation";
 
+import { useAppSelector } from "@/app/redux/hooks";
+
 export default function Page() {
   const [tieneFechaVencimiento, setTieneFechaVencimiento] = useState(false);
   const [fechaVencimiento, setFechaVencimiento] = useState("");
@@ -64,6 +66,8 @@ export default function Page() {
   const [hasUploadedImages, setHasUploadedImages] = useState(false);
   const [fechaVencimientoError, setFechaVencimientoError] = useState("La fecha de vencimiento es obligatoria.");
   const [areAttributesValid, setAreAttributesValid] = useState(false);
+  //Aca adjuntamos el dato del idProductor
+  const idProductorOri = useAppSelector((state) => state.user.id);
 
   const handleNameChange = (value:any) => {
     setNombreV(value);
@@ -120,13 +124,14 @@ export default function Page() {
     setCategoriaValidation(selectedValue ? "valid" : "invalid");
   };
 
+  /*
   const handleProductorChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     const selectedValue = event.target.value;
     setIdProductor(selectedValue);
     setProductorValidation(selectedValue ? "valid" : "invalid");
-  };
+  };*/
 
   const router = useRouter();
   
@@ -165,7 +170,7 @@ export default function Page() {
     console.log("Imágenes a enviar:", imagePreviews);
     console.log("Atributos:", atributos);
     console.log("Id Categoria", idCategoria);
-    console.log("Id Productor", idProductor);
+    console.log("Id Productor", idProductorOri.toString());
     console.log("Fecha Vencimiento", fechaMysql);
     console.log(
       "Nombre: ",
@@ -196,10 +201,7 @@ export default function Page() {
       (formElements.namedItem("categoria") as HTMLInputElement).focus();
       return;
     }
-    if(productorValidation == "invalid"){
-      (formElements.namedItem("productor") as HTMLInputElement).focus();
-      return;
-    }
+   
     if(tieneFechaVencimiento && fechaVencimiento == ""){
       (formElements.namedItem("fecha") as HTMLInputElement).focus();
       return;
@@ -219,8 +221,8 @@ export default function Page() {
 
     formData.append("idCategoria", idCategoria);
 
-    //Aca adjuntamos el dato del idProductor
-    formData.append("idProductor", idProductor);
+    
+    formData.append("idProductor", idProductorOri.toString());
 
     formData.append("atributos", JSON.stringify(atributosArray));
     if(tieneFechaVencimiento){
@@ -233,7 +235,7 @@ export default function Page() {
     });
     
     if(validationNombre == "valid" && validationPrecio == "valid" &&  categoriaValidation == "valid"
-      && productorValidation == "valid" || hasUploadedImages || tieneFechaVencimiento && fechaVencimiento == "" && AtributosValidados){
+       || hasUploadedImages || tieneFechaVencimiento && fechaVencimiento == "" && AtributosValidados){
         try {
           // Realizar la solicitud a tu API utilizando axios
          
@@ -434,7 +436,7 @@ export default function Page() {
               />
             </div> */}
 
-            <div>
+            {/* <div>
               <Select
               id="productor"
                 label="Productor"
@@ -457,7 +459,7 @@ export default function Page() {
                   </SelectItem>
                 ))}
               </Select>
-            </div>
+            </div> */}
 
             {/*<div className="mb-5">
               <Input type="file" onChange={handleFile}  />
