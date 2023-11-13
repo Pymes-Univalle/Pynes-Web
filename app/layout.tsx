@@ -104,6 +104,10 @@ export default function RootLayout({
   const handleProduccion = () => {
     router.push("/Produccion/Mostrar");
   };
+
+  const handleDetalles = () => {
+    router.push("/DetallesVenta/");
+  };
   
   return (
     <html lang="en" className="dark">
@@ -215,6 +219,17 @@ export default function RootLayout({
                      aria-current="page"
                    >
                      Proveedores
+                   </Link>
+                 </NavbarItem>
+                )}
+                 {rol === 2 && (
+                   <NavbarItem>
+                   <Link
+                     color="foreground"
+                     onClick={handleDetalles}
+                     aria-current="page"
+                   >
+                     DEtalles
                    </Link>
                  </NavbarItem>
                 )}
