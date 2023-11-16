@@ -11,52 +11,26 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 
-// interface Producto {
-//   estado:number;
-//   fechaActualizacion: Date;
-// }
-
-interface Producto {
-  idProductos: number;
-  nombre: string;
-  precio: number;
-  cantidad: number;
-  categoria: { nombre: string };
-  ruta: { ruta: string; mainIndex: number };
-  // estado:number;
-  // fechaActualizacion: Date;
-}
-
 export default function Mostrar() {
   const router = useRouter();
   const [page, setPage] = useState(1);
   const rowsPerPage = 3;
-  //const [productosD, setProductos] = useState<any[]>([]);
   const [productos, setProductos] = useState<any[]>([]);
-  const [rutaData, setRutaData] = useState<any[]>([]);
-  const [imagen, setImagen] = useState("");
-
-  // const producto: Producto = {
-  //   estado: 0,
-  //   fechaActualizacion: new Date(new Date().toISOString()),
-  // };
 
   const Reload = () => {
     axios.get("/api/producto")
     .then((res) =>{
         if(res.data && res.data.data){
           setProductos(res.data.data);
-          setRutaData(res.data.productos.ruta);
         }
     })
     .catch((error) => {
-        console.log("Error eal obtener los datos de la Api" + error);
+        console.log("Error al obtener los datos de la Api" + error);
     })
   }
 
   useEffect(() => {
     Reload();
-    console.log(rutaData[1]);
   }, []);
 
   const pages = Math.ceil(productos.length / rowsPerPage);
@@ -109,29 +83,68 @@ export default function Mostrar() {
             <Card
               shadow="sm"
               key={item.idProductos}
-              isPressable
-              onPress={() => console.log("item pressed")}
             >
               <CardBody className="overflow-visible p-0">
                 {item.ruta.map((rutaItem : any, index : number) => (
                   <div key={index}>
-                    {rutaItem.mainIndex === index && (  // Compara mainIndex con la posición del array
+                    {item.mainIndex === index && (  // Compara mainIndex con la posición del array
                       <Image
                         shadow="sm"
                         radius="lg"
                         width="100%"
-                        alt={`Image ${rutaItem.mainIndex}`}
-                        className="w-full object-cover h-[140px]"
+                        alt={`Image ${item.mainIndex}`}
+                        className="w-full object-cover h-[160px]"
                         src={rutaItem.ruta}
                       />
                     )}
                   </div>
                 ))}
               </CardBody>
-              <CardFooter className="text-small justify-between">
-                <b>{item.nombre}</b>
-                <p className="text-default-500">{item.precio}</p>
-                <p className="text-default-500">Images:</p>
+              <CardFooter className="text-small justify-between items-center">
+                {/* <b>{item.nombre}</b> */}
+                {/* <p className="text-default-500">{item.precio}</p> */}
+                <Button className="text-tiny" color="primary" radius="full" size="sm"
+                  onClick={() => ClickDetalles(item["idProductos"])}>
+                  <EyeIcon className="w-6 h-6 text-white" />
+                    Ver
+                </Button>
+                <Button className="text-tiny" color="success" radius="full" size="sm"
+                  onClick={() => ClickEditar(item["idProductos"])}>
+                  <EditIcon className="w-6 h-6 text-white" />
+                    Editar
+                </Button>
+
+                <Popover showArrow
+                  backdrop="opaque"
+                  placement="right"
+                  classNames={{
+                      base: "py-3 px-4 border border-default-200 bg-gradient-to-br from-white to-default-300 dark:from-default-100 dark:to-default-50",
+                      arrow: "bg-default-200",
+                  }}>
+                  <PopoverTrigger>
+                    <Button className="text-tiny" color="danger" radius="full" size="sm">
+                      <DeleteIcon className="w-6 h-6 text-white" />
+                        Eliminar
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent>
+                    {(titleProps) => (
+                      <div className="px-1 py-2 w-full">
+                        <p
+                        className="text-small font-bold text-foreground"
+                        {...titleProps}
+                        >
+                        ¿Estás seguro de querer eliminar a {item["nombre"]}?
+                        </p>
+                        <div className="mt-2 flex flex-col gap-2 w-full">
+                        <Button color="success" onClick={() => handleDeleteConfirm(item["idProductos"])}>
+                            Confirmar
+                        </Button>
+                        </div>
+                      </div>
+                    )}
+                  </PopoverContent>
+                </Popover>        
               </CardFooter>
             </Card>
           ))}

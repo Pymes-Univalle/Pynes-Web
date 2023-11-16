@@ -1,26 +1,32 @@
 "use client";
-import { Button, Input, Select, SelectItem, Textarea, Image, Checkbox, CircularProgress, Progress } from "@nextui-org/react";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import { useSearchParams } from "next/navigation";
 import { useRouter } from 'next/navigation';
+import { Button, Input, Select, SelectItem, Textarea, 
+  Image, Checkbox, CircularProgress, Progress, RadioGroup, Radio } from "@nextui-org/react";
 
 export default function Editar() {
 
   //#region Atributos
   const router = useRouter();
+  //State for Loading
   const [isLoading, setIsLoading] = useState(false);
+
+  //State for Productos Data
   const [products, setProducts] = useState(null);
   const [rutaData, setRutaData] = useState([]);
   const [atributoData, setAtributoData] = useState([]);
+
+  //State for URL Parameters
   const valor = useSearchParams();
   const id = valor.get('id');
 
+  //State for Product Form
   const [idCategoria, setIdCategoria] = useState("");
   const [categories, setCategories] = useState([]);
   const [categoriaActual, setCategoriaActual] = useState("");
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
-
 
   //Esto seria para el que hizo productor
   const [id_productor, setIdProductor] = useState("");
@@ -35,15 +41,26 @@ export default function Editar() {
   const [imagePreviews, setImagePreviews] = useState<
     { src: string; alt: string; file: File }[]
   >([]);
+
+  //Atributos 
+  const [nombre, setNombreV] = React.useState("");
+  const [precio, setPrecioV] = React.useState("");
+  const [descripcion, setDescripcion] = React.useState("");
+  const [cantidad, setCantidad] = React.useState("");
+  const [categoriaValidation, setCategoriaValidation] = useState("invalid");
+  const [productorValidation, setProductorValidation] = useState("invalid");
+  const [fechaVencimientoError, setFechaVencimientoError] = useState("La fecha de vencimiento es obligatoria.");
+  const [choosenIndex, setChoosenIndex] = useState(0);
+  const [oldChoosenIndex, setOldChoosenIndex] = useState(0);
+  const [hasUploadedImages, setHasUploadedImages] = useState(true);
+  const [areAttributesValid, setAreAttributesValid] = useState(false);
   //#endregion
 
-  //#region Cargar datos de categorías y productores
+  //#region (useEffect) Cargar datos de categorías y productores
   useEffect(() => {
     //#region Obtener el ID de la "categoría" actual del producto
-    // Realiza la solicitud a la API para cargar datos de categorías y productores
     axios.get("/api/categoria")
     .then((response) => {
-      // response.data debe contener la lista de categorías desde tu API
       setCategories(response.data.data);
     })
     .catch((error) => {
@@ -63,7 +80,7 @@ export default function Editar() {
   }, []);
   //#endregion
 
-  //#region Obtener los datos del producto
+  //#region (useEffect) Obtener los datos del producto
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -75,6 +92,8 @@ export default function Editar() {
 
           setProducts(productoData);
           setRutaData(productoData.ruta);
+          setChoosenIndex(productoData.ruta[0]?.mainIndex)
+          //setOldChoosenIndex(productoData.ruta[0]?.mainIndex)
           setAtributoData(productoData.atributo);
 
           setNombreV(productoData.nombre);
@@ -97,7 +116,7 @@ export default function Editar() {
             console.error("No se encontró la categoría del producto.");
           }
 
-          console.log('Categoria Seleccionada:', categoriaSeleccionada);
+          //console.log('Categoria Seleccionada:', categoriaSeleccionada);
           
           setCategoriaSeleccionada(productoData.idCategoria);
           //#endregion
@@ -122,7 +141,7 @@ export default function Editar() {
             file: null,
           }));
 
-          console.log('Image previews:', imagenesProducto); // Log the image previews
+          //console.log('Image previews:', imagenesProducto); // Log the image previews
 
           setImagePreviews(imagenesProducto);
           //#endregion
@@ -134,7 +153,7 @@ export default function Editar() {
             valor: atributo.valor,
           }));
 
-          console.log('Atributos del producto:', atributosProducto);
+          //console.log('Atributos del producto:', atributosProducto);
 
           setAtributos(atributosProducto);
           //#endregion
@@ -151,49 +170,42 @@ export default function Editar() {
   }, [id, categories]);
   //#endregion
 
-    //Atributos 
-  const [nombre, setNombreV] = React.useState("");
-  const [precio, setPrecioV] = React.useState("");
-  const [descripcion, setDescripcion] = React.useState("");
-  const [cantidad, setCantidad] = React.useState("");
-
-  //#region HandleChanges
-  const handleNameChange = (value:any) => {
-    setNombreV(value);
-  }
-  const handlePriceChange = (value:any) =>{
-    setPrecioV(value);
-  }
-
-  const handleCategoryChange = (
-    event: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-
-    const selectedValue = event.target.value;
-    setIdCategoria(selectedValue);
-  };
-
-  const handleProductorChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const selectedValue = event.target.value;
-    setIdProductor(selectedValue);
-  };
+  //#region (useEffect) Fecha de vencimiento
+  useEffect(() => {
+    // Este efecto se ejecutará cuando 'tieneFechaVencimiento' cambie
+    if (!tieneFechaVencimiento) {
+      setFechaVencimiento(""); // Limpia la fecha de vencimiento cuando se desmarca el checkbox
+    }
+  }, [tieneFechaVencimiento]);
   //#endregion
 
+  //#region Funciones de validación
   //#region "Validate" de Campos
   const validateNombre = (value: any) => {
     if(typeof value == "string"){
-      // Esta expresión regular permite solo letras (mayúsculas y minúsculas) y espacios
       return value.match(/^[A-Za-z\s]{3,}$/i);
     }
     return false;
   }
   const validatePrecio = (value: any) =>{
     if(typeof value == "string"){
-       return value.match(/^\d{2,}$/);
+       return value.match(/^[1-9]\d*(\.\d+)?$/);
     }
     return false;
+  }
+
+  const validateCantidad = (value: any) =>{
+    if(typeof value == "string"){
+      const regex = /^\d+(\.\d+)?$/;
+      return regex.test(value);
+    }
+    return false;
+  }
+
+  const validateAttributes = (attributes: any[]) => {
+    return attributes.every((atributo) => {
+      return atributo.nombre.trim() !== "" && atributo.valor.trim() !== "";
+    });
   }
   //#endregion
 
@@ -208,14 +220,54 @@ export default function Editar() {
     if(precio === " ") return undefined;
     return validatePrecio(precio) ? "valid" : "invalid";
   } , [precio])
+
+  const validationCantidad = React.useMemo(() => {
+    if(cantidad === " ") return undefined;
+    return validateCantidad(cantidad) ? "valid" : "invalid";
+  }, [cantidad])
+  //#endregion
   //#endregion
 
-  //Fin de Validacion 
+  //#region HandleChanges
+  const handleNameChange = (value:any) => {
+    setNombreV(value);
+  }
+  const handlePriceChange = (value:any) =>{
+    setPrecioV(value);
+  }
 
- 
+  const handleCantidadChange = (value:any) =>{
+    setCantidad(value);
+  }
+
+  const handleProductorChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const selectedValue = event.target.value;
+    setIdProductor(selectedValue);
+    setProductorValidation(selectedValue ? "valid" : "invalid");
+  };
+
+  const handleFechaVencimientoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+    setFechaVencimiento(inputValue);
+
+    if (inputValue === "") {
+      setFechaVencimientoError("La fecha de vencimiento es obligatoria.");
+    } else {
+      const fechaVencimientoDate = new Date(inputValue);
+      const currentDate = new Date();
+
+      if (fechaVencimientoDate <= currentDate) {
+        setFechaVencimientoError("La fecha de vencimiento debe ser mayor a la fecha actual.");
+      } else {
+        setFechaVencimientoError(""); // No hay error
+      }
+    }
+  };
+  //#endregion
   
-  
-  //#region Subiendo las respuestas del formulario a la base de datos (Submitting)
+  //#region (Submit) Subiendo las respuestas del formulario a la base de datos (Submitting)
   async function submit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
     setIsLoading(true);
@@ -262,6 +314,33 @@ export default function Editar() {
      
     );
 
+    const AtributosValidos = validateAttributes(atributos);
+    console.log("Atributos ", AtributosValidos)
+
+    if(validationNombre == "invalid"){
+      (formElements.namedItem("nombre") as HTMLInputElement)?.focus();
+      return;
+    }
+    if(validationPrecio == "invalid"){
+      (formElements.namedItem("precio") as HTMLInputElement)?.focus();
+      return;
+    }
+    if (validationCantidad == "invalid") {
+      (formElements.namedItem("cantidad") as HTMLInputElement)?.focus();
+    }
+    if (categoriaValidation == "invalid") {
+      (formElements.namedItem("categoria") as HTMLInputElement)?.focus();
+    }
+    if (productorValidation == "invalid") {
+      (formElements.namedItem("productor") as HTMLInputElement)?.focus();
+    }
+    if (tieneFechaVencimiento && fechaVencimientoError == "") {
+      (formElements.namedItem("fecha") as HTMLInputElement)?.focus();
+    }
+    if (!AtributosValidos) {
+      return;
+    }
+
     // Crear un objeto FormData
     const formData = new FormData();
 
@@ -285,40 +364,42 @@ export default function Editar() {
     imagePreviews.forEach((preview, index) => {
       formData.append(`imagen_${index}`, preview.file);
     });
-    
-    try {
-      // Realizar la solicitud a tu API utilizando axios
-      const response = await axios.put(`/api/producto/${id}`, formData, {headers: {'Content-Type': 'multipart/form-data',},});
 
-      if (response.status === 200) {
+    console.log("Index: " + choosenIndex);
+    formData.append("mainIndex", choosenIndex.toString());
 
-        setIsLoading(false);
-
-        console.log("Datos y imágenes enviados correctamente a la API");
-        router.push('/Producto/Mostrar');
-     
-      
-      } else {
-        console.error("Error al enviar los datos y las imágenes a la API");
+    if (validationNombre == "valid" && validationPrecio == "valid" && validationCantidad == "valid" && categoriaValidation == "valid" 
+      && productorValidation == "valid" || hasUploadedImages || tieneFechaVencimiento && fechaVencimiento == "" && AtributosValidos) {
+      try {
+        // Realizar la solicitud a tu API utilizando axios
+        const response = await axios.put(`/api/producto/${id}`, formData, {headers: {'Content-Type': 'multipart/form-data',},});
+  
+        if (response.status === 200) {
+  
+          setIsLoading(false);
+  
+          console.log("Datos y imágenes enviados correctamente a la API");
+          router.push('/Producto/Mostrar');
+        
+        
+        } else {
+          console.error("Error al enviar los datos y las imágenes a la API");
+        }
+      } catch (error) {
+        console.error("Error al realizar la solicitud a la API:", error);
       }
-    } catch (error) {
-      console.error("Error al realizar la solicitud a la API:", error);
+    } else {
+      console.log("Error en los datos")
     }
-
   }
   //#endregion
 
-  useEffect(() => {
-    // Este efecto se ejecutará cuando 'tieneFechaVencimiento' cambie
-    if (!tieneFechaVencimiento) {
-      setFechaVencimiento(""); // Limpia la fecha de vencimiento cuando se desmarca el checkbox
-    }
-  }, [tieneFechaVencimiento]);
-
+  //#region File Handling
   function removeImagePreview(index: number): void {
     const updatedImagePreviews = [...imagePreviews];
     updatedImagePreviews.splice(index, 1);
     setImagePreviews(updatedImagePreviews);
+    setHasUploadedImages(updatedImagePreviews.length > 0);
   }
 
   async function handleFileChange(
@@ -334,10 +415,16 @@ export default function Editar() {
           file,
         }))
       );
-      setImagePreviews([...imagePreviews, ...newImagePreviews]);
+
+      const updatedImagePreviews = [...imagePreviews, ...newImagePreviews];
+
+      setImagePreviews(updatedImagePreviews);
+      setHasUploadedImages(true);
     }
   }
+  //#endregion
 
+  //#region Atributos Handling
   function handleAtributoChange(
     index: number,
     field: "nombre" | "valor",
@@ -346,6 +433,9 @@ export default function Editar() {
     const updatedAtributos = [...atributos];
     updatedAtributos[index][field] = value;
     setAtributos(updatedAtributos);
+
+    const isValid = validateAttributes(updatedAtributos);
+    setAreAttributesValid(isValid);
   }
 
   function addAtributo(): void {
@@ -356,6 +446,21 @@ export default function Editar() {
     const updatedAtributos = [...atributos];
     updatedAtributos.splice(index, 1);
     setAtributos(updatedAtributos);
+
+    const isValid = validateAttributes(updatedAtributos);
+    setAreAttributesValid(isValid);
+  }
+  //#endregion
+
+  function Marcador(index: number): void {
+    console.log("Index:" + index);
+    //setChoosenIndex(index);
+    setChoosenIndex((prevIndex) => {
+      console.log("PrevChoosenIndex: " + prevIndex);
+      console.log("NewChoosenIndex: " + index);
+      return index;
+    })
+    console.log("ChoosenIndex: " + choosenIndex);
   }
 
   if (!products) {
@@ -373,7 +478,7 @@ export default function Editar() {
         <div className="mx-auto max-w-5xl">
           <h1 className=" text-black text-2xl text-center font-bold mb-8 mt-5">
             {" "}
-            Editar Producto{" "}
+            Editar Producto {" "}
           </h1>
           <form
             id="miFormulario"
@@ -414,24 +519,26 @@ export default function Editar() {
                 key="outside"
                 label="Descripcion"
                 required
+                color={"success"}
                 value={descripcion}
                 onChange={(e) => setDescripcion(e.target.value)}
               />
             </div>
             <div>
               <Select
+                id="categoria"
                 label="Categoría"
                 placeholder="Selecciona una categoría"
                 defaultSelectedKeys={[`${categoriaSeleccionada}`]}
                 onChange={(selectedValue: any) => setCategoriaSeleccionada(selectedValue.target.value)}
+                color={"success"}
                 className="mb-5 max-w-xs"
               >
                 {categories.map((category) => (
                   <SelectItem
                     className="text-black"
                     key={category["idCategoria"]}
-                    value={category["idCategoria"]}
-                  >
+                    value={category["idCategoria"]}>
                     {category["nombre"]}
                   </SelectItem>
                 ))}
@@ -439,7 +546,10 @@ export default function Editar() {
             </div>
 
             <div className="mb-5">
-              <Input id="cantidad" key="outside" label="Cantidad" required value={cantidad} onChange={(e) => setCantidad(e.target.value)}/>
+              <Input id="cantidad" key="outside" label="Cantidad" required 
+                color={validationCantidad === "invalid" ? "danger" : "success"}
+                errorMessage={validationCantidad === "invalid" && "El campo cantidad es obligatorio"  }
+                value={cantidad} onChange={(e) => setCantidad(e.target.value)}/>
             </div>
 
             <div>
@@ -451,6 +561,7 @@ export default function Editar() {
                 onChange={(selectedValue: any) =>
                   handleProductorChange(selectedValue)
                 }
+                color={"success"}
                 className="mb-5 max-w-xs"
               >
                 {productores.map((productor) => (
@@ -459,7 +570,7 @@ export default function Editar() {
                     key={productor["idProductor"]}
                     value={productor["idProductor"]}
                   >
-                    {productor["puesto"]}
+                    {productor["usuario"]["nombre"]}
                   </SelectItem>
                 ))}
               </Select>
@@ -475,28 +586,33 @@ export default function Editar() {
                 {imagePreviews.length > 0 && (
                   <div className="mb-5">
                     <div className="flex flex-wrap">
-                      {imagePreviews.map((image, index) => (
-                        <div key={index} className="flex-shrink-0 mr-2">
-                          <Image
-                            src={image.src}
-                            alt={`Previsualización ${index + 1}`}
-                            width={200}
-                            height={200}
-                          />
-                          <button
-                            type="button"
-                            onClick={() => removeImagePreview(index)}
-                          >
-                            Eliminar
-                          </button>
-                        </div>
-                      ))}
+                      <RadioGroup className="text-black" label="Seleccione su imagen Principal"
+                        value={choosenIndex.toString()}>
+                        {imagePreviews.map((image, index) => (
+                          <div key={index} className="flex-shrink-0 mr-2">
+                            <Image
+                              src={image.src}
+                              alt={`Previsualización ${index + 1}`}
+                              width={200}
+                              height={200}
+                            />
+                            <button type="button" onClick={() => removeImagePreview(index)}>
+                              Eliminar
+                            </button>
+
+                            <Radio value={index.toString()}
+                              onChange={() => Marcador(index)}>Imagen Previsualizada {index}</Radio>
+                          </div>
+                        ))}
+                      </RadioGroup>
                     </div>
                   </div>
                 )}
               </div>
             </div>
-
+            {!hasUploadedImages && (
+              <p className="text-danger">Por favor, suba al menos una imagen</p>
+            )}
             <div className="mb-5">
             <label>
               <Checkbox
@@ -516,11 +632,14 @@ export default function Editar() {
                   disabled
                 />
                 <Input
+                  id="fecha"
                   type="date"
                   label="Fecha de Vencimiento - Valor"
                   placeholder="Ingrese la fecha de vencimiento"
                   value={fechaVencimiento}
-                  onChange={(e) => setFechaVencimiento(e.target.value)}
+                  onChange={(e) => setFechaVencimiento(e.target.value)} //We need to check this one
+                  errorMessage={fechaVencimientoError}
+                  color={fechaVencimientoError ? "danger" : "success"}
                 />
               </div>
             )}
@@ -544,13 +663,14 @@ export default function Editar() {
                     onChange={(e) =>
                       handleAtributoChange(index, "valor", e.target.value)
                     }
+                    color={atributo.valor.trim() !== "" ? "success" : "danger"}
+                    errorMessage={atributo.valor.trim() === "" ? "Este campo es obligatorio" : ""}
                   />
                   <button type="button" onClick={() => removeAtributo(index)}>
                     Eliminar Atributo
                   </button>
                 </div>
               ))}
-
              
               <button type="button" onClick={addAtributo}>
                 Agregar Atributo

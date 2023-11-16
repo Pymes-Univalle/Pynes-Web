@@ -3,10 +3,9 @@ import {
   Button, Input, Select, SelectItem, Textarea,
   Image, Checkbox, RadioGroup, Radio,
 } from "@nextui-org/react";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import axios from "axios";
-import { Console } from "console";
 import { useRouter } from "next/navigation";
 
 export default function Page() {
@@ -136,9 +135,7 @@ export default function Page() {
     router.push(`/Producto/Mostrar`);
   };
 
-  async function submit(
-    event: React.FormEvent<HTMLFormElement>
-  ): Promise<void> {
+  async function submit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
     const formElements = event.currentTarget.elements;
     const nombre =
@@ -292,8 +289,15 @@ export default function Page() {
           file
         }))
       );
-      setImagePreviews([...imagePreviews, ...newImagePreviews]);
+
+      const updatedImagePreviews = [...imagePreviews, ...newImagePreviews];
+
+      setImagePreviews(updatedImagePreviews);
       setHasUploadedImages(true);
+
+      if (choosenIndex === null) {
+        setChoosenIndex(0);
+      }
     }
   }
 
@@ -307,9 +311,8 @@ export default function Page() {
     setAtributos(updatedAtributos);
   
     // Validate attributes whenever an attribute is added or updated
-  const isValid = validateAttributes(updatedAtributos);
-  setAreAttributesValid(isValid);
-
+    const isValid = validateAttributes(updatedAtributos);
+    setAreAttributesValid(isValid);
   }
 
   function addAtributo(): void {
@@ -346,7 +349,6 @@ export default function Page() {
       }
     }
   };
-
   
 
   function Marcador(index: number): void {
@@ -457,7 +459,7 @@ export default function Page() {
                     key={productor["idProductor"]}
                     value={productor["idProductor"]}
                   >
-                    {productor["puesto"]}
+                    {productor["usuario"]["nombre"]}
                   </SelectItem>
                 ))}
               </Select>
@@ -474,25 +476,20 @@ export default function Page() {
                   <div className="mb-5">
 
                     <div className="flex flex-wrap">
-                    <RadioGroup
-                            label="Select your favorite city"
-                          >
+                    <RadioGroup label="Select your favorite city" value={choosenIndex.toString()}>
                       {imagePreviews.map((image, index) => (
                         <div key={index} className="flex-shrink-0 mr-2">
                           <Image
                             src={image.src}
-                            alt={"Previsualización ${index + 1}"}
+                            alt={`Previsualización ${index + 1}`}
                             width={200}
                             height={200}
                           />
-                          <button
-                            type="button"
-                            onClick={() => removeImagePreview(index)}
-                          >
+                          <button type="button" onClick={() => removeImagePreview(index)}>
                             Eliminar
                           </button>
 
-                          <Radio value={index.toString()} onChange={() => Marcador(index)} >Imagen Previsualizada {index} </Radio>
+                          <Radio value={index.toString()} onChange={() => Marcador(index)}>Imagen Previsualizada {index}</Radio>
                         </div>
                       ))}
                     </RadioGroup>

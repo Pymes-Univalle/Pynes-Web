@@ -59,7 +59,8 @@ export async function POST(request: Request) {
         idCategoria: parseInt(idCategoria as string),
         idProductor: parseInt(idProductor as string),
         fechaActualizacion: new Date(new Date().toISOString()),
-        fechaVencimiento: fechaVencimiento || null
+        fechaVencimiento: fechaVencimiento || null,
+        mainIndex: parseInt(mainIndex as string),
       },
     });
 
@@ -121,7 +122,7 @@ export async function POST(request: Request) {
              ruta: url,
              idProducto: nuevoProducto.idProductos,
              fechaActualizacion: new Date().toISOString(),
-             mainIndex: parseInt(mainIndex as string),
+             //mainIndex: parseInt(mainIndex as string),
            },
          });
        })

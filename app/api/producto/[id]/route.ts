@@ -49,6 +49,7 @@ export async function PUT(request: Request, {params}: Params) {
     const idCategoria = formData.get('idCategoria');
     const idProductor = formData.get('idProductor');
     const fechaVencimientoValue = formData.get('fechaVencimineto');
+    const mainIndex = formData.get('mainIndex');
     let fechaVencimiento: Date | undefined;
 
     if (fechaVencimientoValue && typeof fechaVencimientoValue === 'string') {
@@ -69,7 +70,8 @@ export async function PUT(request: Request, {params}: Params) {
         idCategoria: parseInt(idCategoria as string),
         idProductor: parseInt(idProductor as string),
         fechaActualizacion: new Date(new Date().toISOString()),
-        fechaVencimiento: fechaVencimiento || null
+        fechaVencimiento: fechaVencimiento || null,
+        mainIndex: parseInt(mainIndex as string),
       },
     });
 
@@ -155,6 +157,7 @@ export async function PUT(request: Request, {params}: Params) {
             ruta: url,
             idProducto: productoActualizado.idProductos,
             fechaActualizacion: new Date().toISOString(),
+            //mainIndex: parseInt(mainIndex as string),
           },
         });
       })
