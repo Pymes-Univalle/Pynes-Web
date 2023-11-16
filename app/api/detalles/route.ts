@@ -18,13 +18,21 @@ export async function GET( request: NextRequest  ) {
             where: {
               estado: 1,
               productos:{
-                idProductor:userRating
+                idProductor:1
               }
 
             },
             include:{
                 productos:true,
-                
+                venta:{
+                    include:{
+                        cliente:{
+                            include:{
+                                usuario:true
+                            }
+                        }
+                    }
+                }
             }
           })
   
