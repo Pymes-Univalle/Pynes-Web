@@ -5,7 +5,7 @@ import EyeIcon from "@/EyeIcon";
 import {
   Button, Link, Pagination, Popover, PopoverContent, PopoverTrigger,
   Table, TableBody, TableCell, TableColumn, TableHeader, TableRow,
-  Card, CardBody, CardFooter, Image
+  Card, CardBody, CardFooter, Image, Input
 } from "@nextui-org/react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -16,6 +16,7 @@ export default function Mostrar() {
   const [page, setPage] = useState(1);
   const rowsPerPage = 3;
   const [productos, setProductos] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const Reload = () => {
     axios.get("/api/producto")
@@ -39,6 +40,12 @@ export default function Mostrar() {
     const end = start + rowsPerPage;
     return productos.slice(start, end);
   }, [page, productos]);
+
+  const filteredProductos = useMemo(() => {
+    return productos.filter((producto) =>
+      producto.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [productos, searchTerm]);
 
   const ClickDetalles = (id: any) => {
     router.push(`/Producto/Detalles?id=${id}`);
@@ -78,8 +85,14 @@ export default function Mostrar() {
           Crear Productos
         </Link>
 
+        <Input
+          placeholder="Buscar por nombre"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+
         <div className="gap-3 grid grid-cols-2 sm:grid-cols-4 mt-3">
-          {productos.map((item) => (
+          {filteredProductos.map((item) => (
             <Card
               shadow="sm"
               key={item.idProductos}

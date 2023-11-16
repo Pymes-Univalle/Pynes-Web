@@ -92,7 +92,8 @@ export default function Editar() {
 
           setProducts(productoData);
           setRutaData(productoData.ruta);
-          setChoosenIndex(productoData.ruta[0]?.mainIndex)
+          //setChoosenIndex(productoData.ruta[0]?.mainIndex)
+          setChoosenIndex(productoData.mainIndex)
           //setOldChoosenIndex(productoData.ruta[0]?.mainIndex)
           setAtributoData(productoData.atributo);
 
@@ -454,13 +455,9 @@ export default function Editar() {
 
   function Marcador(index: number): void {
     console.log("Index:" + index);
-    //setChoosenIndex(index);
-    setChoosenIndex((prevIndex) => {
-      console.log("PrevChoosenIndex: " + prevIndex);
-      console.log("NewChoosenIndex: " + index);
-      return index;
-    })
-    console.log("ChoosenIndex: " + choosenIndex);
+    if (index !== choosenIndex) {
+      setChoosenIndex(index);
+    }
   }
 
   if (!products) {
