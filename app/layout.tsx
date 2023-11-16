@@ -9,6 +9,7 @@ import { deleteUser } from "./redux/features/userSlice";
 import { useAppDispatch } from "./redux/hooks";
 import { GoogleMap, LoadScript } from "@react-google-maps/api";
 import GOOGLE_MAPS_API_KEY from "@/googleMapsConfig";
+import './globals.css'; 
 
 import {
   Navbar,
@@ -110,7 +111,7 @@ export default function RootLayout({
   };
   
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="">
       <body className="bg-white h-screen w-screen">
         <div className="h-full w-full flex flex-col">
           <Providers>
@@ -118,6 +119,7 @@ export default function RootLayout({
               isBordered
               isMenuOpen={isMenuOpen}
               onMenuOpenChange={setIsMenuOpen}
+              className="dark "
             >
               <NavbarContent className="sm:hidden" justify="start">
                 <NavbarMenuToggle
@@ -310,7 +312,7 @@ export default function RootLayout({
               </NavbarMenu>
             </Navbar>
           
-            <div className="bg-black  w-screen h-full justify-center items-center">
+            <div className=" bg-zinc-100 w-screen h-full justify-center items-center">
            
               {children}
               

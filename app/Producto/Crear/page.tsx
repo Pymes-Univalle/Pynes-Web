@@ -354,9 +354,9 @@ export default function Page() {
 
   return (
     <>
-      <div className="bg-blanco h-full text-black ">
+      <div className=" text-black ">
         <div className="mx-auto max-w-5xl">
-          <h1 className=" text-black text-2xl text-center font-bold mb-8 mt-5">
+          <h1 className="  text-2xl text-center font-bold mb-8 mt-5">
             {" "}
             Crear Producto{" "}
           </h1>
@@ -466,7 +466,7 @@ export default function Page() {
                 </div>*/}
 
             <div className="mb-5">
-              <Input type="file" onChange={handleFileChange} multiple />
+              <Input type="file" accept="image/png, image/jpg, image/jpeg" onChange={handleFileChange} multiple />
             </div>
 
             <div className="mb-5">
@@ -477,7 +477,7 @@ export default function Page() {
                    
                     <div className="flex flex-wrap">
                     <RadioGroup
-                            label="Select your favorite city"
+                            
                           >
                       {imagePreviews.map((image, index) => (
                         <div key={index} className="flex-shrink-0 mr-2">
@@ -489,6 +489,7 @@ export default function Page() {
                           />
                           <button
                             type="button"
+                            className="m-5"
                             onClick={() => removeImagePreview(index)}
                           >
                             Eliminar

@@ -238,9 +238,9 @@ export default function ProductionForm() {
 
   return (
     <>
-      <div className="bg-blanco min-h-screen min-w-screen text-black ">
+      <div className="bg-blanco  ">
         <div className="mx-auto max-w-5xl">
-          <h1 className=" text-black text-2xl text-center font-bold mb-8 mt-5">
+          <h1 className=" text-2xl text-center font-bold mb-8 mt-5">
             {" "}
             Crear Producción{" "}
           </h1>
@@ -253,6 +253,7 @@ export default function ProductionForm() {
               {selectedItems.map((selectedItem, index) => (
                 <div key={index}>
                   <Select
+                  className="text-white"
                     id={`insumos-${index}`}
                     label="Insumos"
                     placeholder="Selecciona un Insumo"
@@ -261,7 +262,7 @@ export default function ProductionForm() {
                   >
                     {insumos.map((insumo) => (
                       <SelectItem
-                        className="text-black"
+                        className="text-white"
                         key={insumo["idInsumo"]}
                         value={insumo["idInsumo"]}
                       >
@@ -270,6 +271,7 @@ export default function ProductionForm() {
                     ))}
                   </Select>
                   <Input
+                  className="text-white"
                     label="Cantidad"
                     placeholder="Ingrese la cantidad"
                     value={selectedItem.cantidadSalida}
