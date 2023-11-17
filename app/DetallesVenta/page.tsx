@@ -55,8 +55,10 @@ export default function Page() {
           <TableColumn key="precio">Precio</TableColumn>
           <TableColumn key="cantidad">Cantidad</TableColumn>
           <TableColumn key="importe">Importe</TableColumn>
+          
           <TableColumn key="fechaVenta">Fecha de Venta</TableColumn>
           <TableColumn key="nombreUsuario">Nombre del Usuario</TableColumn>
+          <TableColumn key="Celular">Celular</TableColumn>
         </TableHeader>
         <TableBody items={filteredData}>
           {(venta) => (
@@ -67,6 +69,12 @@ export default function Page() {
               <TableCell>{venta['inporte']}</TableCell>
               <TableCell>{venta['fechaRegistro']}</TableCell>
               <TableCell>{venta['venta']['cliente']['usuario']['nombre']}</TableCell>
+              <TableCell>
+                <a href={`https://wa.me/+591${venta['venta']['cliente']['usuario']['celular']}`} target="_blank">
+                  {venta['venta']['cliente']['usuario']['celular']}
+                </a>
+              </TableCell>
+
             </TableRow>
           )}
         </TableBody>
