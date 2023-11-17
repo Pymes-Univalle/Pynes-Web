@@ -77,6 +77,21 @@ model insumo {
   insumoproduccion insumoproduccion[]
 }
 
+model insumoproduccion {
+  Insumo_idInsumo Int
+  Produccion_id   Int
+  cantidadEntrada Int
+  cantidadSalida  Int
+  cantidadTotal   Int
+  fechaRegistro   DateTime?  @default(now()) @db.DateTime(0)
+  insumo          insumo     @relation(fields: [Insumo_idInsumo], references: [idInsumo], onDelete: NoAction, onUpdate: NoAction, map: "fk_Insumo_has_Produccion_Insumo1")
+  produccion      produccion @relation(fields: [Produccion_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Insumo_has_Produccion_Produccion1")
+
+  @@id([Insumo_idInsumo, Produccion_id])
+  @@index([Insumo_idInsumo], map: "fk_Insumo_has_Produccion_Insumo1_idx")
+  @@index([Produccion_id], map: "fk_Insumo_has_Produccion_Produccion1_idx")
+}
+
 model organizacion {
   idOrganizacion Int         @id
   latitud        String      @db.VarChar(60)
@@ -112,7 +127,6 @@ model productor {
   estado             Int          @default(1) @db.TinyInt
   fechaRegistro      DateTime?    @default(now()) @db.DateTime(0)
   fechaActualizacion DateTime     @db.DateTime(0)
-  mainIndex          Int          @default(0) @db.TinyInt
   produccion         produccion[]
   usuario            usuario      @relation(fields: [idProductor], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Productores_usuario1")
   organizacion       organizacion @relation(fields: [idOrganizacion], references: [idOrganizacion], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_organizacion")
@@ -133,6 +147,7 @@ model productos {
   fechaRegistro      DateTime?       @default(now()) @db.DateTime(0)
   fechaActualizacion DateTime        @db.DateTime(0)
   fechaVencimiento   DateTime?       @db.DateTime(0)
+  mainIndex          Int             @default(0) @db.TinyInt
   atributo           atributo[]
   detalleventas      detalleventas[]
   produccion         produccion[]
@@ -161,7 +176,7 @@ model ruta {
   estado             Int       @default(1) @db.TinyInt
   fechaRegistro      DateTime? @default(now()) @db.DateTime(0)
   fechaActualizacion DateTime  @db.DateTime(0)
-  productos          productos @relation(fields: [idProducto], references: [idProductos], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_productos")
+  productos          productos @relation(fields: [idProducto], references: [idProductos], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_productos3")
 
   @@index([idProducto], map: "id_idx")
 }
@@ -191,19 +206,4 @@ model venta {
   cliente       cliente         @relation(fields: [idCliente], references: [idCliente], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_cliente")
 
   @@index([idCliente], map: "id_idx")
-}
-
-model insumoproduccion {
-  Insumo_idInsumo Int
-  Produccion_id   Int
-  cantidadEntrada Int
-  cantidadSalida  Int
-  cantidadTotal   Int
-  fechaRegistro   DateTime?  @default(now()) @db.DateTime(0)
-  insumo          insumo     @relation(fields: [Insumo_idInsumo], references: [idInsumo], onDelete: NoAction, onUpdate: NoAction, map: "fk_Insumo_has_Produccion_Insumo1")
-  produccion      produccion @relation(fields: [Produccion_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Insumo_has_Produccion_Produccion1")
-
-  @@id([Insumo_idInsumo, Produccion_id])
-  @@index([Insumo_idInsumo], map: "fk_Insumo_has_Produccion_Insumo1_idx")
-  @@index([Produccion_id], map: "fk_Insumo_has_Produccion_Produccion1_idx")
 }

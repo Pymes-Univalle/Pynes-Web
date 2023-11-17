@@ -316,10 +316,13 @@ export default function Mostrar() {
                         className="w-full object-cover h-[160px]"
                         src={rutaItem.ruta}
                       />
+                      
                     )}
+                    
                   </div>
                 ))}
               </CardBody>
+              <div className="m-5"> {item.nombre}</div>
               <CardFooter className="text-small justify-between items-center">
                 {/* <b>{item.nombre}</b> */}
                 {/* <p className="text-default-500">{item.precio}</p> */}
@@ -328,7 +331,7 @@ export default function Mostrar() {
                   <EyeIcon className="w-6 h-6 text-white" />
                     Ver
                 </Button>
-                <Button className="text-tiny" color="success" radius="full" size="sm"
+                <Button className="text-tiny text-white" color="success" radius="full" size="sm"
                   onClick={() => ClickEditar(item["idProductos"])}>
                   <EditIcon className="w-6 h-6 text-white" />
                     Editar
