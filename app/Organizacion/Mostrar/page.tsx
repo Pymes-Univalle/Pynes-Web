@@ -32,7 +32,7 @@ interface User {
 export default function Mostrar() {
   const router = useRouter();
   const [page, setPage] = useState(1);
-  const rowsPerPage = 3;
+  const rowsPerPage = 10;
   const [organizacion, setOrganizations] = useState([]); // Estado para almacenar las organizaciones
 
 
@@ -148,7 +148,7 @@ export default function Mostrar() {
         }}
       >
         <TableHeader>
-          <TableColumn key="idOrganizacion">Id</TableColumn>
+          <TableColumn hidden key="idOrganizacion">Id</TableColumn>
           <TableColumn key="nombre">Nombre</TableColumn>
           <TableColumn key="apellido">Apellido</TableColumn>
           <TableColumn key="correo">Correo</TableColumn>
@@ -163,8 +163,8 @@ export default function Mostrar() {
         </TableHeader>
         <TableBody items={items}>
           {(item) => (
-            <TableRow key={item["id"]}>
-              <TableCell>
+            <TableRow  key={item["id"]}>
+              <TableCell hidden>
                 <div className="flex gap-4">{item["id"]}</div>
               </TableCell>
               <TableCell>{item["nombre"]}</TableCell>

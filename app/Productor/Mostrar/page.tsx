@@ -125,7 +125,7 @@ export default function Mostrar() {
         }}
       >
         <TableHeader>
-          <TableColumn key="idProductor">Id</TableColumn>
+          <TableColumn hidden key="idProductor">Id</TableColumn>
           <TableColumn key="nombre">Nombres</TableColumn>
           <TableColumn key="apellido">Apellidos</TableColumn>
           <TableColumn key="correo">Correo</TableColumn>
@@ -139,7 +139,7 @@ export default function Mostrar() {
         <TableBody items={items}>
           {(item) => (
             <TableRow key={item["usuario"]["id"]}>
-              <TableCell>
+              <TableCell hidden>
                 <div className="flex gap-4">{item["usuario"]["id"]}</div>
               </TableCell>
               <TableCell>{item["usuario"]["nombre"]}</TableCell>

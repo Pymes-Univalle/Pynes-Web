@@ -31,7 +31,7 @@ import EyeIcon from "@/EyeIcon";
 export default function Mostrar() {
   const router = useRouter();
   const [page, setPage] = useState(1);
-  const rowsPerPage = 3;
+  const rowsPerPage = 10;
   const [insumo, setInsumo] = useState([]); // Estado para almacenar los insumos
 
 //   const user: User = {
@@ -121,7 +121,7 @@ export default function Mostrar() {
         }}
       >
         <TableHeader>
-          <TableColumn key="idInsumo">Id</TableColumn>
+          <TableColumn hidden key="idInsumo">Id</TableColumn>
           <TableColumn key="nombre">Nombre</TableColumn>
           <TableColumn key="precio">Precio</TableColumn>
           <TableColumn key="cantidad">Cantidad</TableColumn>
@@ -132,7 +132,7 @@ export default function Mostrar() {
         <TableBody items={items}>
           {(item) => (
             <TableRow key={item["idInsumo"]}>
-              <TableCell>
+              <TableCell hidden>
                 <div className="flex gap-4">{item["id"]}</div>
               </TableCell>
               <TableCell>{item["nombre"]}</TableCell>

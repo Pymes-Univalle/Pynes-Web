@@ -110,7 +110,7 @@ export default function RootLayout({
   };
   
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="">
       <body className="bg-white h-screen w-screen">
         <div className="h-full w-full flex flex-col">
           <Providers>
@@ -229,7 +229,7 @@ export default function RootLayout({
                      onClick={handleDetalles}
                      aria-current="page"
                    >
-                     DEtalles
+                     Ventas 
                    </Link>
                  </NavbarItem>
                 )}
@@ -256,7 +256,7 @@ export default function RootLayout({
                     <DropdownMenu aria-label="Static Actions">
                       <DropdownItem key="miPerfil">
                         <Link
-                          className="text-white w-full"
+                          className=" w-full"
                           onClick={handleMyPerfil}
                         >
                           Mi Perfil
@@ -264,7 +264,7 @@ export default function RootLayout({
                       </DropdownItem>
                       <DropdownItem key="cambiarContraseña">
                         <Link
-                          className="text-white w-full"
+                          className=" w-full"
                           onClick={handleCambiarContrasena}
                         >
                           Cambiar Contraseña
@@ -310,7 +310,7 @@ export default function RootLayout({
               </NavbarMenu>
             </Navbar>
           
-            <div className="bg-black  w-screen h-full justify-center items-center">
+            <div className="bg-white  w-screen h-full justify-center items-center">
            
               {children}
               

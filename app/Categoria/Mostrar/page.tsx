@@ -13,7 +13,7 @@ interface Categoria{
 export default function page() {
     const router = useRouter();
     const [page, setPage] = useState(1);
-    const rowsPerPage = 3;
+    const rowsPerPage = 10;
     const [Categoria , setCategoria] = useState([]);
 
     const pages = Math.ceil(Categoria.length / rowsPerPage);
@@ -70,7 +70,7 @@ export default function page() {
         }}
       >
         <TableHeader>
-          <TableColumn key="id">Id</TableColumn>
+          <TableColumn hidden key="id">Id</TableColumn>
           <TableColumn key="nombre">Nombre</TableColumn>
           
           <TableColumn key="editar">Editar</TableColumn>
@@ -79,8 +79,8 @@ export default function page() {
         <TableBody items={items}>
           {(item) => (
             <TableRow key={item['idCategoria']}>
-              <TableCell>
-                <div className="flex gap-4">
+              <TableCell hidden>
+                 <div className="flex gap-4">
                 {item['idCategoria']}
                 </div>
               </TableCell>

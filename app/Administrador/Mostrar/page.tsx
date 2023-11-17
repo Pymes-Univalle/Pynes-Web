@@ -32,7 +32,7 @@ interface User {
 export default function Mostrar() {
   const router = useRouter();
   const [page, setPage] = useState(1);
-  const rowsPerPage = 3;
+  const rowsPerPage = 10;
   const [administrador, setAdmins] = useState([]); // Estado para almacenar los admins
 
   const user: User = {

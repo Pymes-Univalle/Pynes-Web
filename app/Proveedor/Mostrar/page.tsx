@@ -22,7 +22,7 @@ interface Proveedor {
 export default function Mostrar() {
   const router = useRouter();
   const [page, setPage] = useState(1);
-  const rowsPerPage = 3;
+  const rowsPerPage = 10;
   const [provedorD, setProveedor] = useState([]); // Estado para almacenar las organizaciones
 
   useEffect(() => {
@@ -114,7 +114,7 @@ export default function Mostrar() {
         }}
       >
         <TableHeader>
-          <TableColumn key="id">Id</TableColumn>
+          <TableColumn hidden key="id">Id</TableColumn>
           <TableColumn key="nombre">Nombre</TableColumn>
           <TableColumn key="celular">Celular</TableColumn>
         
@@ -125,7 +125,7 @@ export default function Mostrar() {
         <TableBody items={items}>
           {(item) => (
             <TableRow key={item['id']}>
-              <TableCell>
+              <TableCell hidden>
                 <div className="flex gap-4">
                 {item['id']}
                 </div>

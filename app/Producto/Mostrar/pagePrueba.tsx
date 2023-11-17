@@ -30,7 +30,7 @@ interface Producto {
 export default function Mostrar() {
   const router = useRouter();
   const [page, setPage] = useState(1);
-  const rowsPerPage = 3;
+  const rowsPerPage = 10;
   //const [productosD, setProductos] = useState<any[]>([]);
   const [productos, setProductos] = useState<any[]>([]);
   const [rutaData, setRutaData] = useState<any[]>([]);
