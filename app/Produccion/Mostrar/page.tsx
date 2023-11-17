@@ -4,6 +4,7 @@ import EditIcon from "@/EditIcon";
 import EyeIcon from "@/EyeIcon";
 import {
   Button,
+  Input,
   Link,
   Pagination,
   Table,
@@ -16,12 +17,15 @@ import {
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
+import { InsumosProduccion } from "@/app/Models";
 
 export default function Mostrar() {
   const router = useRouter();
   const [page, setPage] = useState(1);
   const rowsPerPage = 3;
-  const [produccionD, setProduccion] = useState([]);
+  const [produccionD, setProduccion] = useState<InsumosProduccion[]>([]);
+  const [fechaActualizacion, setFechaActualizacion] = useState("");
+  const [fechaRegistro, setFechaRegistro] = useState("");
 
   useEffect(() => {
     axios
@@ -36,12 +40,31 @@ export default function Mostrar() {
       });
   }, []);
 
-  const pages = Math.ceil(produccionD.length / rowsPerPage);
+  const filteredProduccion2 = useMemo(() => {
+    return produccionD.filter((produccion) => {
+      if (fechaActualizacion && produccion["fechaActualizacion"] !== fechaActualizacion) {
+        return false;
+      }
+      if (fechaRegistro && produccion["fechaRegistro"] !== fechaRegistro) {
+        return false;
+      }
+      return true;
+    });
+  }, [produccionD, fechaActualizacion, fechaRegistro]);
+
+  const filteredProduccion = useMemo(() => {
+    if (fechaRegistro) {
+      return filteredProduccion.filter((produccion) => produccion.fechaRegistro === fechaRegistro);
+    }
+    return filteredProduccion;
+  }, [filteredProduccion, fechaRegistro]);
+
+  const pages = Math.ceil(filteredProduccion.length / rowsPerPage);
   const items = useMemo(() => {
     const start = (page - 1) * rowsPerPage;
     const end = start + rowsPerPage;
-    return produccionD.slice(start, end);
-  }, [page, produccionD]);
+    return filteredProduccion.slice(start, end);
+  },[page, filteredProduccion]);
 
   const ClickDetalles = (id: any) => {
     router.push(`/Produccion/Detalles?id=${id}`);
@@ -59,13 +82,21 @@ export default function Mostrar() {
     <>
       <div className="text-black bg-blanco p-4">
         <h1 className="text-center text-2x1 mb-4"> Lista de Producciones</h1>
-
+        <div>
+          <label htmlFor="fecha-registro">Fecha de Registro:</label>
+          <input
+            name="filtro-registro"
+            type="date"
+            id="fecha-registro"
+            value={fechaRegistro}
+            onChange={(e) => setFechaRegistro(e.target.value)}
+          />
+        </div>
        
         <Button
           className="flex items-center text-black hover:text-gray-800"
           color="success"
-          onClick={() => CrearProduccion()}
-        >
+          onClick={() => CrearProduccion()}>
           <EditIcon className="w-6 h-6 text-black" />
           Crear Producciones
         </Button>
@@ -114,8 +145,7 @@ export default function Mostrar() {
                   <Button
                     className="flex items-center text-black hover:text-gray-800"
                     color="primary"
-                    onClick={() => ClickDetalles(item["id"])}
-                  >
+                    onClick={() => ClickDetalles(item["id"])}>
                     <EyeIcon className="w-6 h-6 text-black" />
                     Ver
                   </Button>
@@ -150,3 +180,7 @@ export default function Mostrar() {
     </>
   );
 }
+
+
+
+
