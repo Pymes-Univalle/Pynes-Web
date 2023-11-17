@@ -4,8 +4,13 @@ import { NextResponse } from "next/server";
 
 
 export async function GET() {
+
+  
     try {
+
         const proveedor = await prisma.categoria.findMany();
+         
+        
     
         return NextResponse.json({ data: proveedor }, { status: 200 });
       } catch (error) {

@@ -18,7 +18,7 @@ export async function GET( request: NextRequest  ) {
             where: {
               estado: 1,
               productos:{
-                idProductor:1
+                idProductor:userRating
               }
 
             },

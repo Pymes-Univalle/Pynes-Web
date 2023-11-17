@@ -41,7 +41,9 @@ export default function Page() {
 
   return (
     <>
-      <h1>Detalles Ventas</h1>
+    <div className="text-black bg-blanco p-4">
+      <h1 className="text-center text-2xl mb-4">Detalles Ventas</h1>
+
       <Input
         type="month"
         value={selectedMonth}
@@ -69,6 +71,10 @@ export default function Page() {
           )}
         </TableBody>
       </Table>
+
+    </div> 
+   
+      
     </>
   );
 }
