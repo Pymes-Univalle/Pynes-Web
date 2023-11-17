@@ -112,6 +112,7 @@ model productor {
   estado             Int          @default(1) @db.TinyInt
   fechaRegistro      DateTime?    @default(now()) @db.DateTime(0)
   fechaActualizacion DateTime     @db.DateTime(0)
+  mainIndex          Int          @default(0) @db.TinyInt
   produccion         produccion[]
   usuario            usuario      @relation(fields: [idProductor], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_Productores_usuario1")
   organizacion       organizacion @relation(fields: [idOrganizacion], references: [idOrganizacion], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_organizacion")
@@ -160,7 +161,6 @@ model ruta {
   estado             Int       @default(1) @db.TinyInt
   fechaRegistro      DateTime? @default(now()) @db.DateTime(0)
   fechaActualizacion DateTime  @db.DateTime(0)
-  mainIndex          Int       @default(0) @db.TinyInt
   productos          productos @relation(fields: [idProducto], references: [idProductos], onDelete: NoAction, onUpdate: NoAction, map: "fk_id_productos")
 
   @@index([idProducto], map: "id_idx")
