@@ -535,6 +535,7 @@ export default function Page() {
                 />
                 <Input
                   id="fecha"
+                  className="w-1/4"
                   type="date"
                   label="Fecha de Vencimiento - Valor"
                   placeholder="Ingrese la fecha de vencimiento"

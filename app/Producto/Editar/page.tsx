@@ -517,6 +517,7 @@ export default function Editar() {
                 />
                 <Input
                   type="date"
+                  className="w-1/4"
                   label="Fecha de Vencimiento - Valor"
                   placeholder="Ingrese la fecha de vencimiento"
                   value={fechaVencimiento}

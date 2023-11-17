@@ -44,7 +44,8 @@ export default function Page() {
     <div className="text-black bg-blanco p-4">
       <h1 className="text-center text-2xl mb-4">Detalles Ventas</h1>
 
-      <Input
+      <Input 
+        className="w-1/4"
         type="month"
         value={selectedMonth}
         onChange={(e) => setSelectedMonth(e.target.value)}
