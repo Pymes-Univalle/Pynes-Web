@@ -17,6 +17,8 @@ export async function POST(request: Request) {
         total,
         detalleventas,
       } = await request.json();
+
+      console.log("......");
   
       const result = await prisma.$transaction(async (transaction) => {
         // Crea la venta

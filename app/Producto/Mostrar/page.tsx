@@ -212,7 +212,7 @@ import EyeIcon from "@/EyeIcon";
 import {
   Button, Link, Pagination, Popover, PopoverContent, PopoverTrigger,
   Table, TableBody, TableCell, TableColumn, TableHeader, TableRow,
-  Card, CardBody, CardFooter, Image, Input
+  Card, CardBody, CardFooter, Image, Input, CardHeader
 } from "@nextui-org/react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -303,8 +303,13 @@ export default function Mostrar() {
             <Card
               shadow="sm"
               key={item.idProductos}
-            >
-              <CardBody className="overflow-visible p-0">
+              className="py-4">
+              <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
+                <p className="text-tiny uppercase font-bold">Categoria:</p>
+                <small className="text-default-500">{item.categoria.nombre}</small>
+                <h5 className="font-bold text-large">{item.nombre}</h5>
+              </CardHeader>
+              <CardBody className="overflow-visible p-4">
                 {item.ruta.map((rutaItem : any, index : number) => (
                   <div key={index}>
                     {item.mainIndex === index && (  // Compara mainIndex con la posición del array
@@ -314,18 +319,12 @@ export default function Mostrar() {
                         width="100%"
                         alt={`Image ${item.mainIndex}`}
                         className="w-full object-cover h-[160px]"
-                        src={rutaItem.ruta}
-                      />
-                      
+                        src={rutaItem.ruta}/>
                     )}
-                    
                   </div>
                 ))}
               </CardBody>
-              <div className="m-5"> {item.nombre}</div>
-              <CardFooter className="text-small justify-between items-center">
-                {/* <b>{item.nombre}</b> */}
-                {/* <p className="text-default-500">{item.precio}</p> */}
+              <CardFooter className="text-small justify-between items-center bg-black/40">
                 <Button className="text-tiny" color="primary" radius="full" size="sm"
                   onClick={() => ClickDetalles(item["idProductos"])}>
                   <EyeIcon className="w-6 h-6 text-white" />

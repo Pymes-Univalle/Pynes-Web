@@ -43,8 +43,10 @@ Comandos utiles:
     * in case the other one doesn´t work -> try this: npm install --save-dev https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/emailjs -->
 * npm install emailjs (Alicia's email way)
 * npm i @emailjs/browser
+* npm install node-fetch
+Por si se cambia la base de datos:
 * Remove-Item -Recurse -Force node_modules Remove-Item -Force package-lock.json
 * npx prisma introspect
 * npx prisma generate
+Para correr el proyecto:
 * npm run dev
-* npm install node-fetch
