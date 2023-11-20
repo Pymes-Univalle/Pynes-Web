@@ -17,7 +17,8 @@ function page() {
     correo: true,
   });
     const router = useRouter();
-  const id = useAppSelector((state) => state.user.id);
+    const id = JSON.parse(localStorage.getItem("userId") || "0") as number;
+
   console.log(id);
   useEffect(() => {
     const fetchData = async () => {
@@ -52,7 +53,7 @@ function page() {
       <div className="mx-auto max-w-5xl">
         <h1 className="text-black text-2xl text-center font-bold mb-8 mt-5">
           {" "}
-          Información del productor{" "}
+          Información del usuario{" "}
         </h1>
         <div className=" p-5 border-1 shadow ">
           <div className="mb-5 mt-5">
@@ -70,13 +71,15 @@ function page() {
           <div className="mb-5">
             <strong className="text-blue-600">Celular:</strong> {celular}
           </div>
-        </div>
-      </div>
-      <Button radius="full" className="mt-5 bg-amarillo"
+          <Button radius="full" className="mt-5 bg-amarillo"
        onClick={handleActualizarClick}
        >
         Actualizar Datos
       </Button>
+        </div>
+        
+      </div>
+      
     </div>
   );
 }

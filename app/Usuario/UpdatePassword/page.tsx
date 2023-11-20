@@ -14,14 +14,26 @@ import {
 import CryptoJS from "crypto-js";
 import { useAppSelector } from "@/app/redux/hooks";
 import { useRouter } from "next/navigation";
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; 
+
 
 export default function UpdatePassword() {
   const router = useRouter();
-  const idUser = useAppSelector((state) => state.user.id)
+  //const idUser = useAppSelector((state) => state.user.id)
+  const idUser = JSON.parse(localStorage.getItem("userId") || "0") as number;
   const [modal, setModal] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [contrasenaActual, setContrasenaActual] = useState("");
   const [contrasena, setContrasena] = useState("");
+
+  const [isVisible1, setIsVisible1] = React.useState(false);
+  const [isVisible2, setIsVisible2] = React.useState(false);
+  const [isVisible3, setIsVisible3] = React.useState(false);
+
+  const toggleVisibility1 = () => setIsVisible1(!isVisible1);
+  const toggleVisibility2 = () => setIsVisible2(!isVisible2);
+  const toggleVisibility3 = () => setIsVisible3(!isVisible3);
+
   const [confirmarContrasena, setConfirmarContrasena] = useState("");
   const [fieldValidations, setFieldValidations] = useState({
     contrasenaActual: true,
@@ -79,9 +91,9 @@ const handleClick = () => {
   };
 
   return (
-    <div className="bg-black min-h-screen text-blanco ">
+    <div className=" min-h-screen ">
       <div className="mx-auto max-w-5xl">
-        <h1 className=" text-white text-2xl text-center font-bold mb-8 mt-5">
+        <h1 className="  text-2xl text-center font-bold mb-8 mt-5">
           Cambiar Contraseña
         </h1>
         <form
@@ -94,10 +106,19 @@ const handleClick = () => {
               id="contrasenaActual"
               name="contrasenaActual"
               key="outside"
-              type="text"
               label="Contraseña actual"
               labelPlacement="outside"
+              type={isVisible1 ? "text" : "password"}
               required
+              endContent={
+                <button className="focus:outline-none" type="button" onClick={toggleVisibility1}>
+                  {isVisible1 ? (
+                    <FaEyeSlash className="text-2xl text-default-400 pointer-events-none" />
+                  ) : (
+                    <FaEye className="text-2xl text-default-400 pointer-events-none" />
+                  )}
+                </button>
+              }
               onValueChange={setContrasenaActual}
               validationState={
                 fieldValidations.contrasenaActual ? "valid" : "invalid"
@@ -115,11 +136,20 @@ const handleClick = () => {
               id="contrasena"
               name="contrasena"
               key="outside"
-              type="text"
+              type={isVisible2 ? "text" : "password"}
               label="Nueva contraseña"
               minLength={6}
               labelPlacement="outside"
               required
+              endContent={
+                <button className="focus:outline-none" type="button" onClick={toggleVisibility2}>
+                  {isVisible2 ? (
+                    <FaEyeSlash className="text-2xl text-default-400 pointer-events-none" />
+                  ) : (
+                    <FaEye className="text-2xl text-default-400 pointer-events-none" />
+                  )}
+                </button>
+              }
               onValueChange={setContrasena}
               validationState={
                 fieldValidations.contrasena ? "valid" : "invalid"
@@ -134,11 +164,20 @@ const handleClick = () => {
               id="confirmarContrasena"
               name="confirmarContrasena"
               key="outside"
-              type="text"
+              type={isVisible3 ? "text" : "password"}
               label="Confirmar nueva contraseña"
               minLength={6}
               labelPlacement="outside"
               required
+              endContent={
+                <button className="focus:outline-none" type="button" onClick={toggleVisibility3}>
+                  {isVisible3 ? (
+                    <FaEyeSlash className="text-2xl text-default-400 pointer-events-none" />
+                  ) : (
+                    <FaEye className="text-2xl text-default-400 pointer-events-none" />
+                  )}
+                </button>
+              }
               onValueChange={setConfirmarContrasena}
               validationState={
                 fieldValidations.confirmarContrasena ? "valid" : "invalid"
@@ -159,7 +198,7 @@ const handleClick = () => {
             <ModalContent>
               {(onClose) => (
                 <>
-                  <ModalHeader className="flex flex-col gap-1 self-center mt-10">
+                  <ModalHeader className="flex flex-col gap-1 self-center mt-10 text-black">
                     Contraseña Actualizada Correctamente
                   </ModalHeader>
 

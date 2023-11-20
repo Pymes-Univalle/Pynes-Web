@@ -60,9 +60,7 @@ function page() {
           <div className="mb-5 mt-5">
           <strong>Nombre:</strong> {organization['usuario']['nombre']}
         </div>
-        <div className="mb-5">
-          <strong>Apellido:</strong> {organization['usuario']['apellido']}
-        </div>
+        
         <div className="mb-5">
           <strong>Gmail:</strong> {organization['usuario']['correo']}
         </div>

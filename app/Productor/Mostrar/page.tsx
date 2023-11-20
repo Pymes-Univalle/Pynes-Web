@@ -17,6 +17,8 @@ import {
   Tooltip,
 } from "@nextui-org/react";
 
+import { FaWhatsapp } from 'react-icons/fa';
+
 import { useRouter } from "next/navigation";
 import { Metadata } from "next";
 import EyeIcon from "@/EyeIcon";
@@ -45,16 +47,21 @@ export default function Mostrar() {
     /*if( userToken === null){
       router.push("/Login");
     }*/
-    axios
-      .get("/api/productor")
-      .then((response) => {
-        if (response.data && response.data.data) {
-          setProductores(response.data.data);
-          console.log(response.data.data);
-        }
-      })
-      .catch((error) => console.error(error));
+    carga();
+    
   }, []);
+
+  const carga = () => {
+    axios
+    .get("/api/productor")
+    .then((response) => {
+      if (response.data && response.data.data) {
+        setProductores(response.data.data);
+        console.log(response.data.data);
+      }
+    })
+    .catch((error) => console.error(error));
+  }
 
   const pages = Math.ceil(productor.length / rowsPerPage);
 
@@ -84,7 +91,7 @@ export default function Mostrar() {
       });
 
       if (response.status === 200) {
-        router.refresh();
+        carga();
       } else {
         console.error("Error al actualizar:", response.data);
       }
@@ -101,7 +108,7 @@ export default function Mostrar() {
         variant="solid"
         as={Link}
         onClick={registrar}
-        className="btn mb-5 text-white font-bold py-2 px-4 rounded-lg"
+        className="btn mb-5  font-bold py-2 px-4 rounded-lg"
       >
         Registrar Productor
       </Button>
@@ -146,11 +153,22 @@ export default function Mostrar() {
               <TableCell>{item["usuario"]["apellido"]}</TableCell>
               <TableCell>{item["usuario"]["correo"]}</TableCell>
 
-              <TableCell>{item["usuario"]["celular"]}</TableCell>
+              <TableCell>
+                <a
+                  href={`https://wa.me/+591${item["usuario"]["celular"]}`}
+                  target="_blank"
+                  className="hover:text-green-500 flex items-center"
+                  style={{ fontSize: '15px' }}
+                >
+                  <FaWhatsapp />
+                  <span className="ml-1">{item["usuario"]["celular"]}</span>
+                </a>
+
+              </TableCell>
               <TableCell>{item["puesto"]}</TableCell>
 
               <TableCell>
-                <Tooltip content="Ver detalles">
+                <Tooltip className="text-black" content="Ver detalles">
                   <span
                     onClick={() => detalles(item["usuario"]["id"])}
                     className="text-lg text-default-400 cursor-pointer active:opacity-50"
@@ -160,7 +178,7 @@ export default function Mostrar() {
                 </Tooltip>
               </TableCell>
               <TableCell>
-                <Tooltip content="Editar productor">
+                <Tooltip className="text-black" content="Editar productor">
                   <span
                     onClick={() => editar(item["usuario"]["id"])}
                     className="text-lg text-default-400 cursor-pointer active:opacity-50"

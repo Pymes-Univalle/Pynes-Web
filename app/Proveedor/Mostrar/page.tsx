@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { Metadata } from "next";
 import { data } from "autoprefixer";
 
-
+import { FaWhatsapp } from 'react-icons/fa';
 
 
 interface Proveedor {
@@ -115,10 +115,10 @@ export default function Mostrar() {
       >
         <TableHeader>
           <TableColumn hidden key="id">Id</TableColumn>
-          <TableColumn key="nombre">Nombre</TableColumn>
+          <TableColumn key="nombre">Nombre del Proveedor</TableColumn>
           <TableColumn key="celular">Celular</TableColumn>
         
-          <TableColumn key="ver">Ver</TableColumn>
+          {/* <TableColumn key="ver">Ver</TableColumn> */}
           <TableColumn key="editar">Editar</TableColumn>
           <TableColumn key="eliminar">Eliminar</TableColumn>
         </TableHeader>
@@ -131,9 +131,19 @@ export default function Mostrar() {
                 </div>
               </TableCell>
               <TableCell>{item['nombre']}</TableCell> 
-              <TableCell>{item['celular']}</TableCell> 
-              
               <TableCell>
+                <a
+                  href={`https://wa.me/+591${item['celular']}`}
+                  target="_blank"
+                  className="hover:text-green-500 flex items-center"
+                  style={{ fontSize: '15px' }}
+                >
+                  <FaWhatsapp />
+                  <span className="ml-1">{item['celular']}</span>
+                </a>
+              </TableCell> 
+              
+              {/* <TableCell>
                 <Button
                   className="flex items-center text-black hover:text-gray-800"
                   color="primary"
@@ -142,7 +152,7 @@ export default function Mostrar() {
                   <EyeIcon className="w-6 h-6 text-black" />
                   Ver
                 </Button>
-              </TableCell>
+              </TableCell> */}
               <TableCell>
               <Button
                   className="flex items-center text-black hover:text-gray-800"
@@ -183,7 +193,7 @@ export default function Mostrar() {
                           <Button color="success" onClick={ ()=> handleDeleteConfirm(item["id"])    }>
                             Confirmar
                           </Button>
-                          <Button >Cancelar</Button>
+                         
                         </div>
                       </div>
                     )}

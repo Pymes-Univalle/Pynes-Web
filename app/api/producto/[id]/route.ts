@@ -77,43 +77,22 @@ export async function PUT(request: Request, {params}: Params) {
         mainIndex: parseInt(mainIndex as string),
       },
     });
- 
-    await Promise.all(
-      atributos.map(async (atributo: { idAtributo: number, nombre: string; valor: string }) => {
-        const existingAtributo = await prisma.atributo.findFirst({
-          // Buscar un atributo con el mismo ID o nombre
-          where: {
-            OR: [
-              { idAtributo: atributo.idAtributo },
-              { nombre: atributo.nombre },
-            ],
-          },
-        });
- 
-        if (existingAtributo) {
-          // Si existe un atributo con el mismo ID o nombre, actualízalo
-          const updatedAtributo = await prisma.atributo.update({
-            where: {
-              idAtributo: existingAtributo.idAtributo,
-            },
-            data: {
-              nombre: atributo.nombre,
-              valor: atributo.valor,
-            },
-          });
-        }
-        if (!existingAtributo) {
-          // Si no existe un atributo con el mismo ID o nombre, créalo
-          const newAtributo = await prisma.atributo.create({
-            data: {
-              nombre: atributo.nombre,
-              valor: atributo.valor,
-              idProducto: productoId,
-            },
-          });
-        }
-      })
-    );
+
+    // Eliminar los atributos existentes
+    await prisma.atributo.deleteMany({
+      where: {
+        idProducto: productoActualizado.idProductos,
+      },
+    });
+
+    // Insertar los nuevos atributos
+    await prisma.atributo.createMany({
+      data: atributos.map((atributo: { idAtributo: number; nombre: string; valor: string }) => ({
+        nombre: atributo.nombre,
+        valor: atributo.valor,
+        idProducto: productoActualizado.idProductos,
+      })),
+    });
  
     // Procesar imágenes
     const urls: string[] = [];
@@ -175,68 +154,6 @@ export async function PUT(request: Request, {params}: Params) {
 
     const rutasEnviadas = urls;
     console.log('Rutas Enviadas:', rutasEnviadas);
-
-    // if (rutasEnviadas.length > 0) {
-    //   if (dbRutas.length === 0) {
-    //     // If there are no existing routes, insert all the routes from rutasEnviadas
-    //     await Promise.all(
-    //       rutasEnviadas.map(async (rutaEnviada) => {
-    //         await prisma.ruta.create({
-    //           data: {
-    //             ruta: rutaEnviada,
-    //             idProducto: productoId,
-    //             fechaActualizacion: new Date().toISOString(),
-    //           },
-    //         });
-    //       })
-    //     );
-    //   } else {
-    //     // Find routes to delete
-    //     const rutasEliminar = dbRutas.filter((dbRuta) => {
-    //       return !rutasEnviadas.includes(dbRuta.ruta);
-    //     });
-    
-    //     console.log('Rutas en DB:', dbRutas);
-    //     console.log('Rutas a Eliminar:', rutasEliminar);
-    
-    //     // Delete routes that are not in rutasEnviadas
-    //     await Promise.all(
-    //       rutasEliminar.map(async (ruta) => {
-    //         await prisma.ruta.delete({
-    //           where: {
-    //             id: ruta.id,
-    //           },
-    //         });
-    //       })
-    //     );
-    
-    //     // Insert new routes that are not in dbRutas
-    //     const nuevasRutas = rutasEnviadas.filter((rutaEnviada) => {
-    //       return !dbRutas.some((dbRuta) => dbRuta.ruta === rutaEnviada);
-    //     });
-    
-    //     await Promise.all(
-    //       nuevasRutas.map(async (nuevaRuta) => {
-    //         await prisma.ruta.create({
-    //           data: {
-    //             ruta: nuevaRuta,
-    //             idProducto: productoId,
-    //             fechaActualizacion: new Date().toISOString(),
-    //           },
-    //         });
-    //       })
-    //     );
-
-    //     // Debugging: Log the updated routes after deletion and insertion
-    //     const updatedDbRutas = await prisma.ruta.findMany({
-    //       where: {
-    //         idProducto: productoId,
-    //       },
-    //     });
-
-    //     console.log('Rutas en DB actualizadas:', updatedDbRutas);
-    //   }
-    // }
 
     if (rutasEnviadas.length > 0) {
       // Compare imagePreviews with existing routes

@@ -4,10 +4,7 @@ import { Input, Checkbox, Button, Progress } from "@nextui-org/react";
 
 import { useSearchParams } from "next/navigation";
 
-
-
-
-
+import { useRouter } from "next/navigation";
 
 interface Proveedor {
   nombre: string;
@@ -17,10 +14,9 @@ interface Proveedor {
 }
 
 
-
 export default function Editar() {
 
-
+  const router = useRouter();
 
   const axios = require('axios');
 
@@ -157,6 +153,7 @@ export default function Editar() {
         if (response.status === 200) {
           // Maneja la respuesta exitosa aquí, por ejemplo, muestra un mensaje de éxito o redirige a otra página
           console.log('Actualización exitosa:', response.data);
+          router.push('/Proveedor/Mostrar');
         } else {
           // Maneja la respuesta en caso de error aquí
           console.error('Error al actualizar:', response.data);
@@ -179,10 +176,10 @@ export default function Editar() {
   return (
     <div className="bg-blanco min-h-screen text-black ">
       <div className="mx-auto max-w-5xl">
-        <h1 className=" text-black text-2xl text-center font-bold mb-8 mt-5"> Crear Orgnizacion </h1>
+        <h1 className=" text-black text-2xl text-center font-bold mb-8 mt-5"> Editar Proveedor </h1>
         <form className=" p-5 border-1 shadow " onSubmit={handleSubmit}>
 
-        <div className="mb-5 mt-5" >
+        <div hidden className="mb-5 mt-5" >
            
            <Input id="id" key="outside" type="text" label="ID"  value={proveedor['id']}  />
           

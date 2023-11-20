@@ -62,6 +62,7 @@ export default function Login() {
           correo: resp.data.user.correo,
           rol: resp.data.role,
           token: resp.data.token,
+          celular: resp.data.user.celular
         };
 
         if(user.rol === 3){
@@ -69,12 +70,14 @@ export default function Login() {
           return;
         }
        
-        dispatch(addUser(user));
+        //dispatch(addUser(user));
         localStorage.setItem("rol", user.rol);
         //Cookies.remove('userToken')
         Cookies.set('userToken', user.token, { expires: 2 / 24 });
         Cookies.set('userId', user.id, { expires: 2 / 24 });
-        console.log(Cookies.get('userToken'));
+        localStorage.setItem("userId", user.id);
+        
+       // console.log(Cookies.get('userToken'));
        
        
 

@@ -129,6 +129,7 @@ export default function Mostrar() {
       </Button>
 
       <Table
+        className="mt-5"
         aria-label="Example table with client side pagination"
         bottomContent={
           <div className="flex w-full justify-center">
@@ -150,12 +151,12 @@ export default function Mostrar() {
         <TableHeader>
           <TableColumn hidden key="idOrganizacion">Id</TableColumn>
           <TableColumn key="nombre">Nombre</TableColumn>
-          <TableColumn key="apellido">Apellido</TableColumn>
+         
           <TableColumn key="correo">Correo</TableColumn>
           <TableColumn key="celular">Celular</TableColumn>
-          <TableColumn key="latitud">Latitud</TableColumn>
-          <TableColumn key="longitud">Longitud</TableColumn>
-          <TableColumn key="crearProductos">CrearProductos</TableColumn>
+        
+          {/* <TableColumn key="crearProductos">CrearProductos</TableColumn> */}
+
           <TableColumn key="nit">Nit</TableColumn>
           <TableColumn key="ver">Ver</TableColumn>
           <TableColumn key="editar">Editar</TableColumn>
@@ -168,13 +169,18 @@ export default function Mostrar() {
                 <div className="flex gap-4">{item["id"]}</div>
               </TableCell>
               <TableCell>{item["nombre"]}</TableCell>
-              <TableCell>{item["apellido"]}</TableCell>
+             
               <TableCell>{item["correo"]}</TableCell>
 
               <TableCell>{item["celular"]}</TableCell>
-              <TableCell>{item["organizacion"]["latitud"]}</TableCell>
-              <TableCell>{item["organizacion"]["longitud"]}</TableCell>
-              <TableCell>{item["organizacion"]["crearProductos"]}</TableCell>
+              
+
+              {/* <TableCell>
+                {item["organizacion"]["crearProductos"] === 1
+                  ? "Puede Crear"
+                  : "No Puede"}
+              </TableCell> */}
+
               <TableCell>{item["organizacion"]["nit"]}</TableCell>
               <TableCell>
                 <Button
@@ -226,7 +232,7 @@ export default function Mostrar() {
                           <Button color="success" onClick={ ()=> handleDeleteConfirm(item["id"])    }>
                             Confirmar
                           </Button>
-                          <Button >Cancelar</Button>
+                        
                         </div>
                       </div>
                     )}

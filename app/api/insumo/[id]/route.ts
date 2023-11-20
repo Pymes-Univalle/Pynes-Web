@@ -13,7 +13,6 @@ export async function GET(request: Request , {params}: Params) {
         const insumo = await prisma.insumo.findFirst({
           where:{
               idInsumo: Number(params.id)
-              
           }
         })
 
@@ -38,7 +37,7 @@ export async function PUT(request: Request, { params }: Params) {
             data: {
                 nombre: nombre,
                 precio: precio,
-                cantidad: cantidad,
+                cantidad: parseInt(cantidad),
             },
         });
 

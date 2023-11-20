@@ -30,7 +30,8 @@ export default function UpdateData() {
     correo: true,
   });
     const router = useRouter();
-  const id = useAppSelector((state) => state.user.id);
+  //const id = useAppSelector((state) => state.user.id);
+  const id = JSON.parse(localStorage.getItem("userId") || "0") as number;
   console.log(id);
   useEffect(() => {
     const fetchData = async () => {
@@ -89,9 +90,9 @@ export default function UpdateData() {
   };
 
   return (
-    <div className="bg-black min-h-screen text-blanco ">
+    <div className="min-h-screen text-blanco ">
       <div className="mx-auto max-w-5xl">
-        <h1 className=" text-white text-2xl text-center font-bold mb-8 mt-5">
+        <h1 className="text-2xl text-center font-bold mb-8 mt-5">
           Actualizar datos del perfil
         </h1>
         <form

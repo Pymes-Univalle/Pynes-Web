@@ -8,6 +8,9 @@ import { useRouter } from "next/navigation";
 
 
 export default function ProductionForm() {
+
+  const idProductorOriginal = JSON.parse(localStorage.getItem("userId") || "0") as number;
+
   const router = useRouter();
 
   const [insumos, setInsumos] = useState([]);
@@ -145,7 +148,7 @@ export default function ProductionForm() {
     // Datos para crear una producción
     const productionData = {
       idProductos: parseInt(idProductos),
-      idProductor: parseInt(idProductor),
+      idProductor: parseInt(idProductorOriginal),
       canrtidad: parseInt(cantidad),
       insumoproduccion: { create: insumosProduccion }, // Relacionar insumosProduccion
       producto: producto
@@ -326,7 +329,7 @@ export default function ProductionForm() {
                 ))}
               </Select>
             </div>
-            <div>
+            {/* <div>
               <Select
                 id="productor"
                 label="Productor"
@@ -349,7 +352,7 @@ export default function ProductionForm() {
                   </SelectItem>
                 ))}
               </Select>
-            </div>
+            </div> */}
             <Button type="submit">Enviar</Button>
           </form>
         </div>

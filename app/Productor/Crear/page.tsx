@@ -50,8 +50,8 @@ interface Productor {
 }
 
 export default function Crear() {
-  console.log(useAppSelector((state) => state.user.id));
-  const idOrganizacion = useAppSelector((state) => state.user.id);
+  const idOrganizacion = JSON.parse(localStorage.getItem("userId") || "0") as number;
+  //const idOrganizacion = useAppSelector((state) => state.user.id);
   const router = useRouter();
   const [modal, setModal] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -200,9 +200,9 @@ export default function Crear() {
   };
 
   return (
-    <div className="bg-black min-h-screen text-black ">
+    <div className="min-h-screen  ">
       <div className="mx-auto max-w-5xl">
-        <h1 className=" text-white text-2xl text-center font-bold mb-8 mt-5">
+        <h1 className=" text-2xl text-center font-bold mb-8 mt-5">
           Registrar Productor
         </h1>
         <form
@@ -316,7 +316,7 @@ export default function Crear() {
             <ModalContent>
               {(onClose) => (
                 <>
-                  <ModalHeader className="flex flex-col gap-1 self-center mt-10">
+                  <ModalHeader className="flex flex-col gap-1 self-center mt-10 text-black">
                     Productor registrado correctamente
                   </ModalHeader>
 

@@ -54,6 +54,7 @@ export default function Editar() {
   const [areAttributesValid, setAreAttributesValid] = useState(false);
   const [formData, setFormData] = useState(new FormData());
 
+  
   //#endregion
  
   //#region (useEffect) Cargar datos de categorías y productores
@@ -603,12 +604,12 @@ export default function Editar() {
                               width={200}
                               height={200}
                             />
-                            <button type="button" onClick={() => removeImagePreview(index)}>
+                            <button   className="bg-red-500 text-white mr-10 p-5" type="button" onClick={() => removeImagePreview(index)}>
                               Eliminar
                             </button>
  
                             <Radio value={index.toString()}
-                              onChange={() => Marcador(index)}>Imagen Previsualizada {index}</Radio>
+                              onChange={() => Marcador(index)}>Seleccionar como imagen principal</Radio>
                           </div>
                         ))}
                       </RadioGroup>

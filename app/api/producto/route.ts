@@ -47,6 +47,7 @@ export async function POST(request: Request) {
     const idCategoria = formData.get('idCategoria');
     const idProductor = formData.get('idProductor');
     const fechaVencimientoValue  = formData.get('fechaVencimineto');
+    const mainIndex = formData.get('mainIndex');
     let fechaVencimiento: Date | undefined;
 
     if (fechaVencimientoValue && typeof fechaVencimientoValue === 'string') {
@@ -68,7 +69,8 @@ export async function POST(request: Request) {
         idCategoria: parseInt(idCategoria as string),
         idProductor: parseInt(idProductor as string),
         fechaActualizacion: new Date(new Date().toISOString()),
-        fechaVencimiento: fechaVencimiento || null
+        fechaVencimiento: fechaVencimiento || null,
+        mainIndex: parseInt(mainIndex as string),
       },
     });
 

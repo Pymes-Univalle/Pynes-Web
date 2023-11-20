@@ -123,7 +123,7 @@ export default function Mostrar() {
         <TableHeader>
           <TableColumn hidden key="idInsumo">Id</TableColumn>
           <TableColumn key="nombre">Nombre</TableColumn>
-          <TableColumn key="precio">Precio</TableColumn>
+          <TableColumn key="precio">Precio en Bs</TableColumn>
           <TableColumn key="cantidad">Cantidad</TableColumn>
           <TableColumn key="ver">Ver</TableColumn>
           <TableColumn key="editar">Editar</TableColumn>
@@ -143,7 +143,7 @@ export default function Mostrar() {
                 <Button
                   className="flex items-center text-black hover:text-gray-800"
                   color="primary"
-                  onClick={() => clic(item["id"])}
+                  onClick={() => clic(item["idInsumo"])}
                 >
                   <EyeIcon className="w-6 h-6 text-black" />
                   Ver
@@ -153,7 +153,7 @@ export default function Mostrar() {
                 <Button
                   className="flex items-center text-black hover:text-gray-800"
                   color="success"
-                  onClick={() => clicEdit(item["id"])}
+                  onClick={() => clicEdit(item["idInsumo"])}
                 >
                   <EditIcon className="w-6 h-6 text-black" />
                   Editar
@@ -186,7 +186,7 @@ export default function Mostrar() {
                           ¿Estás seguro de querer eliminar el insumo: {item["nombre"]}?
                         </p>
                         <div className="mt-2 flex flex-col gap-2 w-full">
-                          <Button color="success" onClick={ ()=> handleDeleteConfirm(item["id"])    }>
+                          <Button color="success" onClick={ ()=> handleDeleteConfirm(item["idInsumo"])    }>
                             Confirmar
                           </Button>
                           <Button >Cancelar</Button>

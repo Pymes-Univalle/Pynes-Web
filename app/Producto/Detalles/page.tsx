@@ -1,18 +1,15 @@
 "use client";
-import { data } from "autoprefixer";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-
-import { Image } from '@nextui-org/react';
+import { Card, Image } from '@nextui-org/react';
+import { Container } from "postcss";
 
 function page() {
   const valor = useSearchParams();
   const id = valor.get("id");
   const [products, setProducts] = useState(null);
-
   const [rutaData, setRutaData] = useState([]); 
-  
   const [atributoData, setAtributoData] = useState([]); 
 
   useEffect(() => {
@@ -33,89 +30,68 @@ function page() {
       }
     };
     fetchData();
-
-    
   }, []);
+
   if (!products) {
     return <div>Cargando...</div>;
   }
+
   return (
     <>
-      <div className="bg-blanco min-h-screen text-black ">
-        <div className="mx-auto max-w-5xl">
-          <h1 className="text-black text-2xl text-center font-bold mb-8 mt-5">
-            {" "}
-            Visualizar Producto{" "}
+      <div className="bg-blanco min-h-screen text-black">
+        <div className="mx-auto max-w-5xl p-5 border rounded shadow-lg">
+          <h1 className="text-black text-3xl text-center font-bold mb-8 mt-5">
+            Visualizar Producto
           </h1>
-          <div className=" p-5 border-1 shadow ">
-            <div className="mb-5 mt-5">
-              <strong>Nombre:</strong> {products["nombre"]}
-            </div>
-            <div className="mb-5">
-              <strong>Precio:</strong> {products["precio"]}
-            </div>
-            <div className="mb-5">
-              <strong>Descripcion:</strong> {products["descripcion"]}
-            </div>
-            <div className="mb-5">
-              <strong>Categoria:</strong> {products["categoria"]["nombre"]}
-            </div>
-            <div className="mb-5">
-              <strong>Cantidad:</strong> {products["cantidad"]}
-            </div>
-            {products["fechaVencimiento"] && (
-              <div className="mb-5">
-                <strong>Fecha de Vencimiento:</strong> {products["fechaVencimiento"]}
-              </div>
-            )}
 
-
-           <div className="mb-5">
-              <strong>Imagenes:</strong>
-              <div style={{ display: "flex" }}>
-                {rutaData.map((rutaItem, index) => (
-                  <div key={index}
-                  style={{
-                    width: "300px",
-                    height: "300px",
-                    marginRight: "10px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    overflow: "hidden",
-                    position: "relative",
-                  }}>
-                    <Image
-                      src={rutaItem["ruta"]}
-                      alt={`Image ${index}`}
-                      width={300}
-                      height={300}
-                        style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      
-                      }}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-            
-
+          <div className="mb-5">
+            <strong>Nombre:</strong> {products["nombre"]}
+          </div>
+          <div className="mb-5">
+            <strong>Precio:</strong> {products["precio"]}
+          </div>
+          <div className="mb-5">
+            <strong>Descripcion:</strong> {products["descripcion"]}
+          </div>
+          <div className="mb-5">
+            <strong>Categoria:</strong> {products["categoria"]["nombre"]}
+          </div>
+          <div className="mb-5">
+            <strong>Cantidad:</strong> {products["cantidad"]}
+          </div>
+          {products["fechaVencimiento"] && (
             <div className="mb-5">
-              <strong>Atributos:</strong>
-              <ul>
-                {atributoData.map((atributoItem, index) => (
-                  <li key={index}>
-                    <strong>{atributoItem["nombre"]}:</strong>{" "}
-                    {atributoItem["valor"]}
-                  </li>
-                ))}
-              </ul>
+              <strong>Fecha de Vencimiento:</strong> {products["fechaVencimiento"]}
             </div>
+          )}
 
+          <div className="mb-5">
+            <strong>Imagenes:</strong>
+            <div className="flex flex-wrap">
+              {rutaData.map((rutaItem, index) => (
+                <div key={index} className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 mb-4">
+                  <Image
+                    src={rutaItem["ruta"]}
+                    alt={`Image ${index}`}
+                    width={300}
+                    height={300}
+                    className="w-full h-full object-cover rounded-lg"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
 
+          <div className="mb-5">
+            <strong>Atributos:</strong>
+            <ul>
+              {atributoData.map((atributoItem, index) => (
+                <li key={index} className="mb-2">
+                  <strong>{atributoItem["nombre"]}:</strong>{" "}
+                  {atributoItem["valor"]}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </div>

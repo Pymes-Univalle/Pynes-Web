@@ -139,7 +139,7 @@ export default function RootLayout({
                     <Link
                       color="foreground"
                       onClick={handleOrganizaciones}
-                      aria-current="page"
+                      aria-current="page" className="cursor-pointer"
                     >
                       Organizaciones
                     </Link>
@@ -150,29 +150,19 @@ export default function RootLayout({
                    <Link
                      color="foreground"
                      onClick={handleProductores}
-                     aria-current="page"
+                     aria-current="page" className="cursor-pointer"
                    >
                      Productores
                    </Link>
                  </NavbarItem>
                 )}
-                {rol === 1 && (
-                   <NavbarItem>
-                   <Link
-                     color="foreground"
-                     onClick={handleProductos}
-                     aria-current="page"
-                   >
-                     Productos
-                   </Link>
-                 </NavbarItem>
-                )}
+                
                 {rol === 2 && (
                    <NavbarItem>
                    <Link
                      color="foreground"
                      onClick={handleProductos}
-                     aria-current="page"
+                     aria-current="page" className="cursor-pointer"
                    >
                      Productos
                    </Link>
@@ -183,7 +173,7 @@ export default function RootLayout({
                    <Link
                      color="foreground"
                      onClick={handleProduccion}
-                     aria-current="page"
+                     aria-current="page" className="cursor-pointer"
                    >
                      Producción
                    </Link>
@@ -194,7 +184,7 @@ export default function RootLayout({
                    <Link
                      color="foreground"
                      onClick={handleCategorias}
-                     aria-current="page"
+                     aria-current="page" className="cursor-pointer"
                    >
                      Categorias
                    </Link>
@@ -205,7 +195,7 @@ export default function RootLayout({
                    <Link
                      color="foreground"
                      onClick={handleInsumos}
-                     aria-current="page"
+                     aria-current="page" className="cursor-pointer"
                    >
                      Insumos
                    </Link>
@@ -216,7 +206,7 @@ export default function RootLayout({
                    <Link
                      color="foreground"
                      onClick={handleProveedores}
-                     aria-current="page"
+                     aria-current="page" className="cursor-pointer"
                    >
                      Proveedores
                    </Link>
@@ -227,7 +217,7 @@ export default function RootLayout({
                    <Link
                      color="foreground"
                      onClick={handleDetalles}
-                     aria-current="page"
+                     aria-current="page" className="cursor-pointer"
                    >
                      Ventas 
                    </Link>

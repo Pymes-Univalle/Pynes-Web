@@ -325,12 +325,12 @@ export default function Editar() {
   return (
     <div className="bg-blanco min-h-screen text-black ">
       <div className="mx-auto max-w-5xl">
-        <h1 className=" text-black text-2xl text-center font-bold mb-8 mt-5"> Crear Orgnizacion </h1>
+        <h1 className=" text-black text-2xl text-center font-bold mb-8 mt-5"> Crear Organizacion </h1>
         <form className=" p-5 border-1 shadow " onSubmit={handleSubmit}>
 
-        <div className="mb-5 mt-5" >
+        <div hidden className="mb-5 mt-5" >
            
-           <Input id="id" key="outside" type="text" label="ID"  value={organization['idOrganizacion']}  />
+           <Input  id="id" key="outside" type="text" label="ID"  value={organization['idOrganizacion']}  />
           
          </div>
 
@@ -346,7 +346,7 @@ export default function Editar() {
            
           </div>
 
-          <div className="mb-5 mt-5">
+          {/* <div className="mb-5 mt-5">
            
            <Input id="apellido" key="outside" type="text" label="Apellido" required 
            value={apellido} 
@@ -357,7 +357,7 @@ export default function Editar() {
             onValueChange={handleApellidoChange}
             />
           
-         </div>
+         </div> */}
           <div className="mb-5">
          
             <Input id="correo" key="outside" type="gmail" label="Gmail" required 
@@ -369,7 +369,7 @@ export default function Editar() {
             onValueChange={handleCorreoChange}
             />
           </div>
-          <div className="mb-5">
+          <div hidden className="mb-5">
             <Input
               id="contrasena"
               key="outside"

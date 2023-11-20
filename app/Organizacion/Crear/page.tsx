@@ -173,8 +173,7 @@ export default function Crear() {
     
     const nombre =
       (formElements.namedItem("nombre") as HTMLInputElement)?.value || "";
-    const apellido =
-      (formElements.namedItem("apellido") as HTMLInputElement)?.value || "";
+    const apellido = "";
     const correo =
       (formElements.namedItem("correo") as HTMLInputElement)?.value || "";
 
@@ -256,7 +255,7 @@ export default function Crear() {
 
      
       if (data.organizacion == null ) {
-        if(validationApellido == "valid" && validationNombre == "valid" && validationNit == "valid" && validationCelular == "valid" && validationState == "valid" && mapValid ){
+        if(validationNombre == "valid" && validationNit == "valid" && validationCelular == "valid" && validationState == "valid" && mapValid ){
           setIsLoading(true);
           try {
             const resp = await axios.post("/api/organizacion/", {
@@ -310,7 +309,7 @@ export default function Crear() {
   
                 if (response.status === 200) {
                   setIsLoading(false);
-                  router.push('Organizacion/Mostrar')
+                  router.push('/Organizacion/Mostrar')
                  
                   
                 } else {
@@ -341,7 +340,7 @@ export default function Crear() {
       <div className="mx-auto max-w-5xl">
         <h1 className=" text-black text-2xl text-center font-bold mb-8 mt-5">
           {" "}
-          Crear Orgnizacion{" "}
+          Crear Organizacion{" "}
         </h1>
         <form
           className=" p-5 border-1 shadow "
@@ -362,7 +361,7 @@ export default function Crear() {
             />
            
           </div>
-          <div className="mb-5">
+          {/* <div className="mb-5">
             <Input
               id="apellido"
               key="outside"
@@ -374,7 +373,7 @@ export default function Crear() {
               validationState={validationApellido}
               onValueChange={handleApellidoChange}
             />
-          </div>
+          </div> */}
           <div className="mb-5">
             <Input
               id="correo"

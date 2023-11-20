@@ -28,6 +28,7 @@ export async function POST(request: Request) {
             total: total,
           },
         });
+
         console.log("ventaaaaaaaaaaaaaa ",venta);
         // Crea los detalles de venta asociados
         const detalleVentas = await Promise.all(

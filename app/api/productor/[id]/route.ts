@@ -31,6 +31,7 @@ export async function PUT(request: Request, { params }: Params) {
   try {
     const {
       nombre,
+      apellido,
       correo,
       contrasena,
       celular,
@@ -47,6 +48,7 @@ export async function PUT(request: Request, { params }: Params) {
         },
         data: {
           nombre: nombre,
+          apellido: apellido,
           correo: correo,
           contrasena: contrasena,
           celular: celular,

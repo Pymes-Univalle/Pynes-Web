@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Input } from "@nextui-org/react";
+import { FaWhatsapp } from 'react-icons/fa';
 
 export default function Page() {
   const [ventaData, setVentaData] = useState([]);
@@ -50,15 +51,15 @@ export default function Page() {
         value={selectedMonth}
         onChange={(e) => setSelectedMonth(e.target.value)}
       />
-      <Table>
+      <Table className="mt-5">
         <TableHeader>
           <TableColumn key="nombreProducto">Nombre del Producto</TableColumn>
-          <TableColumn key="precio">Precio</TableColumn>
-          <TableColumn key="cantidad">Cantidad</TableColumn>
-          <TableColumn key="importe">Importe</TableColumn>
+          <TableColumn key="precio">Precio Unitario Bs</TableColumn>
+          <TableColumn key="cantidad">Cantidad de Productos Comprados</TableColumn>
+          <TableColumn key="importe">Importe Bs</TableColumn>
           
           <TableColumn key="fechaVenta">Fecha de Venta</TableColumn>
-          <TableColumn key="nombreUsuario">Nombre del Usuario</TableColumn>
+          <TableColumn key="nombreUsuario">Nombre del Cliente</TableColumn>
           <TableColumn key="Celular">Celular</TableColumn>
         </TableHeader>
         <TableBody items={filteredData}>
@@ -68,11 +69,26 @@ export default function Page() {
               <TableCell>{venta['productos']['precio']}</TableCell>
               <TableCell>{venta['cantidad']}</TableCell>
               <TableCell>{venta['inporte']}</TableCell>
-              <TableCell>{venta['fechaRegistro']}</TableCell>
-              <TableCell>{venta['venta']['cliente']['usuario']['nombre']}</TableCell>
               <TableCell>
-                <a href={`https://wa.me/+591${venta['venta']['cliente']['usuario']['celular']}`} target="_blank">
-                  {venta['venta']['cliente']['usuario']['celular']}
+                {new Date(venta['fechaRegistro']).toLocaleString('es-ES', {
+                  year: 'numeric',
+                  month: 'numeric',
+                  day: 'numeric',
+                  hour: 'numeric',
+                  minute: 'numeric',
+                  second: 'numeric',
+                })}
+              </TableCell>
+              <TableCell>{venta['venta']['cliente']['usuario']['nombre'] + " " +  venta['venta']['cliente']['usuario']['apellido']}</TableCell>
+              <TableCell>
+                <a
+                  href={`https://wa.me/+591${venta['venta']['cliente']['usuario']['celular']}`}
+                  target="_blank"
+                  className="hover:text-green-500 flex items-center"
+                  style={{ fontSize: '15px' }}
+                >
+                  <FaWhatsapp />
+                  <span className="ml-1">{venta['venta']['cliente']['usuario']['celular']}</span>
                 </a>
               </TableCell>
 

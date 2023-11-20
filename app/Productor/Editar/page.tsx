@@ -196,7 +196,7 @@ export default function Editar() {
       >
         <section className="col-span-1 flex flex-col items-center">
           <div className="w-full">
-            <h1 className=" text-white text-2xl text-center font-bold mb-2 mt-5">
+            <h1 className=" text-2xl text-center font-bold mb-2 mt-5">
               Actualizar Productor
             </h1>
             <div className="mt-10">
@@ -299,7 +299,7 @@ export default function Editar() {
             <ModalContent>
               {(onClose) => (
                 <>
-                  <ModalHeader className="flex flex-col gap-1 self-center mt-10">
+                  <ModalHeader className="text-black flex flex-col gap-1 self-center mt-10">
                     Productor actualizado correctamente
                   </ModalHeader>
 
