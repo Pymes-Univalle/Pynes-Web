@@ -8,7 +8,9 @@ interface Params {
 export async function GET(request: Request, { params }: Params) {
   try {
     const productos = await prisma.productos.findMany({
+
       where: {
+        estado: 1,
         idProductor: {
           in: (await prisma.productor.findMany({
             where: {

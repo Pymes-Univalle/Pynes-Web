@@ -188,9 +188,7 @@ export default function Crear() {
       (formElements.namedItem("nombre") as HTMLInputElement).focus();
     }
 
-    if(validationApellido == "invalid"){
-      (formElements.namedItem("apellido") as HTMLInputElement).focus();
-    }
+    
 
     if(validationState == "invalid"){
       (formElements.namedItem("correo") as HTMLInputElement).focus();
@@ -306,15 +304,16 @@ export default function Crear() {
                   gmail: user.correo,
                   contraseña: contraseña,
                 });
-  
-                if (response.status === 200) {
-                  setIsLoading(false);
+                setIsLoading(false);
                   router.push('/Organizacion/Mostrar')
+                // if (response.status === 200) {
+                //   setIsLoading(false);
+                //   router.push('/Organizacion/Mostrar')
                  
                   
-                } else {
-                  console.error("Error al enviar el correo electrónico");
-                }
+                // } else {
+                //   console.error("Error al enviar el correo electrónico");
+                // }
               } catch (error) {
                 console.error("Error al enviar el correo electrónico:", error);
               }

@@ -221,7 +221,7 @@ export default function Editar() {
     const formElements = event.currentTarget.elements;
     var crear = 0;
     const id = (formElements.namedItem("id") as HTMLInputElement)?.value || "";
-    const apellido = (formElements.namedItem("apellido") as HTMLInputElement)?.value || "";
+    const apellido = "";
     const nombre = (formElements.namedItem("nombre") as HTMLInputElement)?.value || "";
     const correo = (formElements.namedItem("correo") as HTMLInputElement)?.value || "";
     const contrasena = (formElements.namedItem("contrasena") as HTMLInputElement)?.value || "";
@@ -263,10 +263,7 @@ export default function Editar() {
       return;
     }
 
-    if(validationApellido == "invalid"){
-      (formElements.namedItem("apellido") as HTMLInputElement).focus();
-      return;
-    }
+  
 
     if(validationCorreo == "invalid"){
       (formElements.namedItem("correo") as HTMLInputElement).focus();
@@ -283,7 +280,7 @@ export default function Editar() {
       return;
     }
 
-    if(validationApellido == "valid" && validationNombre == "valid" && validationCelular == "valid" && validationCorreo == "valid" && validationNit == "valid"){
+    if(validationNombre == "valid" && validationCelular == "valid" && validationCorreo == "valid" && validationNit == "valid"){
       try {
         const response = await axios.put(`/api/organizacion/${id}`, {
           nombre: user.nombre,

@@ -202,7 +202,7 @@ export default function Crear() {
   return (
     <div className="min-h-screen  ">
       <div className="mx-auto max-w-5xl">
-        <h1 className=" text-2xl text-center font-bold mb-8 mt-5">
+        <h1 className="text-black text-2xl text-center font-bold mb-8 mt-5">
           Registrar Productor
         </h1>
         <form
