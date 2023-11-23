@@ -55,6 +55,8 @@ export default function Editar() {
   const [celular, setCelular] = useState<string>("");
   const [nit, setNit] = useState<string>("");
 
+  const router = useRouter();
+
   //Validacion Nombre
  
   const handleNombreChange = (value:any) => {
@@ -204,7 +206,7 @@ export default function Editar() {
     }
     
    
-    const router = useRouter();
+    
   
     const MostrarOrganizacion = () => {
       router.push(`/Organizacion/Mostrar`);

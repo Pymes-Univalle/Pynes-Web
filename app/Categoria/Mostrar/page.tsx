@@ -10,7 +10,7 @@ interface Categoria{
     nombre: String
 }
 
-export default function page() {
+export default function Mostrar() {
     const router = useRouter();
     const [page, setPage] = useState(1);
     const rowsPerPage = 10;

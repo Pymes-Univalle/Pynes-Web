@@ -5,7 +5,7 @@ import { Button, Link } from "@nextui-org/react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { useRouter } from "next/navigation";
 
-function page() {
+export default function MiPerfil() {
   const [nombre, setNombre] = useState("");
   const [apellido, setApellido] = useState("");
   const [celular, setCelular] = useState("");
@@ -84,4 +84,4 @@ function page() {
   );
 }
 
-export default page;
+

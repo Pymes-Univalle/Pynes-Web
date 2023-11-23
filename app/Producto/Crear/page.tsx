@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 
 import { useAppSelector } from "@/app/redux/hooks";
 
-export default function Page() {
+export default function Crear() {
   const [tieneFechaVencimiento, setTieneFechaVencimiento] = useState(false);
   const [fechaVencimiento, setFechaVencimiento] = useState("");
 

@@ -1,15 +1,16 @@
 'use client'
 import { Button, Input } from '@nextui-org/react'
 import axios from 'axios';
-import React from 'react'
+import React, {useState, useMemo} from 'react'
 import { useRouter } from 'next/navigation';
+//import { useRouter} from 'next/router';
 
 interface Categoria {
   nombre: string;
   
 }
 
-export default function page() {
+export default function Crear() {
  
   //Validacion
   const router = useRouter();
@@ -31,6 +32,10 @@ export default function page() {
 
     return validateNombre(nombre) ? "valid" : "invalid";
   }, [nombre])
+
+  // Wrap localStorage usage in a check for the existence of window
+  const myData = typeof window !== 'undefined' ? localStorage.getItem('myData') : null;
+
   //Fin de validacion
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();

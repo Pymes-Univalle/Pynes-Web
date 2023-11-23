@@ -148,7 +148,7 @@ export default function Login() {
                 </div>
 
                 <Button
-                  type="submit"
+                  type="submit" name="btnLogin"
                   className="flex items-center  justify-center mt-4 text-white rounded-lg shadow-md bg-blue-500 hover:bg-blue-400 w-full h-13"
                 >
                   <h1 className="px-4 py-3 w-5/6 text-base text-center text-white font-bold">

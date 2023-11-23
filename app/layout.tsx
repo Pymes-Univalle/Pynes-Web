@@ -1,9 +1,10 @@
 "use client";
 import "./globals.css";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Providers } from "./redux/provider";
-import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { deleteUser } from "./redux/features/userSlice";
 import { useAppDispatch } from "./redux/hooks";
@@ -29,7 +30,7 @@ import {
   DropdownItem,
 } from "@nextui-org/react";
 
-import { useState } from "react";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -44,6 +45,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const rol = JSON.parse(localStorage.getItem("rol") || "0") as number;
+  const router = useRouter();
 
   if (pathname === "/Login") {
     return (
@@ -54,8 +58,7 @@ export default function RootLayout({
       </Providers>
     );
   }
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const rol = JSON.parse(localStorage.getItem("rol") || "0") as number;
+  
  // console.log("rol", rol);
 
   const menuItems = [
@@ -70,8 +73,7 @@ export default function RootLayout({
     "Help & Feedback",
     "Log Out",
   ];
-
-  const router = useRouter();
+  
   const handleMyPerfil = () => {
     router.push("/Usuario/MiPerfil");
   };

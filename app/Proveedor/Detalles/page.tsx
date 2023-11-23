@@ -8,7 +8,7 @@ import { useSearchParams } from "next/navigation";
 
 
 
-function page() {
+export default function Detalles() {
   
   const valor = useSearchParams();
   const id = valor.get('idProveedor');
@@ -66,4 +66,3 @@ function page() {
   )
 }
 
-export default page

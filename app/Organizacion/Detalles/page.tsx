@@ -19,7 +19,7 @@ const center = {
   lng: -66.224047,
 };
 
-function page() {
+export default function Detalles() {
   
   const valor = useSearchParams();
   const id = valor.get('id');
@@ -92,5 +92,3 @@ function page() {
   </div>
   )
 }
-
-export default page

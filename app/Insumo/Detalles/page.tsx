@@ -4,7 +4,7 @@ import axios from "axios";
 import { useSearchParams } from "next/navigation";
 
 
-function page() {
+export default function Detalles() {
   
   const valor = useSearchParams();
   const id = valor.get('id');
@@ -59,5 +59,3 @@ function page() {
   </div>
   )
 }
-
-export default page

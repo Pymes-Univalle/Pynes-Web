@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Card, Image } from '@nextui-org/react';
 import { Container } from "postcss";
 
-function page() {
+export default function Detalles() {
   const valor = useSearchParams();
   const id = valor.get("id");
   const [products, setProducts] = useState(null);
@@ -98,4 +98,4 @@ function page() {
     </>
   );
 }
-export default page;
+

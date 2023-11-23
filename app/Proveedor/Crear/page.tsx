@@ -13,7 +13,7 @@ interface Provedores {
   fechaActualizacion:Date
   
 }
-export default function page() {
+export default function Crear() {
   const router = useRouter();
 
   //Validacion

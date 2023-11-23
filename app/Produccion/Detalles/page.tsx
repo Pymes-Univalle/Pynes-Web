@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 
 import { Image } from '@nextui-org/react';
 
-function page() {
+export default function Detalles() {
   const valor = useSearchParams();
   const id = valor.get("id");
   const [produccion, setProduccion] = useState(null);
@@ -78,4 +78,4 @@ function page() {
     </>
   );
 }
-export default page;
+
