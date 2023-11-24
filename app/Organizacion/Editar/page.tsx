@@ -209,7 +209,8 @@ export default function Editar() {
     
   
     const MostrarOrganizacion = () => {
-      router.push(`/Organizacion/Mostrar`);
+      //router.push(`/Organizacion/Mostrar`);
+      window.location.href = "/Organizacion/Mostrar";
     };
     
 
@@ -401,7 +402,8 @@ export default function Editar() {
           <div className="mb-5">
             <label>Ubicación:</label>
             <div style={mapContainerStyle}>
-                <GoogleMap
+            <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
+              <GoogleMap
                   mapContainerStyle={mapContainerStyle}
                   center={mapCenter}
                   zoom={15}
@@ -413,7 +415,9 @@ export default function Editar() {
                     <Marker key={index} position={marker} />
                   ))}
                  
-                </GoogleMap>
+                </GoogleMap>  
+            </LoadScript>
+               
             </div>
           </div>
           <div className="mb-5">

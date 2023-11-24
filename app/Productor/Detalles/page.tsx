@@ -72,8 +72,8 @@ export default function Detalles() {
         <div className="mb-5">
           <label>Ubicación:</label>
           <div>
-         
-              <GoogleMap
+          <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
+            <GoogleMap
                 mapContainerStyle={mapContainerStyle}
                 center={{
                   lat: parsedLatitud || center.lat,
@@ -85,6 +85,8 @@ export default function Detalles() {
                   <Marker position={{ lat: parsedLatitud, lng: parsedLongitud }} />
                 )}
               </GoogleMap>
+          </LoadScript>
+             
             
           </div>
         </div>

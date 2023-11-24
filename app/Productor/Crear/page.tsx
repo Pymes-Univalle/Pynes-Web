@@ -90,7 +90,8 @@ export default function Crear() {
   };
 
   const handleAceparClick = () => {
-    router.push("/Productor/Mostrar");
+    //router.push("/Productor/Mostrar");
+    window.location.href = "/Productor/Mostrar";
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -165,14 +166,7 @@ export default function Crear() {
               templateParams,
               "BQzfsMnH6-p-UBfyg"
             )
-            .then(
-              (result) => {
-                console.log(result.text);
-              },
-              (error) => {
-                console.log(error.text);
-              }
-            );
+            
 
           const resp = await axios.post("/api/productor/", {
             nombre: user.nombre,
@@ -289,8 +283,8 @@ export default function Crear() {
           <div className="mt-10 mb-10">
             <label>Ubicación:</label>
             <div>
-            
-                <GoogleMap
+            <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
+              <GoogleMap
                   mapContainerStyle={mapContainerStyle}
                   center={center}
                   zoom={10}
@@ -299,7 +293,9 @@ export default function Crear() {
                   {markers.map((marker, index) => (
                     <Marker key={index} position={marker} />
                   ))}
-                </GoogleMap>
+              </GoogleMap>
+            </LoadScript>
+               
              
               {mapError && (
                 <p className="text-red-500">

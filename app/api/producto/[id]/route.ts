@@ -116,7 +116,7 @@ export async function PUT(request: Request, {params}: Params) {
  
       // Subir la imagen a Cloudinary (o realizar la acción deseada con la imagen)
       const response = await fetch(
-        'https://api.cloudinary.com/v1_1/di9vckxy5/image/upload',
+        'https://api.cloudinary.com/v1_1/dx3ex26da/image/upload',
         {
           method: 'POST',
           body: imageFormData,

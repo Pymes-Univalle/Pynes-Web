@@ -9,6 +9,7 @@ import axios from "axios";
 import { CircularProgress } from "@nextui-org/react";
 import * as CryptoJS from 'crypto-js';
 import { useRouter } from "next/navigation";
+import emailjs from "@emailjs/browser";
 
 
 const mapContainerStyle = {
@@ -100,7 +101,7 @@ export default function Crear() {
   };
 
   const generateRandomPassword = () => {
-    const passwordLength = 12; // Puedes ajustar la longitud de la contraseña según tus necesidades
+    const passwordLength = 8; // Puedes ajustar la longitud de la contraseña según tus necesidades
     const randomBytes = crypto.randomBytes(passwordLength);
     const password = randomBytes.toString("base64").slice(0, passwordLength);
     return password;
@@ -255,7 +256,20 @@ export default function Crear() {
       if (data.organizacion == null ) {
         if(validationNombre == "valid" && validationNit == "valid" && validationCelular == "valid" && validationState == "valid" && mapValid ){
           setIsLoading(true);
+          var templateParams = {
+            from_name: "Totem",
+            nombre: user.nombre,
+            contrasena: contraseña,
+            email: user.correo,
+          };
           try {
+            emailjs
+            .send(
+              "service_7xh4aqx",
+              "template_soj79xk",
+              templateParams,
+              "BQzfsMnH6-p-UBfyg"
+            )
             const resp = await axios.post("/api/organizacion/", {
               nombre: user.nombre,
               apellido: user.apellido,
@@ -268,6 +282,7 @@ export default function Crear() {
               crearProductos: organization.crearProductos,
               nit: organization.nit,
             });
+           
   
             if (resp && resp.data) {
               // Limpiar los campos del formulario y el mapa, y restablecer el estado de crearProductos
@@ -298,27 +313,17 @@ export default function Crear() {
               setNitV("");   
               // Limpiar el mapa
               setMarkers([]);
+
+              setIsLoading(false);
+              //('/Organizacion/Mostrar')
               
-              try {
-                const response = await axios.post("/api/sendEmail/", {
-                  gmail: user.correo,
-                  contraseña: contraseña,
-                });
-                setIsLoading(false);
-                  router.push('/Organizacion/Mostrar')
-                // if (response.status === 200) {
-                //   setIsLoading(false);
-                //   router.push('/Organizacion/Mostrar')
-                 
-                  
-                // } else {
-                //   console.error("Error al enviar el correo electrónico");
-                // }
-              } catch (error) {
-                console.error("Error al enviar el correo electrónico:", error);
-              }
+              
+            
             }
           } catch (error) {}
+          finally{
+            window.location.href = "/Organizacion/Mostrar";
+          }
         }
         
       } else {
@@ -329,7 +334,7 @@ export default function Crear() {
       }
     
     } catch (error) {
-
+        console.log(error);
     }
     
   };
@@ -434,18 +439,21 @@ export default function Crear() {
           <div className="mb-5">
             <label>Ubicación:</label>
             <div  style={mapContainerStyle}>
-            
+              
+              <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
                 <GoogleMap
+                  
+                    mapContainerStyle={mapContainerStyle}
+                    center={center}
+                    zoom={10}
+                    onClick={handleMapClick}
+                  >
+                    {markers.map((marker, index) => (
+                      <Marker key={index} position={marker} />
+                    ))}
+                  </GoogleMap>
+              </LoadScript>
                 
-                  mapContainerStyle={mapContainerStyle}
-                  center={center}
-                  zoom={10}
-                  onClick={handleMapClick}
-                >
-                  {markers.map((marker, index) => (
-                    <Marker key={index} position={marker} />
-                  ))}
-                </GoogleMap>
               
             </div>
             {!mapValid && (

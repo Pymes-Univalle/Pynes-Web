@@ -10,6 +10,9 @@ import { useSelector, useDispatch } from "react-redux";
 import { addUser, deleteUser } from "../redux/features/userSlice";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { useRouter } from "next/navigation";
+
+import { GoogleMap, LoadScript } from "@react-google-maps/api";
+import GOOGLE_MAPS_API_KEY from "@/googleMapsConfig";
 interface User {
   correo: string;
   contrasena: string;
@@ -100,6 +103,7 @@ export default function Login() {
   // console.log(useAppSelector((state) => state.user.id));
 
   return (
+  
     <motion.div
       className="w-full content-center items-center"
       initial={{ opacity: 0, y: -20 }}
@@ -175,5 +179,6 @@ export default function Login() {
         </div>
       </div>
     </motion.div>
+   
   );
 }

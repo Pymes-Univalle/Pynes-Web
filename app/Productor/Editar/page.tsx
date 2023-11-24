@@ -116,7 +116,8 @@ export default function Editar() {
     fetchData();
   }, []);
  const handleAceparClick = () => {
-    router.push("/Productor/Mostrar");
+    //router.push("/Productor/Mostrar");
+    window.location.href = "/Productor/Mostrar";
  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -318,8 +319,9 @@ export default function Editar() {
         </section>
         <section className="col-span-1 flex flex-col justify-center">
           <div className="h-fit">
-           
-              <GoogleMap
+            
+          <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
+            <GoogleMap
                 mapContainerStyle={mapContainerStyle}
                 center={center}
                 zoom={10}
@@ -328,7 +330,9 @@ export default function Editar() {
                 {markers.map((marker, index) => (
                   <Marker key={index} position={marker} />
                 ))}
-              </GoogleMap>
+            </GoogleMap>  
+          </LoadScript>
+             
            
           </div>
           <Button
