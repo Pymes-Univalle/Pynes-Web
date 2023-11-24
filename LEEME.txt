@@ -1,0 +1,32 @@
+Para realizar el deployment:
+
+docker-compose up -d
+
+Ingresar a http://localhost:5000
+
+#####################################################################################################
+
+Para dar de baja el entorno
+
+docker-compose down --volumes --rmi all
+
+
+Sólo para construir las imágenes
+
+docker build --no-cache --progress=plain -t next-dockerized-app .
+
+
+
+docker build --no-cache --progress=plain -t database-image -f Dockerfile_mysql
+
+#INSTANCIAR LAS IMAGENES
+
+docker load -i database-image.tar
+docker load -i app-image.tar
+
+# CREAR LOS CONTENEDORES
+
+docker run --hostname dbcontainer --net pymes-net -p 3307:3306 -e MYSQL_ROOT_PASSWORD=univalle  database-image
+
+
+

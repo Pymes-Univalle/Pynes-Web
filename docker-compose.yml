@@ -1,0 +1,18 @@
+services:
+  my_database:
+    hostname: "dbcontainer"
+    build:
+      context: .
+      dockerfile: Dockerfile_mysql
+    container_name: pymes_DB
+    ports:
+      - '3307:3306'
+    restart: always
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+    - 5000:3000
+    #volumes:
+    #- ./flask_app:/opt/app

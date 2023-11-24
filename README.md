@@ -32,3 +32,21 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+--------------
+--------------
+
+Comandos utiles: 
+* npm i
+* npm install axios
+<!-- * npm install --save-dev @types/emailjs
+    * in case the other one doesn´t work -> try this: npm install --save-dev https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/emailjs -->
+* npm install emailjs (Alicia's email way)
+* npm i @emailjs/browser
+* npm install node-fetch
+Por si se cambia la base de datos:
+* Remove-Item -Recurse -Force node_modules Remove-Item -Force package-lock.json
+* npx prisma introspect
+* npx prisma generate
+Para correr el proyecto:
+* npm run dev
