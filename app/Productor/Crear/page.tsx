@@ -50,7 +50,7 @@ interface Productor {
 }
 
 export default function Crear() {
-  const idOrganizacion = JSON.parse(localStorage.getItem("userId") || "0") as number;
+  const idOrganizacion = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem("userId") || "0") as number : 0;
   //const idOrganizacion = useAppSelector((state) => state.user.id);
   const router = useRouter();
   const [modal, setModal] = useState(false);

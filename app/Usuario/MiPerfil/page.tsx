@@ -17,7 +17,7 @@ export default function MiPerfil() {
     correo: true,
   });
     const router = useRouter();
-    const id = JSON.parse(localStorage.getItem("userId") || "0") as number;
+    const id = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem("userId") || "0") as number : 0;
 
   console.log(id);
   useEffect(() => {

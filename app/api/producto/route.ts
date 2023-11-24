@@ -1,5 +1,4 @@
 import prisma from "@/lib/prisma";
-import { data } from "autoprefixer";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 

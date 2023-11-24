@@ -19,7 +19,7 @@ export async function GET(request: Request, { params }: Params) {
             select: {
               idProductor: true,
             },
-          })).map((productor) => productor.idProductor),
+          })).map((productor: any) => productor.idProductor),
         },
       },
       include: {

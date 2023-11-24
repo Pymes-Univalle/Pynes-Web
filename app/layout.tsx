@@ -46,7 +46,7 @@ export default function RootLayout({
 }) {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const rol = JSON.parse(localStorage.getItem("rol") || "0") as number;
+  const rol = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem("rol") || "0") as number : 0;
   const router = useRouter();
 
   if (pathname === "/Login") {

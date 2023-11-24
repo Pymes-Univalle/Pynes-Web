@@ -1,0 +1,9 @@
+# Usa una imagen de MySQL
+FROM mysql:latest
+
+# Define las variables de entorno para la base de datos
+ENV MYSQL_DATABASE=pymes
+ENV MYSQL_ROOT_PASSWORD=univalle
+
+# Copia tu script SQL al directorio de inicialización de la base de datos
+COPY ./pymesLast.sql /docker-entrypoint-initdb.d/

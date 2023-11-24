@@ -33,8 +33,8 @@ export default function Crear() {
     return validateNombre(nombre) ? "valid" : "invalid";
   }, [nombre])
 
-  // Wrap localStorage usage in a check for the existence of window
-  const myData = typeof window !== 'undefined' ? localStorage.getItem('myData') : null;
+  // // Wrap localStorage usage in a check for the existence of window
+  // const myData = typeof window !== 'undefined' ? localStorage.getItem('myData') : null;
 
   //Fin de validacion
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>): Promise<void> {

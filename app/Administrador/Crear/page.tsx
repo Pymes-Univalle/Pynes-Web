@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { Input, Checkbox, Button } from "@nextui-org/react";
 import crypto from "crypto";
 import axios from "axios";

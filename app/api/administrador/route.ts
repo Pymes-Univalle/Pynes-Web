@@ -16,7 +16,7 @@ export async function GET() {
     });
 
     // Filtrar los administradores que no tienen relación con cliente, organización ni productor
-    const administradoresSinRelacion = administradores.filter((admin) => {
+    const administradoresSinRelacion = administradores.filter((admin:any) => {
         return !admin.cliente && !admin.organizacion && !admin.productor;
     });
 

@@ -71,11 +71,16 @@ export default function Login() {
         }
        
         //dispatch(addUser(user));
-        localStorage.setItem("rol", user.rol);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem("rol", user.rol);
+        }
         //Cookies.remove('userToken')
         Cookies.set('userToken', user.token, { expires: 2 / 24 });
         Cookies.set('userId', user.id, { expires: 2 / 24 });
-        localStorage.setItem("userId", user.id);
+
+        if (typeof window !== 'undefined') {
+          localStorage.setItem("userId", user.id);
+        }
         
        // console.log(Cookies.get('userToken'));
        

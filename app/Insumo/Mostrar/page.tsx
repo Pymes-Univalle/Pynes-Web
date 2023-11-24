@@ -41,16 +41,18 @@ export default function Mostrar() {
 
   useEffect(() => {
     // Realizar la solicitud GET al servidor para obtener los insumos usando Axios
-    axios
-      .get("/api/insumo")
-      .then((response) => {
-        if (response.data && response.data.data) {
-            setInsumo(response.data.data);
-        }
-      })
-      .catch((error) =>
-        console.error("Error al obtener a los insumos:", error)
-    );
+    if (typeof window !== 'undefined') {
+      axios
+        .get("/api/insumo")
+        .then((response) => {
+          if (response.data && response.data.data) {
+              setInsumo(response.data.data);
+          }
+        })
+        .catch((error) =>
+          console.error("Error al obtener a los insumos:", error)
+      );
+    }
   }, []);
 
   const pages = Math.ceil(insumo.length / rowsPerPage);

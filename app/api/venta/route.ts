@@ -20,7 +20,7 @@ export async function POST(request: Request) {
 
       console.log("......");
   
-      const result = await prisma.$transaction(async (transaction) => {
+      const result = await prisma.$transaction(async (transaction: any) => {
         // Crea la venta
         const venta = await transaction.venta.create({
           data: {

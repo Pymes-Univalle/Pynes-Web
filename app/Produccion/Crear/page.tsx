@@ -8,8 +8,8 @@ import { useRouter } from "next/navigation";
 
 
 export default function ProductionForm() {
-
-  const idProductorOriginal = JSON.parse(localStorage.getItem("userId") || "0");
+  
+  const idProductorOriginal = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem("userId") || "0") : 0;
 
   const router = useRouter();
 

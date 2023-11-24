@@ -20,7 +20,8 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 export default function UpdatePassword() {
   const router = useRouter();
   //const idUser = useAppSelector((state) => state.user.id)
-  const idUser = JSON.parse(localStorage.getItem("userId") || "0") as number;
+  //const idUser = JSON.parse(localStorage.getItem("userId") || "0") as number;
+  const idUser = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem("userId") || "0") as number : 0;
   const [modal, setModal] = useState(false);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [contrasenaActual, setContrasenaActual] = useState("");

@@ -68,7 +68,7 @@ export default function Crear() {
   const [areAttributesValid, setAreAttributesValid] = useState(false);
   //Aca adjuntamos el dato del idProductor
   //const idProductorOri = useAppSelector((state) => state.user.id);
-  const idProductorOri = JSON.parse(localStorage.getItem("userId") || "0") as number;
+  const idProductorOri = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem("userId") || "0") as number : 0;
 
   const handleNameChange = (value:any) => {
     setNombreV(value);

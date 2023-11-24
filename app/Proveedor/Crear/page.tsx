@@ -1,6 +1,5 @@
 'use client'
 import { Button, Input } from '@nextui-org/react'
-import { proveedores } from '@prisma/client';
 import axios from 'axios';
 import React from 'react'
 import { useRouter } from "next/navigation";

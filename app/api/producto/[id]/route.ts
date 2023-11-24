@@ -1,5 +1,4 @@
 import prisma from "@/lib/prisma";
-import { data } from "autoprefixer";
 import { NextResponse } from "next/server";
  
 interface Params{
@@ -8,8 +7,6 @@ interface Params{
  
 export async function GET(request:Request, {params}: Params) {
   try {
-     
-    //console.log(params.id)
     const productoId = Number(params.id);
     const productos = await prisma.productos.findFirst({
       where:{
@@ -157,12 +154,12 @@ export async function PUT(request: Request, {params}: Params) {
 
     if (rutasEnviadas.length > 0) {
       // Compare imagePreviews with existing routes
-      const routesToDelete = dbRutas.filter((dbRuta) => !rutasEnviadas.includes(dbRuta.ruta));
-      const routesToAdd = rutasEnviadas.filter((ruta) => !dbRutas.some((dbRuta) => dbRuta.ruta === ruta));
+      const routesToDelete = dbRutas.filter((dbRuta: any) => !rutasEnviadas.includes(dbRuta.ruta));
+      const routesToAdd = rutasEnviadas.filter((ruta: any) => !dbRutas.some((dbRuta: any) => dbRuta.ruta === ruta));
 
       // Delete routes that are not in rutasEnviadas
       await Promise.all(
-        routesToDelete.map(async (ruta) => {
+        routesToDelete.map(async (ruta: any) => {
           await prisma.ruta.delete({
             where: {
               id: ruta.id,
@@ -173,7 +170,7 @@ export async function PUT(request: Request, {params}: Params) {
 
       // Insert new routes that are not in dbRutas
       await Promise.all(
-        routesToAdd.map(async (nuevaRuta) => {
+        routesToAdd.map(async (nuevaRuta: any) => {
           await prisma.ruta.create({
             data: {
               ruta: nuevaRuta,
