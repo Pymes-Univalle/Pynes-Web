@@ -276,31 +276,34 @@ De no funcionar el paso 1, se crear una cuenta en cloudinary y realizar la sigui
  ![Captura de pantalla 2023-11-24 114234](https://github.com/Pymes-Univalle/Pynes-Web/assets/90225797/2c02f96d-5de3-4a26-b506-ad93c80d6a24)
 
 Dirigir se al icono de ajustes 
- 
+
+![Imagen1](https://github.com/Pymes-Univalle/Pynes-Web/assets/113220241/734a6edb-5e6e-4c68-9ee7-1046be476e90)
 
 Luego a upload 
  
- 
+![Imagen1](https://github.com/Pymes-Univalle/Pynes-Web/assets/113220241/b47bccf3-1622-4dc3-9e1d-0bbce305d098)
 
 Luego a Add upload preset 
 
- 
+![Imagen1](https://github.com/Pymes-Univalle/Pynes-Web/assets/113220241/36c9881b-1be5-46f7-bb87-6a2f8dc688d6)
 
 Cambiar el Upload preset_name por test_pymes 
 
- 
+ ![Imagen1](https://github.com/Pymes-Univalle/Pynes-Web/assets/113220241/7de2fe50-f62b-4c16-b5e6-3b6642014925)
+
 
 Abajo en Signing Mode: cámbialo a Unsigned click en el botón Save de arriba de color naranja 
 
- 
+ ![Imagen1](https://github.com/Pymes-Univalle/Pynes-Web/assets/113220241/59f08615-9cc6-4c6c-bb17-3bd333e4b506)
+
 
 Ahora en la ventana anterior en la parte de Upload presets: debería aparecerle uno con el nombre de test_pymes , en mode Unsigned. 
  
- 
+ ![Imagen1](https://github.com/Pymes-Univalle/Pynes-Web/assets/113220241/92146781-ae0b-4f15-8e70-53590e1df4f5)
 
 Una vez acabado de configurar el entorno, ahora diríjase a la ventana principal, haga click en el botón de abajo del icono de la nube del lado de la esquina superior izquierda, luego diríjase a dashboard, luego a More info de Api Environment variable 
 
- 
+ ![Imagen1](https://github.com/Pymes-Univalle/Pynes-Web/assets/113220241/b02f2bb0-3b22-495f-8190-dfe0acc72531)
 
 Luego copie el cuarto link 
 
