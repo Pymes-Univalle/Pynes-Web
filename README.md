@@ -422,3 +422,5 @@ API: Prisma
 Almacenamiento de imágenes: Cloudinary 
 
 Mapa: Api Google Maps 
+
+Video de presentación: https://youtu.be/E1AN2a9RMUM
